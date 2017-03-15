@@ -17,4 +17,7 @@ public class Config {
 	
 	//Error message
 	public static final boolean LOGGER_MESSAGE = true;
+	
+	//global
+	public static final int PAGE_SIZE = 20;
 }

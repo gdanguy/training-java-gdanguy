@@ -5,9 +5,8 @@ import java.util.Scanner;
 import Service.*;
 import configuration.Config;
 
-public class Main {
 
-	
+public class Main {	
 	public static void main( String[] args ) throws ClassNotFoundException, SQLException {
 		System.out.println("Welcome, type "+Config.HELP+" for the list of commands");
 		String result="";
@@ -19,5 +18,4 @@ public class Main {
 		}while(! result.equals(Config.QUIT) );
 		s.close();
 	}
-	
 }
