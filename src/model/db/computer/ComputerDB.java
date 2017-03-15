@@ -10,12 +10,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
 import model.computer.Computer;
 
 public class ComputerDB {
+	private static Logger logger = LoggerFactory.getLogger(ComputerDB.class);
 	private Connection conn;
 
 	/**
@@ -24,9 +28,10 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public ComputerDB() throws ClassNotFoundException, SQLException {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
-
 	}
 
 	/**
@@ -41,10 +46,12 @@ public class ComputerDB {
 	}
 
 	/**
-	 * Cette méthode retourne la liste des ordinateurs.
+	 * This method returns the list of computers.
 	 * @return
 	 */
 	public ArrayList<Computer> getComputer() {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Get all computers");
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
 			ResultSet r = s.executeQuery();
@@ -65,6 +72,8 @@ public class ComputerDB {
 	 * @return
 	 */
 	public Computer getComputerDetails(int id) {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Get computer : "+id);
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
 			s.setInt(1, id);
@@ -75,6 +84,7 @@ public class ComputerDB {
 				return null;
 			}
 		}catch(SQLException e){
+			logger.error(e+"\n");
 			return null;
 		}
 	}
@@ -86,6 +96,8 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Create computer : "+computer);
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
@@ -140,6 +152,8 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Update a computer : "+computer);
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
@@ -187,6 +201,8 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public String deleteComputer(int id) throws SQLException {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Delete a computer : "+id);
 		PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
 		s.setInt(1, id);
 		
@@ -200,7 +216,6 @@ public class ComputerDB {
 
 
 	private static Calendar setDate(String date) throws NumberFormatException{
-		
 		String tempo[] = date.split(" ");
 		String tempo2[] = tempo[0].split("-");
 		String tempo3[] = tempo[1].split(":");

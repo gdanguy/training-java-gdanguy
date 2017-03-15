@@ -7,19 +7,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import configuration.Config;
 import model.company.Company;
 
 public class CompanyDB {
-
+	private static Logger logger = LoggerFactory.getLogger(CompanyDB.class);
 	private Connection conn;
 
+	/**
+	 * Builder
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public CompanyDB() throws ClassNotFoundException, SQLException {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
 
 	}
-
+	
+	/**
+	 * Close connection
+	 */
 	protected void finalize() {
 		try {
 			if (conn != null && !conn.isClosed())
@@ -28,7 +41,13 @@ public class CompanyDB {
 		}
 	}
 
+	/**
+	 * This method returns the list of companies.
+	 * @return
+	 */
 	public ArrayList<Company> getCompanies() {
+		if(Config.LOGGER_MESSAGE)
+			logger.info("Get all companies");
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
 			ResultSet r = s.executeQuery();
@@ -38,6 +57,7 @@ public class CompanyDB {
 			}
 			return result;
 		}catch(SQLException e){
+			logger.error(e+"\n");
 			return null;
 		}
 		

@@ -16,5 +16,5 @@ public class Config {
 	public static final String PASSWORD_DB = "qwerty1234";
 	
 	//Error message
-	public static final boolean ERR_MESSAGE = true;
+	public static final boolean LOGGER_MESSAGE = true;
 }
