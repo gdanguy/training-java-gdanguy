@@ -28,7 +28,7 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public ComputerDB() throws ClassNotFoundException, SQLException {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
@@ -50,7 +50,7 @@ public class ComputerDB {
 	 * @return
 	 */
 	public ArrayList<Computer> getAllComputer() {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Get all computers");
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
@@ -72,7 +72,7 @@ public class ComputerDB {
 	 * @return
 	 */
 	public Computer getComputerDetails(int id) {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Get computer : "+id);
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
@@ -96,7 +96,7 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Create computer : "+computer);
 		String date;
 		boolean introduced = false;
@@ -152,7 +152,7 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Update a computer : "+computer);
 		String date;
 		boolean introduced = false;
@@ -201,7 +201,7 @@ public class ComputerDB {
 	 * @throws SQLException
 	 */
 	public String deleteComputer(int id) throws SQLException {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Delete a computer : "+id);
 		PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
 		s.setInt(1, id);

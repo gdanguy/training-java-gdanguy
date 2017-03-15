@@ -69,11 +69,11 @@ public class CLIService {
 	 * @throws SQLException
 	 */
 	public static String choixAction(String action, Scanner s) throws ClassNotFoundException, SQLException{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Choose action : '" + action+"'\n");
 		int id;
 		try{
-			switch(action){
+			switch( action ){
 				case Config.LIST_COMPUTER :
 					listComputers().display(s);
 					return "";
@@ -99,12 +99,12 @@ public class CLIService {
 				default :
 					return "Invalid input\n";
 			}
-		}catch(NullPointerException | NumberFormatException e){
+		}catch( NullPointerException | NumberFormatException e ){
 			if( Config.LOGGER_MESSAGE ){
 				logger.error(e+"\n");
 			}
     		return "Invalid input";
-    	}catch(MysqlDataTruncation e2){
+    	}catch( MysqlDataTruncation e2 ){
     		if( Config.LOGGER_MESSAGE ){
 				logger.error(e2+"\n");
     		}
@@ -114,7 +114,7 @@ public class CLIService {
 	
 	
     private static Computer inputComputer(Scanner s) {
-    	if(Config.LOGGER_MESSAGE)
+    	if( Config.LOGGER_MESSAGE )
 			logger.info("Input new Computer");
     	try{
 	    	String name = lireSaisieUtilisateur(s,"Enter computer Name : ");
@@ -132,7 +132,7 @@ public class CLIService {
     
     
     private static Computer inputComputer(Scanner s, Computer c, int id) {
-    	if(Config.LOGGER_MESSAGE)
+    	if( Config.LOGGER_MESSAGE )
 			logger.info("Input new Computer, old : "+c);
     	try{
 	    	String name = lireSaisieUtilisateur(s,"Enter computer Name (before : "+c.getName()+") : ");
@@ -155,7 +155,7 @@ public class CLIService {
 	 * @throws SQLException
 	 */
 	public static PagesComputers listComputers() throws ClassNotFoundException, SQLException{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("List all Computers");
 		ComputerDB db = new ComputerDB();
 		PagesComputers result = new PagesComputers(db.getAllComputer());
@@ -169,7 +169,7 @@ public class CLIService {
      * @throws SQLException
      */
 	public static PagesCompanies listCompanies() throws ClassNotFoundException, SQLException{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("List all Companies");
 		CompanyDB db = new CompanyDB();
 		PagesCompanies result = new PagesCompanies(db.getCompanies());
@@ -184,7 +184,7 @@ public class CLIService {
      * @throws SQLException
      */
 	public static String showComputerdetails(int id) throws ClassNotFoundException, SQLException{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Get a computers, id ="+id);
 		Computer result = getComputer(id);
 		if( result == null ){
@@ -207,7 +207,7 @@ public class CLIService {
 	 * @throws SQLException
 	 */
 	public static String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Create a computer, "+computer);
 		ComputerDB db = new ComputerDB();
 		return db.createComputer(computer).toStringDetails();
@@ -221,7 +221,7 @@ public class CLIService {
      * @throws SQLException
      */
 	public static String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Update a Computer, new : "+computer);
 		ComputerDB db = new ComputerDB();
 		return db.updateComputer(computer).toStringDetails();
@@ -235,7 +235,7 @@ public class CLIService {
 	 * @throws SQLException
 	 */
 	public static String deleteComputer(int id) throws ClassNotFoundException, SQLException{
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Delete a computer, id = "+id);
 		ComputerDB db = new ComputerDB();
 		return db.deleteComputer(id);

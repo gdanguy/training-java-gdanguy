@@ -23,7 +23,7 @@ public class CompanyDB {
 	 * @throws SQLException
 	 */
 	public CompanyDB() throws ClassNotFoundException, SQLException {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
@@ -46,7 +46,7 @@ public class CompanyDB {
 	 * @return
 	 */
 	public ArrayList<Company> getCompanies() {
-		if(Config.LOGGER_MESSAGE)
+		if( Config.LOGGER_MESSAGE )
 			logger.info("Get all companies");
 		try{
 			PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
