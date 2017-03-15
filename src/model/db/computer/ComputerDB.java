@@ -18,7 +18,7 @@ import com.mysql.jdbc.MysqlDataTruncation;
 import configuration.Config;
 import model.computer.Computer;
 
-public class ComputerDB {
+public class ComputerDB implements ComputerDBInterface{
 	private static Logger logger = LoggerFactory.getLogger(ComputerDB.class);
 	private Connection conn;
 
@@ -48,21 +48,18 @@ public class ComputerDB {
 	/**
 	 * This method returns the list of computers.
 	 * @return
+	 * @throws SQLException 
 	 */
-	public ArrayList<Computer> getAllComputer() {
+	public ArrayList<Computer> getAllComputer() throws SQLException {
 		if( Config.LOGGER_MESSAGE )
 			logger.info("Get all computers");
-		try{
-			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
-			ResultSet r = s.executeQuery();
-			ArrayList<Computer> result = new ArrayList<>();
-			while(r.next()){
-				result.add(new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5)));
-			}
-			return result;
-		}catch(SQLException e){
-			return null;
+		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
+		ResultSet r = s.executeQuery();
+		ArrayList<Computer> result = new ArrayList<>();
+		while(r.next()){
+			result.add(new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5)));
 		}
+		return result;
 		
 	}
 
@@ -70,21 +67,17 @@ public class ComputerDB {
 	 * This method returns a computer identified by its id.
 	 * @param id of the computer
 	 * @return
+	 * @throws SQLException 
 	 */
-	public Computer getComputerDetails(int id) {
+	public Computer getComputerDetails(int id) throws SQLException {
 		if( Config.LOGGER_MESSAGE )
 			logger.info("Get computer : "+id);
-		try{
-			PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
-			s.setInt(1, id);
-			ResultSet r = s.executeQuery();
-			if( r.next() ){
-				return new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5));
-			}else{
-				return null;
-			}
-		}catch(SQLException e){
-			logger.error(e+"\n");
+		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
+		s.setInt(1, id);
+		ResultSet r = s.executeQuery();
+		if( r.next() ){
+			return new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5));
+		}else{
 			return null;
 		}
 	}

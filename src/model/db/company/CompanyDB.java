@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import configuration.Config;
 import model.company.Company;
 
-public class CompanyDB {
+public class CompanyDB implements CompanyDBInterface{
 	private static Logger logger = LoggerFactory.getLogger(CompanyDB.class);
 	private Connection conn;
 
@@ -44,22 +44,18 @@ public class CompanyDB {
 	/**
 	 * This method returns the list of companies.
 	 * @return
+	 * @throws SQLException 
 	 */
-	public ArrayList<Company> getCompanies() {
+	public ArrayList<Company> getCompanies() throws SQLException {
 		if( Config.LOGGER_MESSAGE )
 			logger.info("Get all companies");
-		try{
-			PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
-			ResultSet r = s.executeQuery();
-			ArrayList<Company> result = new ArrayList<>();
-			while(r.next()){
-				result.add(new Company(r.getInt(1),r.getString(2)));
-			}
-			return result;
-		}catch(SQLException e){
-			logger.error(e+"\n");
-			return null;
+		PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
+		ResultSet r = s.executeQuery();
+		ArrayList<Company> result = new ArrayList<>();
+		while(r.next()){
+			result.add(new Company(r.getInt(1),r.getString(2)));
 		}
+		return result;
 		
 	}
 	
