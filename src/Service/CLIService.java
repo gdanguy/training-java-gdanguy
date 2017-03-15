@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.mysql.jdbc.MysqlDataTruncation;
+
 import configuration.Config;
 import model.company.Company;
 import model.computer.Computer;
@@ -87,8 +89,15 @@ public class CLIService {
 					return "Invalid input";
 			}
 		}catch(NullPointerException | NumberFormatException e){
-    		System.err.println(e);
+			if( Config.ERR_MESSAGE ){
+				System.err.println(e);
+			}
     		return "Invalid input";
+    	}catch(MysqlDataTruncation e2){
+    		if( Config.ERR_MESSAGE ){
+    			System.err.println(e2);
+    		}
+    		return "The date must be more recent on 1 January 1970 at 00:00:00";
     	}
 	}
 	
@@ -101,7 +110,9 @@ public class CLIService {
 	    	int companyId = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer Company id : "));
 			return new Computer(-1,name,introduced,discontinued,companyId);
     	}catch(NullPointerException | NumberFormatException e){
-    		System.err.println(e);
+    		if( Config.ERR_MESSAGE ){
+    			System.err.println(e);
+    		}
     		return null;
     	}
 	}
@@ -115,7 +126,9 @@ public class CLIService {
 	    	int companyId = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer Company id (before : "+c.getCompany_id()+"): "));
 			return new Computer(id,name,introduced,discontinued,companyId);
     	}catch(NullPointerException | NumberFormatException e){
-    		System.err.println(e);
+    		if( Config.ERR_MESSAGE ){
+    			System.err.println(e);
+    		}
     		return null;
     	}
 	}
@@ -180,7 +193,7 @@ public class CLIService {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException{
+	public static String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		ComputerDB db = new ComputerDB();
 		return db.createComputer(computer).toStringDetails();
 	}
@@ -192,7 +205,7 @@ public class CLIService {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-	public static String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException{
+	public static String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		ComputerDB db = new ComputerDB();
 		return db.updateComputer(computer).toStringDetails();
 	}

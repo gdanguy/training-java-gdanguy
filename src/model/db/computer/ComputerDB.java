@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import com.mysql.jdbc.MysqlDataTruncation;
+
 import configuration.Config;
 import model.computer.Computer;
 
@@ -83,7 +85,7 @@ public class ComputerDB {
 	 * @return the computer inserted
 	 * @throws SQLException
 	 */
-	public Computer createComputer(Computer computer) throws SQLException {
+	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
@@ -137,7 +139,7 @@ public class ComputerDB {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Computer updateComputer(Computer computer) throws SQLException {
+	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation {
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
