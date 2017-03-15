@@ -19,7 +19,7 @@ public class Company {
 	
 	@Override
 	public String toString() {
-		return "Companie [id=" + id + ", name=" + name + "]";
+		return "Company [id=" + id + ", name=" + name + "]";
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class ComputerDB {
 	 * This method returns the list of computers.
 	 * @return
 	 */
-	public ArrayList<Computer> getComputer() {
+	public ArrayList<Computer> getAllComputer() {
 		if(Config.LOGGER_MESSAGE)
 			logger.info("Get all computers");
 		try{

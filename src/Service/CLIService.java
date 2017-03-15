@@ -1,7 +1,6 @@
 package Service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -10,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
-import model.company.Company;
+import model.company.PagesCompanies;
 import model.computer.Computer;
+import model.computer.PagesComputers;
 import model.db.company.CompanyDB;
 import model.db.computer.ComputerDB;
 
@@ -75,9 +75,11 @@ public class CLIService {
 		try{
 			switch(action){
 				case Config.LIST_COMPUTER :
-					return listComputers();
+					listComputers().display(s);
+					return "";
 				case Config.LIST_COMPANIES :
-					return listCompanies();
+					listCompanies().display(s);
+					return "";
 				case Config.SHOW_COMPUTER_DETAILS :
 					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
 					return showComputerdetails(id);
@@ -152,16 +154,12 @@ public class CLIService {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static String listComputers() throws ClassNotFoundException, SQLException{
+	public static PagesComputers listComputers() throws ClassNotFoundException, SQLException{
 		if(Config.LOGGER_MESSAGE)
 			logger.info("List all Computers");
 		ComputerDB db = new ComputerDB();
-		ArrayList<Computer> result = db.getComputer();
-		if( result == null ){
-			return "No computer in the database";
-		}else{
-			return result.toString();
-		}
+		PagesComputers result = new PagesComputers(db.getAllComputer());
+		return result;
 	}
 	
     /**
@@ -170,16 +168,12 @@ public class CLIService {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-	public static String listCompanies() throws ClassNotFoundException, SQLException{
+	public static PagesCompanies listCompanies() throws ClassNotFoundException, SQLException{
 		if(Config.LOGGER_MESSAGE)
 			logger.info("List all Companies");
 		CompanyDB db = new CompanyDB();
-		ArrayList<Company> result = db.getCompanies();
-		if( result == null ){
-			return "No computer in the database";
-		}else{
-			return result.toString();
-		}
+		PagesCompanies result = new PagesCompanies(db.getCompanies());
+		return result;
 	}
 	
     /**
