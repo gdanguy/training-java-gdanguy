@@ -34,6 +34,8 @@ public class Computer {
 	public int getCompany_id() {
 		return company_id;
 	}
+	
+
 
 	@Override
 	public String toString() {
@@ -45,6 +47,37 @@ public class Computer {
 				+ ", company_id=" + company_id + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ( (name == null) ? 0 : name.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if ( this == obj )
+			return true;
+		if ( obj == null )
+			return false;
+		if ( getClass() != obj.getClass() )
+			return false;
+		Computer other = (Computer) obj;
+		if ( id != other.id )
+			return false;
+		return true;
+	}
+
+	public int compareTo(Computer c2) {
+		if( this.id == c2.getId() )
+			return 0;
+		else if( this.id < c2.getId() )
+			return -1;
+		else
+			return 1;
+	}
 
 }
  
