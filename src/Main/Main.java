@@ -9,13 +9,13 @@ public class Main {
 	
 	public static void main( String[] args ) throws ClassNotFoundException, SQLException {
 		System.out.println("Welcome, type "+Config.HELP+" for the list of commands");
-		String action="";
+		String result="";
 		Scanner s = new Scanner(System.in);
 		do{
 			String retourUtilisateur = CLIService.lireSaisieUtilisateur(s,"");
-			action = CLIService.choixAction(retourUtilisateur,s);
-			System.out.println(action);
-		}while(! action.equals(Config.QUIT) );
+			result = CLIService.choixAction(retourUtilisateur,s);
+			System.out.println(result);
+		}while(! result.equals(Config.QUIT) );
 		s.close();
 	}
 	

@@ -11,7 +11,7 @@ import model.db.computer.ComputerDB;
 
 public class CLIService {
 	/**
-	 * Retourne un String contenant la liste des options
+	 * Returns a String containing the list of options
 	 * @return 
 	 */
 	public static String listeOption(){
@@ -26,11 +26,21 @@ public class CLIService {
 		
 	}	
 	
+	/**
+	 * Retrieves the user input.
+	 * @param s
+	 * @return
+	 */
 	public static String lireSaisieUtilisateur(Scanner s){
 		return lireSaisieUtilisateur(s,null);
 	}
 	
-	//Saisie
+	/**
+	 * Displays the requested message and retrieves the user input.
+	 * @param s
+	 * @param message
+	 * @return
+	 */
 	public static String lireSaisieUtilisateur(Scanner s, String message){
 		if( message != null ){
 			System.out.println(message);
@@ -40,48 +50,47 @@ public class CLIService {
 		return str;
 	}
 	
-	//Action
+	/**
+	 * Call the method corresponding to the parameter.
+	 * @param action
+	 * @param s
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static String choixAction(String action, Scanner s) throws ClassNotFoundException, SQLException{
-		switch(action){
-			case Config.LIST_COMPUTER :
-				return listComputers();
-			case Config.LIST_COMPANIES :
-				return listCompanies();
-			case Config.SHOW_COMPUTER_DETAILS :
-				try{
-					int id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
+		int id;
+		try{
+			switch(action){
+				case Config.LIST_COMPUTER :
+					return listComputers();
+				case Config.LIST_COMPANIES :
+					return listCompanies();
+				case Config.SHOW_COMPUTER_DETAILS :
+					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
 					return showComputerdetails(id);
-				}catch(NullPointerException | NumberFormatException e){
-		    		System.err.println(e);
-		    		return "Invalid input";
-		    	}
-			case Config.CREATE_COMPUTER :
-				Computer c = inputComputer(s);
-				return createComputer(c);
-			case Config.UPDATE_COMPUTER :
-				try{
-					int id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
+				case Config.CREATE_COMPUTER :
+					Computer c = inputComputer(s);
+					return createComputer(c);
+				case Config.UPDATE_COMPUTER :
+					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
 					return updateComputer(inputComputer(s,getComputer(id),id));
-				}catch(NullPointerException | NumberFormatException e){
-		    		System.err.println(e);
-		    		return "Invalid input";
-		    	}
-			case Config.DELETE_COMPUTER :
-				try{
-					int id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
+				case Config.DELETE_COMPUTER :
+					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
 					return deleteComputer(id);
-				}catch(NullPointerException | NumberFormatException e){
-		    		System.err.println(e);
-		    		return "Invalid input";
-		    	}
-			case Config.HELP :
-				return listeOption();
-			case Config.QUIT :
-				return Config.QUIT;
-			default :
-				return "Invalid input";
-		}
+				case Config.HELP :
+					return listeOption();
+				case Config.QUIT :
+					return Config.QUIT;
+				default :
+					return "Invalid input";
+			}
+		}catch(NullPointerException | NumberFormatException e){
+    		System.err.println(e);
+    		return "Invalid input";
+    	}
 	}
+	
 	
     private static Computer inputComputer(Scanner s) {
     	try{
@@ -96,6 +105,7 @@ public class CLIService {
     	}
 	}
     
+    
     private static Computer inputComputer(Scanner s, Computer c, int id) {
     	try{
 	    	String name = lireSaisieUtilisateur(s,"Enter computer Name (before : "+c.getName()+") : ");
@@ -109,32 +119,48 @@ public class CLIService {
     	}
 	}
 
-	//List computers
+	/**
+	 * List computers
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static String listComputers() throws ClassNotFoundException, SQLException{
 		ComputerDB db = new ComputerDB();
 		ArrayList<Computer> result = db.getComputer();
-		if(result == null){
+		if( result == null ){
 			return "No computer in the database";
 		}else{
 			return result.toString();
 		}
 	}
 	
-    //List companies
+    /**
+     * List companies
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
 	public static String listCompanies() throws ClassNotFoundException, SQLException{
 		CompanyDB db = new CompanyDB();
 		ArrayList<Company> result = db.getCompanies();
-		if(result == null){
+		if( result == null ){
 			return "No computer in the database";
 		}else{
 			return result.toString();
 		}
 	}
 	
-    //Show computer details (the detailed information of only one computer)
+    /**
+     * Show computer details (the detailed information of only one computer)
+     * @param id
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
 	public static String showComputerdetails(int id) throws ClassNotFoundException, SQLException{
 		Computer result = getComputer(id);
-		if(result == null){
+		if( result == null ){
 			return "No computer corresponding in the database";
 		}else{
 			return result.toStringDetails();
@@ -146,22 +172,37 @@ public class CLIService {
 		return db.getComputerDetails(id);
 	}
 	
-	
-	//Create a computer
-	public static String createComputer(Computer computer) throws ClassNotFoundException, SQLException{
+	/**
+	 * Create a computer, the id of parameter is no matter.
+	 * @param computer
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public static String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException{
 		ComputerDB db = new ComputerDB();
-		Computer result = db.createComputer(computer);
-		return result.toStringDetails();
+		return db.createComputer(computer).toStringDetails();
 	}
 	
-    //Update a computer
-	public static String updateComputer(Computer computer) throws ClassNotFoundException, SQLException{
+    /**
+     * Update a computer
+     * @param computer
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+	public static String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException{
 		ComputerDB db = new ComputerDB();
-		Computer result = db.updateComputer(computer);
-		return result.toStringDetails();
+		return db.updateComputer(computer).toStringDetails();
 	}
 	
-	//Delete a computer
+	/**
+	 * Delete a computer
+	 * @param id
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static String deleteComputer(int id) throws ClassNotFoundException, SQLException{
 		ComputerDB db = new ComputerDB();
 		return db.deleteComputer(id);

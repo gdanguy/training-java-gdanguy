@@ -1,5 +1,6 @@
 package Main;
 public class Config {
+	//CLI
 	public static final String LIST_COMPUTER = "list computers";
 	public static final String LIST_COMPANIES = "list companies";
 	public static final String SHOW_COMPUTER_DETAILS = "show computer details";
@@ -9,7 +10,8 @@ public class Config {
 	public static final String QUIT = "quit";
 	public static final String HELP = "help";
 	
-	public static final String URL_DB = "jdbc:mysql://localhost/computer-database-db";
+	//database
+	public static final String URL_DB = "jdbc:mysql://localhost/computer-database-db?useSSL=false";
 	public static final String USER_DB = "admincdb";
 	public static final String PASSWORD_DB = "qwerty1234";
 }
