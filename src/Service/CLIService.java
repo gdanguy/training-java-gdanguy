@@ -27,7 +27,7 @@ public class CLIService {
 	}	
 	
 	/**
-	 * Retrieves the user input.
+	 * Return the user input.
 	 * @param s
 	 * @return
 	 */
@@ -36,7 +36,7 @@ public class CLIService {
 	}
 	
 	/**
-	 * Displays the requested message and retrieves the user input.
+	 * Displays the requested message and return the user input.
 	 * @param s
 	 * @param message
 	 * @return
