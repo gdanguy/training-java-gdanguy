@@ -1,8 +1,9 @@
-package Main;
+package main;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 import Service.*;
+import configuration.Config;
 
 public class Main {
 

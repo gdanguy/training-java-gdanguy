@@ -6,7 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import Main.Config;
+
+import configuration.Config;
 import model.company.Company;
 
 public class CompanyDB {

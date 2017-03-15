@@ -1,4 +1,4 @@
-package Main;
+package configuration;
 public class Config {
 	//CLI
 	public static final String LIST_COMPUTER = "list computers";

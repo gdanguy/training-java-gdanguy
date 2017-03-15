@@ -3,7 +3,8 @@ package Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import Main.Config;
+
+import configuration.Config;
 import model.company.Company;
 import model.computer.Computer;
 import model.db.company.CompanyDB;

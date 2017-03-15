@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import Main.Config;
+import configuration.Config;
 import model.computer.Computer;
 
 public class ComputerDB {
@@ -88,7 +88,7 @@ public class ComputerDB {
 		boolean introduced = false;
 		boolean discontinued = false;
 		if( computer.getIntroduced().equals("") ){
-			date=",null,";
+			date=",null";
 		}else{
 			introduced = true;
 			date=",?";
