@@ -23,8 +23,7 @@ public class CompanyDB implements CompanyDBInterface{
 	 * @throws SQLException
 	 */
 	public CompanyDB() throws ClassNotFoundException, SQLException {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Connection to the database");
+		logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
 
@@ -47,8 +46,7 @@ public class CompanyDB implements CompanyDBInterface{
 	 * @throws SQLException 
 	 */
 	public ArrayList<Company> getCompanies() throws SQLException {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Get all companies");
+		logger.info("Get all companies");
 		PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
 		ResultSet r = s.executeQuery();
 		ArrayList<Company> result = new ArrayList<>();

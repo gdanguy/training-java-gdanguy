@@ -28,8 +28,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException
 	 */
 	public ComputerDB() throws ClassNotFoundException, SQLException {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Connection to the database");
+		logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
 	}
@@ -51,8 +50,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException 
 	 */
 	public ArrayList<Computer> getAllComputer() throws SQLException {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Get all computers");
+		logger.info("Get all computers");
 		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
 		ResultSet r = s.executeQuery();
 		ArrayList<Computer> result = new ArrayList<>();
@@ -70,7 +68,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException 
 	 */
 	public Computer getComputerDetails(int id) throws SQLException {
-		if( Config.LOGGER_MESSAGE )
+		
 			logger.info("Get computer : "+id);
 		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
 		s.setInt(1, id);
@@ -89,8 +87,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException
 	 */
 	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Create computer : "+computer);
+		logger.info("Create computer : "+computer);
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
@@ -145,8 +142,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException
 	 */
 	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Update a computer : "+computer);
+		logger.info("Update a computer : "+computer);
 		String date;
 		boolean introduced = false;
 		boolean discontinued = false;
@@ -194,8 +190,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws SQLException
 	 */
 	public String deleteComputer(int id) throws SQLException {
-		if( Config.LOGGER_MESSAGE )
-			logger.info("Delete a computer : "+id);
+		logger.info("Delete a computer : "+id);
 		PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
 		s.setInt(1, id);
 		

@@ -15,9 +15,6 @@ public class Config {
 	public static final String USER_DB = "admincdb";
 	public static final String PASSWORD_DB = "qwerty1234";
 	
-	//Error message
-	public static final boolean LOGGER_MESSAGE = true;
-	
 	//global
 	public static final int PAGE_SIZE = 20;
 }
