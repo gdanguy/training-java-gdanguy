@@ -1,7 +1,6 @@
 package Service;
 
 import java.sql.SQLException;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
+import main.Main;
 import model.company.PagesCompanies;
 import model.computer.Computer;
 import model.computer.PagesComputers;
@@ -39,8 +39,8 @@ public class CLIService {
 	 * @param s
 	 * @return
 	 */
-	public static String lireSaisieUtilisateur(Scanner s){
-		return lireSaisieUtilisateur(s,null);
+	public static String lireSaisieUtilisateur(){
+		return lireSaisieUtilisateur(null);
 	}
 	
 	/**
@@ -49,12 +49,12 @@ public class CLIService {
 	 * @param message
 	 * @return
 	 */
-	public static String lireSaisieUtilisateur(Scanner s, String message){
+	public static String lireSaisieUtilisateur(String message){
 		logger.info("Input needed");
 		if( message != null ){
 			System.out.println(message);
 		}
-		String str = s.nextLine();
+		String str = Main.scanner.nextLine();
 		str.toLowerCase();
 		return str;
 	}
@@ -67,28 +67,28 @@ public class CLIService {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static String choixAction(String action, Scanner s) throws ClassNotFoundException, SQLException{
+	public static String choixAction(String action) throws ClassNotFoundException, SQLException{
 		logger.info("Choose action : '" + action+"'\n");
 		int id;
 		try{
 			switch( action ){
 				case Config.LIST_COMPUTER :
-					listComputers().display(s);
+					listComputers().display();
 					return "";
 				case Config.LIST_COMPANIES :
-					listCompanies().display(s);
+					listCompanies().display();
 					return "";
 				case Config.SHOW_COMPUTER_DETAILS :
-					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
+					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
 					return showComputerdetails(id);
 				case Config.CREATE_COMPUTER :
-					Computer c = inputComputer(s);
+					Computer c = inputComputer();
 					return createComputer(c);
 				case Config.UPDATE_COMPUTER :
-					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
-					return updateComputer(inputComputer(s,getComputer(id),id));
+					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
+					return updateComputer(inputComputer(getComputer(id),id));
 				case Config.DELETE_COMPUTER :
-					id = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer ID : "));
+					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
 					return deleteComputer(id);
 				case Config.HELP :
 					return listeOption();
@@ -107,13 +107,13 @@ public class CLIService {
 	}
 	
 	
-    private static Computer inputComputer(Scanner s) {
+    private static Computer inputComputer() {
     	logger.info("Input new Computer");
     	try{
-	    	String name = lireSaisieUtilisateur(s,"Enter computer Name : ");
-	    	String introduced = lireSaisieUtilisateur(s,"Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
-	    	String discontinued = lireSaisieUtilisateur(s,"Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
-	    	int companyId = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer Company id : "));
+	    	String name = lireSaisieUtilisateur("Enter computer Name : ");
+	    	String introduced = lireSaisieUtilisateur("Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
+	    	String discontinued = lireSaisieUtilisateur("Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
+	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
 			return new Computer(-1,name,introduced,discontinued,companyId);
     	}catch(NullPointerException | NumberFormatException e){
     		{
@@ -124,13 +124,13 @@ public class CLIService {
 	}
     
     
-    private static Computer inputComputer(Scanner s, Computer c, int id) {
+    private static Computer inputComputer(Computer c, int id) {
     	logger.info("Input new Computer, old : "+c);
     	try{
-	    	String name = lireSaisieUtilisateur(s,"Enter computer Name (before : "+c.getName()+") : ");
-	    	String introduced = lireSaisieUtilisateur(s,"Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getIntroduced()+") : ");
-	    	String discontinued = lireSaisieUtilisateur(s,"Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getDiscontinued()+") : ");
-	    	int companyId = Integer.parseInt(lireSaisieUtilisateur(s,"Enter computer Company id (before : "+c.getCompany_id()+"): "));
+	    	String name = lireSaisieUtilisateur("Enter computer Name (before : "+c.getName()+") : ");
+	    	String introduced = lireSaisieUtilisateur("Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getIntroduced()+") : ");
+	    	String discontinued = lireSaisieUtilisateur("Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getDiscontinued()+") : ");
+	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : "+c.getCompany_id()+"): "));
 			return new Computer(id,name,introduced,discontinued,companyId);
     	}catch(NullPointerException | NumberFormatException e){
 			logger.error(e+"\n");

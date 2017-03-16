@@ -1,14 +1,13 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import Service.CLIService;
-import configuration.Config;
 
 public abstract class Pages {
 	public static final String NEXT_PAGE = "+";
 	public static final String PREVIOUS_PAGE = "-";
+	public static final int PAGE_SIZE = 20;
 	
 	protected ArrayList<Object> listObject = new ArrayList<>();
 	protected int maxPage;
@@ -20,10 +19,10 @@ public abstract class Pages {
 	 */
 	protected ArrayList<Object> getListPage(int page){
 		ArrayList<Object> returnListPage = new ArrayList<>();
-		for(int i=page*Config.PAGE_SIZE;(i<listObject.size() && i<page*Config.PAGE_SIZE+Config.PAGE_SIZE);i++){
+		for(int i=page*PAGE_SIZE;(i<listObject.size() && i<page*PAGE_SIZE+PAGE_SIZE);i++){
 			returnListPage.add(listObject.get(i));
 		}
-		maxPage = listObject.size()/Config.PAGE_SIZE;
+		maxPage = listObject.size()/PAGE_SIZE;
 		return returnListPage;
 	}
 
@@ -36,7 +35,7 @@ public abstract class Pages {
 	 * Shows a modifiable range of object to the user
 	 * @param s
 	 */
-	public void display(Scanner s) {
+	public void display() {
 		if( listObject.isEmpty() ){
 			System.out.println("No item wanted in the database");
 		}else{
@@ -47,7 +46,7 @@ public abstract class Pages {
 				quit = true;
 				page = getListPage(numPage);
 				System.out.println(page);
-				String input = CLIService.lireSaisieUtilisateur(s, "Type '"+NEXT_PAGE+"' for next page, '"+PREVIOUS_PAGE+"' for previous page, other for quit");
+				String input = CLIService.lireSaisieUtilisateur("Type '"+NEXT_PAGE+"' for next page, '"+PREVIOUS_PAGE+"' for previous page, other for quit");
 				if( input.equals(NEXT_PAGE) ){
 					numPage++;
 					quit = false;

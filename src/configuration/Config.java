@@ -15,6 +15,4 @@ public class Config {
 	public static final String USER_DB = "admincdb";
 	public static final String PASSWORD_DB = "qwerty1234";
 	
-	//global
-	public static final int PAGE_SIZE = 20;
 }

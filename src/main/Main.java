@@ -7,15 +7,15 @@ import configuration.Config;
 
 
 public class Main {	
+	public static final Scanner scanner = new Scanner(System.in);
+	
 	public static void main( String[] args ) throws ClassNotFoundException, SQLException {
 		System.out.println("Welcome, type "+Config.HELP+" for the list of commands");
 		String result="";
-		Scanner s = new Scanner(System.in);
 		do{
-			String retourUtilisateur = CLIService.lireSaisieUtilisateur(s,"");
-			result = CLIService.choixAction(retourUtilisateur,s);
+			String retourUtilisateur = CLIService.lireSaisieUtilisateur("");
+			result = CLIService.choixAction(retourUtilisateur);
 			System.out.println(result);
 		}while(! result.equals(Config.QUIT) );
-		s.close();
 	}
 }
