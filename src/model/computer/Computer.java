@@ -39,8 +39,6 @@ public class Computer {
 		return company;
 	}
 	
-
-
 	@Override
 	public String toString() {
 		return "Computer [id=" + id + ", name=" + name +"]";
@@ -50,16 +48,7 @@ public class Computer {
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
 				+ ", company=" + company + "]";
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		result = prime * result + ( (name == null) ? 0 : name.hashCode() );
-		return result;
-	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if ( this == obj )
@@ -73,15 +62,5 @@ public class Computer {
 			return false;
 		return true;
 	}
-
-	public int compareTo(Computer c2) {
-		if( this.id == c2.getId() )
-			return 0;
-		else if( this.id < c2.getId() )
-			return -1;
-		else
-			return 1;
-	}
-
 }
  

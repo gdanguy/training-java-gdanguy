@@ -44,14 +44,4 @@ public class Company {
 			return false;
 		return true;
 	}
-	
-	public int compareTo(Company c2) {
-		if( this.id == c2.getId() )
-			return 0;
-		else if( this.id < c2.getId() )
-			return -1;
-		else
-			return 1;
-	}
-	
 }
