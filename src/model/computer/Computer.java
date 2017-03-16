@@ -1,5 +1,6 @@
 package model.computer;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import model.company.Company;
@@ -29,6 +30,14 @@ public class Computer {
 	
 	public LocalDateTime getIntroduced() {
 		return introduced;
+	}
+	
+	public Timestamp getIntroducedTimeStamp() {
+		return introduced == null ? null : Timestamp.valueOf( introduced );
+	}
+	
+	public Timestamp getDiscontinuedTimeStamp() {
+		return discontinued == null ? null : Timestamp.valueOf( discontinued );
 	}
 	
 	public LocalDateTime getDiscontinued() {

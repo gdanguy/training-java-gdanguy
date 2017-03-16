@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -52,9 +51,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		ResultSet r = s.executeQuery();
 		ArrayList<Computer> result = new ArrayList<>();
 		while( r.next() ){
-			LocalDateTime intro = r.getTimestamp("introduced") == null ? null : r.getTimestamp("introduced").toLocalDateTime();
-			LocalDateTime disco = r.getTimestamp("discontinued") == null ? null : r.getTimestamp("discontinued").toLocalDateTime();
-			result.add(new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6))));
+			result.add(makeComputerWithResultSet(r));
 		}
 		Utils.closeConnection(conn);
 		return new Pages<Computer>(result,page);
@@ -77,10 +74,7 @@ public enum ComputerDAOImpl implements ComputerDAO{
 		s.setInt(1, id);
 		ResultSet r = s.executeQuery();
 		if( r.next() ){
-			LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
-			LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
-			
-			Computer result = new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6)));
+			Computer result = makeComputerWithResultSet(r);
 			Utils.closeConnection(conn);
 			return result;
 		}else{
@@ -88,6 +82,14 @@ public enum ComputerDAOImpl implements ComputerDAO{
 			return null;
 		}
 	}
+	
+	
+	private Computer makeComputerWithResultSet(ResultSet r) throws SQLException{
+		LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
+		LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
+		return new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6)));
+	}
+
 
 	/**
 	 * This method adds a computer in the database regardless of its id and returns the computer completed with its id.
@@ -103,10 +105,8 @@ public enum ComputerDAOImpl implements ComputerDAO{
 				,Statement.RETURN_GENERATED_KEYS);
 		s.setString(1, computer.getName());
 		s.setInt(2, computer.getCompany().getId());
-		Timestamp intro = computer.getIntroduced() == null ? null : Timestamp.valueOf( computer.getIntroduced() );
-		s.setTimestamp(3, intro);
-	    Timestamp disco = computer.getDiscontinued() == null ? null : Timestamp.valueOf( computer.getDiscontinued() );
-		s.setTimestamp(4, disco);
+		s.setTimestamp(3, computer.getIntroducedTimeStamp());
+		s.setTimestamp(4, computer.getDiscontinuedTimeStamp());
 		
 		int affectedRows = s.executeUpdate();
 
@@ -142,10 +142,8 @@ public enum ComputerDAOImpl implements ComputerDAO{
 				,Statement.RETURN_GENERATED_KEYS);
 		s.setString(1, modifiedComputer.getName());
 		s.setInt(2, modifiedComputer.getCompany().getId());
-		Timestamp intro = modifiedComputer.getIntroduced()   == null ? null : Timestamp.valueOf( modifiedComputer.getIntroduced() );
-		s.setTimestamp(3, intro);
-	    Timestamp disco = modifiedComputer.getDiscontinued() == null ? null : Timestamp.valueOf( modifiedComputer.getDiscontinued() );
-		s.setTimestamp(4, disco);
+		s.setTimestamp(3, modifiedComputer.getIntroducedTimeStamp());
+		s.setTimestamp(4, modifiedComputer.getDiscontinuedTimeStamp());
 		s.setInt(5, modifiedComputer.getId());
 		
 		int affectedRows = s.executeUpdate();
