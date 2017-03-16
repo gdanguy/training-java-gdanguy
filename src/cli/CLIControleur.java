@@ -56,6 +56,7 @@ public class CLIControleur {
 		message+= CREATE_COMPUTER+"\n";
 		message+= UPDATE_COMPUTER+"\n";
 		message+= DELETE_COMPUTER+"\n";
+		message+= HELP+"\n";
 		message+= QUIT;
 		return message;
 	}
