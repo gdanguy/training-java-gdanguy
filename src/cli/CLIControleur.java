@@ -12,7 +12,7 @@ import com.mysql.jdbc.MysqlDataTruncation;
 
 import Service.DAOServiceImpl;
 import model.Pages;
-import model.DAO.company.CompanyDAOImpl;
+import model.DAO.company.*;
 import model.computer.Computer;
 
 public class CLIControleur {
@@ -156,7 +156,7 @@ public class CLIControleur {
 	    	}
 	    	
 	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
-			CompanyDAOImpl db = new CompanyDAOImpl();
+			CompanyDAOImpl db = CompanyDAO.getInstance();
 			return new Computer(-1,name,intro,disco,db.getCompany(companyId));
     	}catch(NullPointerException | NumberFormatException e){
 			logger.error(e+"\n");
@@ -174,7 +174,7 @@ public class CLIControleur {
 	    			"Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+oldComputer.getIntroduced()+") : ");
 	    	LocalDateTime intro = null;
 	    	if( ! introduced.equals("") ){
-	    		LocalDateTime.parse(introduced,FORMATTEUR);
+	    		intro = LocalDateTime.parse(introduced,FORMATTEUR);
 	    	}
 	    	String discontinued = lireSaisieUtilisateur(
 	    			"Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+oldComputer.getDiscontinued()+") : ");
@@ -184,7 +184,7 @@ public class CLIControleur {
 	    	}
 	    	
 	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : "+oldComputer.getCompany()+"): "));
-			CompanyDAOImpl db = new CompanyDAOImpl();
+			CompanyDAOImpl db = CompanyDAO.getInstance();
 	    	
 			return new Computer(id,name,intro,disco,db.getCompany(companyId));
     	}catch(NullPointerException | NumberFormatException e){

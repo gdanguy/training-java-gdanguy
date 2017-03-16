@@ -1,7 +1,6 @@
 package model.DAO.computer;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,36 +14,16 @@ import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.MysqlDataTruncation;
 
-import configuration.Config;
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
+import utils.Utils;
 
-public class ComputerDAOImpl implements ComputerDAO{
-	private static Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
+public enum ComputerDAOImpl implements ComputerDAO{
+	INSTANCE;
+	
+	private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 	private Connection conn;
-
-	/**
-	 * Builder
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public ComputerDAOImpl() throws ClassNotFoundException, SQLException {
-		logger.info("Connection to the database");
-		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
-	}
-
-	/**
-	 * Close connection
-	 */
-	protected void finalize() {
-		try {
-			if (conn != null && !conn.isClosed())
-				conn.close();
-		} catch (SQLException e) {
-		}
-	}
 
 	/**
 	 * This method returns the first page of computers.
@@ -65,6 +44,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	public Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException {
 		logger.info("Get all computers");
+		conn = Utils.openConnection();
 		PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
 												+ " FROM computer c1"
 												+ "	LEFT JOIN company c2 ON c1.company_id = c2.id"
@@ -76,6 +56,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 			LocalDateTime disco = r.getTimestamp("discontinued") == null ? null : r.getTimestamp("discontinued").toLocalDateTime();
 			result.add(new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6))));
 		}
+		Utils.closeConnection(conn);
 		return new Pages<Computer>(result,page);
 	}
 
@@ -88,6 +69,7 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	public Computer getComputerDetails(int id) throws SQLException, ClassNotFoundException {
 		logger.info("Get computer : "+id);
+		conn = Utils.openConnection();
 		PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
 												+ " FROM computer c1"
 												+ " LEFT JOIN company c2 ON c2.id = c1.company_id"
@@ -97,15 +79,12 @@ public class ComputerDAOImpl implements ComputerDAO{
 		if( r.next() ){
 			LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
 			LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
-			System.out.println("r.getInt(1) : "+r.getInt(1));
-			System.out.println("r.getString(2) : "+r.getString(2));
-			System.out.println("intro : "+intro);
-			System.out.println("disco : "+disco);
-			System.out.println("r.getInt(5) : "+r.getInt(5));
-			System.out.println("r.getString(6) : "+r.getString(6));
-			System.out.println("new Company(r.getInt(5),r.getString(6))");
-			return new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6)));
+			
+			Computer result = new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6)));
+			Utils.closeConnection(conn);
+			return result;
 		}else{
+			Utils.closeConnection(conn);
 			return null;
 		}
 	}
@@ -118,59 +97,65 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
 		logger.info("Create computer : "+computer);
+		conn = Utils.openConnection();
 		PreparedStatement s = conn.prepareStatement(
 				"Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
 				,Statement.RETURN_GENERATED_KEYS);
-		int cpt = 1;
-		s.setString(cpt++, computer.getName());
-		s.setInt(cpt++, computer.getCompany().getId());
+		s.setString(1, computer.getName());
+		s.setInt(2, computer.getCompany().getId());
 		Timestamp intro = computer.getIntroduced() == null ? null : Timestamp.valueOf( computer.getIntroduced() );
-		s.setTimestamp(cpt++, intro);
+		s.setTimestamp(3, intro);
 	    Timestamp disco = computer.getDiscontinued() == null ? null : Timestamp.valueOf( computer.getDiscontinued() );
-		s.setTimestamp(cpt++, disco);
+		s.setTimestamp(4, disco);
 		
 		int affectedRows = s.executeUpdate();
 
         if ( affectedRows == 0 ) {
+    		Utils.closeConnection(conn);
             throw new SQLException("Creating Computer failed, no rows affected.");
         }
 
         ResultSet generatedKeys = s.getGeneratedKeys();
         if ( generatedKeys.next() ) {
             int id = generatedKeys.getInt(1);
-            return new Computer(id,computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),computer.getCompany());
+            Computer result =  new Computer(id,computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),computer.getCompany());
+    		Utils.closeConnection(conn);
+    		return result;
         }
         else {
+    		Utils.closeConnection(conn);
             throw new SQLException("Creating Computer failed, no ID obtained.");
         }
 	}
 
 	/**
 	 * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
-	 * @param oldComputer with the id of the one to be modified and with its new attributes.
+	 * @param modifiedComputer with the id of the one to be modified and with its new attributes.
 	 * @return
 	 * @throws SQLException
 	 */
-	public Computer updateComputer(Computer oldComputer) throws SQLException, MysqlDataTruncation {
-		logger.info("Update a computer : "+oldComputer);
+	public Computer updateComputer(Computer modifiedComputer) throws SQLException, MysqlDataTruncation {
+		logger.info("Update a computer : "+modifiedComputer);
+		conn = Utils.openConnection();
 		PreparedStatement s = conn.prepareStatement(
 				"UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
 				,Statement.RETURN_GENERATED_KEYS);
-		int cpt = 1;
-		s.setString(cpt++, oldComputer.getName());
-		s.setInt(cpt++, oldComputer.getCompany().getId());
-		Timestamp intro = oldComputer.getIntroduced() == null ? null : Timestamp.valueOf( oldComputer.getIntroduced() );
-		s.setTimestamp(cpt++, intro);
-	    Timestamp disco = oldComputer.getDiscontinued() == null ? null : Timestamp.valueOf( oldComputer.getDiscontinued() );
-		s.setTimestamp(cpt++, disco);
-		s.setInt(cpt++, oldComputer.getId());
+		s.setString(1, modifiedComputer.getName());
+		s.setInt(2, modifiedComputer.getCompany().getId());
+		Timestamp intro = modifiedComputer.getIntroduced()   == null ? null : Timestamp.valueOf( modifiedComputer.getIntroduced() );
+		s.setTimestamp(3, intro);
+	    Timestamp disco = modifiedComputer.getDiscontinued() == null ? null : Timestamp.valueOf( modifiedComputer.getDiscontinued() );
+		s.setTimestamp(4, disco);
+		s.setInt(5, modifiedComputer.getId());
 		
 		int affectedRows = s.executeUpdate();
 
         if( affectedRows == 0 ) {
+    		Utils.closeConnection(conn);
             throw new SQLException("Updating Computer failed, no rows affected.");
         }
-        return oldComputer;
+		Utils.closeConnection(conn);
+        return modifiedComputer;
 	}
 
 	/**
@@ -181,14 +166,17 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	public String deleteComputer(int id) throws SQLException {
 		logger.info("Delete a computer : "+id);
+		conn = Utils.openConnection();
 		PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
 		s.setInt(1, id);
 		
 		int affectedRows = s.executeUpdate();
 
 		if (affectedRows == 0) {
+    		Utils.closeConnection(conn);
             throw new SQLException("Delete Computer failed, no rows affected.");
         }
+		Utils.closeConnection(conn);
         return "Computer "+id+" is deleted";
 	}
 }

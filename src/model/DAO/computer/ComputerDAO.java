@@ -4,20 +4,24 @@ import java.sql.SQLException;
 
 import com.mysql.jdbc.MysqlDataTruncation;
 
-import model.computer.Computer;
 import model.Pages;
+import model.DAO.DAO;
+import model.computer.Computer;
 
-public interface ComputerDAO {
+public interface ComputerDAO extends DAO {
 
-	Pages<Computer> getAllComputer() throws SQLException, ClassNotFoundException;
-	Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException;
+	public Pages<Computer> getAllComputer() throws SQLException, ClassNotFoundException;
+	public Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException;
 	
-	Computer getComputerDetails(int id) throws SQLException, ClassNotFoundException;
+	public Computer getComputerDetails(int id) throws SQLException, ClassNotFoundException;
 	
-	Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation;
+	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation;
 	
-	Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation;
+	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation;
 	
-	String deleteComputer(int id) throws SQLException;
+	public String deleteComputer(int id) throws SQLException;
 	
+	public static ComputerDAOImpl getInstance() {
+		return ComputerDAOImpl.INSTANCE;
+	}
 }

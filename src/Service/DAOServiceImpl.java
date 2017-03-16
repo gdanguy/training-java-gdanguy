@@ -6,8 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.MysqlDataTruncation;
+
 import model.Pages;
+import model.DAO.company.CompanyDAO;
 import model.DAO.company.CompanyDAOImpl;
+import model.DAO.computer.ComputerDAO;
 import model.DAO.computer.ComputerDAOImpl;
 import model.company.Company;
 import model.computer.Computer;
@@ -22,6 +25,7 @@ public class DAOServiceImpl implements DAOService{
     }
     
     public Pages<?> list(String type, int page) throws ClassNotFoundException, SQLException {
+    	
     	if(type.equals(TYPE_COMPANY))
     		return listCompanies(page);
     	else if(type.equals(TYPE_COMPUTER))
@@ -38,7 +42,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public Pages<Computer> listComputers(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Computers");
-		ComputerDAOImpl db = new ComputerDAOImpl();
+		ComputerDAOImpl db = ComputerDAO.getInstance();
 		Pages<Computer> result = db.getPageComputer(page);
 		return result;
 	}
@@ -52,7 +56,7 @@ public class DAOServiceImpl implements DAOService{
      */
 	public Pages<Company> listCompanies(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Companies");
-		CompanyDAOImpl db = new CompanyDAOImpl();
+		CompanyDAOImpl db = CompanyDAO.getInstance();
 		Pages<Company> result = db.getPageCompanies(page);
 		return result;
 	}
@@ -75,7 +79,7 @@ public class DAOServiceImpl implements DAOService{
 	}
 	
 	public Computer getComputer(int id) throws ClassNotFoundException, SQLException{
-		ComputerDAOImpl db = new ComputerDAOImpl();
+		ComputerDAOImpl db = ComputerDAO.getInstance();
 		return db.getComputerDetails(id);
 	}
 	
@@ -88,7 +92,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		logger.info("Create a computer, "+computer);
-		ComputerDAOImpl db = new ComputerDAOImpl();
+		ComputerDAOImpl db = ComputerDAO.getInstance();
 		return db.createComputer(computer).toStringDetails();
 	}
 	
@@ -101,7 +105,7 @@ public class DAOServiceImpl implements DAOService{
      */
 	public String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		logger.info("Update a Computer, new : "+computer);
-		ComputerDAOImpl db = new ComputerDAOImpl();
+		ComputerDAOImpl db = ComputerDAO.getInstance();
 		return db.updateComputer(computer).toStringDetails();
 	}
 	
@@ -114,7 +118,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public String deleteComputer(int id) throws ClassNotFoundException, SQLException{
 		logger.info("Delete a computer, id = "+id);
-		ComputerDAOImpl db = new ComputerDAOImpl();
+		ComputerDAOImpl db = ComputerDAO.getInstance();
 		return db.deleteComputer(id);
 	}
 }
