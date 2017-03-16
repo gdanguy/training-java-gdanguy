@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import com.mysql.jdbc.MysqlDataTruncation;
 
 import model.Pages;
-import model.DAO.DAO;
 import model.computer.Computer;
 
-public interface ComputerDAO extends DAO {
+public interface ComputerDAO  {
 
 	public Pages<Computer> getAllComputer() throws SQLException, ClassNotFoundException;
 	public Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException;
