@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +17,7 @@ import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
 import model.Pages;
+import model.company.Company;
 import model.computer.Computer;
 
 public class ComputerDAOImpl implements ComputerDAO{
@@ -49,8 +50,9 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * This method returns the first page of computers.
 	 * @return
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public Pages<Computer> getAllComputer() throws SQLException {
+	public Pages<Computer> getAllComputer() throws SQLException, ClassNotFoundException {
 		return getPageComputer(0);
 	}
 	
@@ -59,14 +61,20 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param page
 	 * @return
 	 * @throws SQLException
+	 * @throws ClassNotFoundException 
 	 */
-	public Pages<Computer> getPageComputer(int page) throws SQLException {
+	public Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException {
 		logger.info("Get all computers");
-		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer LIMIT "+Pages.PAGE_SIZE+" OFFSET "+page*Pages.PAGE_SIZE);
+		PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+												+ " FROM computer c1"
+												+ "	LEFT JOIN company c2 ON c1.company_id = c2.id"
+												+ " LIMIT "+Pages.PAGE_SIZE+" OFFSET "+page*Pages.PAGE_SIZE);
 		ResultSet r = s.executeQuery();
 		ArrayList<Computer> result = new ArrayList<>();
 		while( r.next() ){
-			result.add(new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5)));
+			LocalDateTime intro = r.getTimestamp("introduced") == null ? null : r.getTimestamp("introduced").toLocalDateTime();
+			LocalDateTime disco = r.getTimestamp("discontinued") == null ? null : r.getTimestamp("discontinued").toLocalDateTime();
+			result.add(new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6))));
 		}
 		return new Pages<Computer>(result,page);
 	}
@@ -76,15 +84,27 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 * @param id of the computer
 	 * @return
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public Computer getComputerDetails(int id) throws SQLException {
-		
-			logger.info("Get computer : "+id);
-		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer where id = ?");
+	public Computer getComputerDetails(int id) throws SQLException, ClassNotFoundException {
+		logger.info("Get computer : "+id);
+		PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+												+ " FROM computer c1"
+												+ " LEFT JOIN company c2 ON c2.id = c1.company_id"
+												+ " WHERE c1.id = ?");
 		s.setInt(1, id);
 		ResultSet r = s.executeQuery();
 		if( r.next() ){
-			return new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5));
+			LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
+			LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
+			System.out.println("r.getInt(1) : "+r.getInt(1));
+			System.out.println("r.getString(2) : "+r.getString(2));
+			System.out.println("intro : "+intro);
+			System.out.println("disco : "+disco);
+			System.out.println("r.getInt(5) : "+r.getInt(5));
+			System.out.println("r.getString(6) : "+r.getString(6));
+			System.out.println("new Company(r.getInt(5),r.getString(6))");
+			return new Computer(r.getInt(1),r.getString(2),intro,disco,new Company(r.getInt(5),r.getString(6)));
 		}else{
 			return null;
 		}
@@ -98,36 +118,16 @@ public class ComputerDAOImpl implements ComputerDAO{
 	 */
 	public Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation {
 		logger.info("Create computer : "+computer);
-		String date;
-		boolean introduced = false;
-		boolean discontinued = false;
-		if( computer.getIntroduced().equals("") ){
-			date=",null";
-		}else{
-			introduced = true;
-			date=",?";
-		}
-		if( computer.getDiscontinued().equals("") ){
-			date+=",null";
-		}else{
-			discontinued = true;
-			date+=",?";
-		}
-		
 		PreparedStatement s = conn.prepareStatement(
-				"Insert into computer (name,company_id,introduced,discontinued) values (?,?"+date+")"
+				"Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
 				,Statement.RETURN_GENERATED_KEYS);
 		int cpt = 1;
 		s.setString(cpt++, computer.getName());
-		s.setInt(cpt++, computer.getCompany_id());
-		if( introduced ){
-			Calendar cal = setDate(computer.getIntroduced());
-			s.setTimestamp(cpt++, new java.sql.Timestamp(cal.getTimeInMillis()));
-		}
-		if( discontinued ){
-			Calendar cal = setDate(computer.getDiscontinued());
-			s.setTimestamp(cpt++, new java.sql.Timestamp(cal.getTimeInMillis()));
-		}
+		s.setInt(cpt++, computer.getCompany().getId());
+		Timestamp intro = computer.getIntroduced() == null ? null : Timestamp.valueOf( computer.getIntroduced() );
+		s.setTimestamp(cpt++, intro);
+	    Timestamp disco = computer.getDiscontinued() == null ? null : Timestamp.valueOf( computer.getDiscontinued() );
+		s.setTimestamp(cpt++, disco);
 		
 		int affectedRows = s.executeUpdate();
 
@@ -138,7 +138,7 @@ public class ComputerDAOImpl implements ComputerDAO{
         ResultSet generatedKeys = s.getGeneratedKeys();
         if ( generatedKeys.next() ) {
             int id = generatedKeys.getInt(1);
-            return new Computer(id,computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),computer.getCompany_id());
+            return new Computer(id,computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),computer.getCompany());
         }
         else {
             throw new SQLException("Creating Computer failed, no ID obtained.");
@@ -147,50 +147,30 @@ public class ComputerDAOImpl implements ComputerDAO{
 
 	/**
 	 * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
-	 * @param computer with the id of the one to be modified and with its new attributes.
+	 * @param oldComputer with the id of the one to be modified and with its new attributes.
 	 * @return
 	 * @throws SQLException
 	 */
-	public Computer updateComputer(Computer computer) throws SQLException, MysqlDataTruncation {
-		logger.info("Update a computer : "+computer);
-		String date;
-		boolean introduced = false;
-		boolean discontinued = false;
-		if( computer.getIntroduced().equals("") ){
-			date="";
-		}else{
-			introduced = true;
-			date=", introduced = ?";
-		}
-		if( computer.getDiscontinued().equals("") ){
-			date+="";
-		}else{
-			discontinued = true;
-			date+=", discontinued = ?";
-		}
-		
+	public Computer updateComputer(Computer oldComputer) throws SQLException, MysqlDataTruncation {
+		logger.info("Update a computer : "+oldComputer);
 		PreparedStatement s = conn.prepareStatement(
-				"UPDATE computer SET name = ?, company_id = ? "+date+" WHERE ID = ?"
+				"UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
 				,Statement.RETURN_GENERATED_KEYS);
 		int cpt = 1;
-		s.setString(cpt++, computer.getName());
-		s.setInt(cpt++, computer.getCompany_id());
-		if( introduced ){
-			Calendar cal = setDate(computer.getIntroduced());
-			s.setTimestamp(cpt++, new java.sql.Timestamp(cal.getTimeInMillis()));
-		}
-		if( discontinued ){
-			Calendar cal = setDate(computer.getDiscontinued());
-			s.setTimestamp(cpt++, new java.sql.Timestamp(cal.getTimeInMillis()));
-		}
-		s.setInt(cpt++, computer.getId());
+		s.setString(cpt++, oldComputer.getName());
+		s.setInt(cpt++, oldComputer.getCompany().getId());
+		Timestamp intro = oldComputer.getIntroduced() == null ? null : Timestamp.valueOf( oldComputer.getIntroduced() );
+		s.setTimestamp(cpt++, intro);
+	    Timestamp disco = oldComputer.getDiscontinued() == null ? null : Timestamp.valueOf( oldComputer.getDiscontinued() );
+		s.setTimestamp(cpt++, disco);
+		s.setInt(cpt++, oldComputer.getId());
 		
 		int affectedRows = s.executeUpdate();
 
         if( affectedRows == 0 ) {
             throw new SQLException("Updating Computer failed, no rows affected.");
         }
-        return computer;
+        return oldComputer;
 	}
 
 	/**
@@ -210,18 +190,5 @@ public class ComputerDAOImpl implements ComputerDAO{
             throw new SQLException("Delete Computer failed, no rows affected.");
         }
         return "Computer "+id+" is deleted";
-	}
-
-
-	private static Calendar setDate(String date) throws NumberFormatException{
-		String tempo[] = date.split(" ");
-		String tempo2[] = tempo[0].split("-");
-		String tempo3[] = tempo[1].split(":");
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(TimeZone.getDefault());;
-		cal.set(Integer.parseInt(tempo2[0]), Integer.parseInt(tempo2[1]), Integer.parseInt(tempo2[2]), Integer.parseInt(tempo3[0]), Integer.parseInt(tempo3[1]), Integer.parseInt(tempo3[2]));
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal;
 	}
 }

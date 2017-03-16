@@ -1,6 +1,8 @@
 package cli;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import com.mysql.jdbc.MysqlDataTruncation;
 
 import Service.DAOServiceImpl;
 import model.Pages;
+import model.DAO.company.CompanyDAOImpl;
 import model.computer.Computer;
 
 public class CLIControleur {
@@ -27,6 +30,8 @@ public class CLIControleur {
 	public static final String DELETE_COMPUTER = "delete a computer";
 	public static final String QUIT = "quit";
 	public static final String HELP = "help";
+	
+	public static final DateTimeFormatter FORMATTEUR = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
 	private DAOServiceImpl service;
 	
@@ -109,11 +114,11 @@ public class CLIControleur {
 					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
 					return service.showComputerdetails(id);
 				case CREATE_COMPUTER :
-					Computer c = inputComputer();
+					Computer c = userInputComputer();
 					return service.createComputer(c);
 				case UPDATE_COMPUTER :
 					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-					return service.updateComputer(inputComputer(service.getComputer(id),id));
+					return service.updateComputer(userInputComputer(service.getComputer(id),id));
 				case DELETE_COMPUTER :
 					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
 					return service.deleteComputer(id);
@@ -133,14 +138,26 @@ public class CLIControleur {
     	}
 	}
 	
-	private Computer inputComputer() {
-    	logger.info("Input new Computer");
+	private Computer userInputComputer() throws ClassNotFoundException, SQLException {
+    	logger.info("User input new Computer");
     	try{
 	    	String name = lireSaisieUtilisateur("Enter computer Name : ");
-	    	String introduced = lireSaisieUtilisateur("Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
-	    	String discontinued = lireSaisieUtilisateur("Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
+	    	String introduced = lireSaisieUtilisateur(
+	    			"Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
+	    	LocalDateTime intro = null;
+	    	if( ! introduced.equals("") ){
+	    		LocalDateTime.parse(introduced,FORMATTEUR);
+	    	}
+	    	String discontinued = lireSaisieUtilisateur(
+	    			"Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) : ");
+	    	LocalDateTime disco = null;
+	    	if( ! discontinued.equals("") ){
+	    		disco = LocalDateTime.parse(discontinued,FORMATTEUR);
+	    	}
+	    	
 	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
-			return new Computer(-1,name,introduced,discontinued,companyId);
+			CompanyDAOImpl db = new CompanyDAOImpl();
+			return new Computer(-1,name,intro,disco,db.getCompany(companyId));
     	}catch(NullPointerException | NumberFormatException e){
 			logger.error(e+"\n");
     		return null;
@@ -148,14 +165,28 @@ public class CLIControleur {
 	}
 
     
-    private Computer inputComputer(Computer c, int id) {
-    	logger.info("Input new Computer, old : "+c);
+    private Computer userInputComputer(Computer oldComputer, int id) throws ClassNotFoundException, SQLException {
+    	logger.info("User input new Computer, old : "+oldComputer);
     	try{
-	    	String name = lireSaisieUtilisateur("Enter computer Name (before : "+c.getName()+") : ");
-	    	String introduced = lireSaisieUtilisateur("Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getIntroduced()+") : ");
-	    	String discontinued = lireSaisieUtilisateur("Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+c.getDiscontinued()+") : ");
-	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : "+c.getCompany_id()+"): "));
-			return new Computer(id,name,introduced,discontinued,companyId);
+	    	String name = lireSaisieUtilisateur("Enter computer Name (before : "+oldComputer.getName()+") : ");
+
+	    	String introduced = lireSaisieUtilisateur(
+	    			"Enter computer Introduced (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+oldComputer.getIntroduced()+") : ");
+	    	LocalDateTime intro = null;
+	    	if( ! introduced.equals("") ){
+	    		LocalDateTime.parse(introduced,FORMATTEUR);
+	    	}
+	    	String discontinued = lireSaisieUtilisateur(
+	    			"Enter computer Discontinued (format :YYYY-MM-DD hh:mm:ss or press enter) (before : "+oldComputer.getDiscontinued()+") : ");
+	    	LocalDateTime disco = null;
+	    	if( ! discontinued.equals("") ){
+	    		disco = LocalDateTime.parse(discontinued,FORMATTEUR);
+	    	}
+	    	
+	    	int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : "+oldComputer.getCompany()+"): "));
+			CompanyDAOImpl db = new CompanyDAOImpl();
+	    	
+			return new Computer(id,name,intro,disco,db.getCompany(companyId));
     	}catch(NullPointerException | NumberFormatException e){
 			logger.error(e+"\n");
     		return null;

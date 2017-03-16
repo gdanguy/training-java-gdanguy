@@ -9,10 +9,10 @@ import model.Pages;
 
 public interface ComputerDAO {
 
-	Pages<Computer> getAllComputer() throws SQLException;
-	Pages<Computer> getPageComputer(int page) throws SQLException;
+	Pages<Computer> getAllComputer() throws SQLException, ClassNotFoundException;
+	Pages<Computer> getPageComputer(int page) throws SQLException, ClassNotFoundException;
 	
-	Computer getComputerDetails(int id) throws SQLException;
+	Computer getComputerDetails(int id) throws SQLException, ClassNotFoundException;
 	
 	Computer createComputer(Computer computer) throws SQLException, MysqlDataTruncation;
 	

@@ -1,18 +1,22 @@
 package model.computer;
 
+import java.time.LocalDateTime;
+
+import model.company.Company;
+
 public class Computer {
 	protected int id;
 	protected String name;
-	protected String introduced;
-	protected String discontinued;
-	protected int company_id;
+	protected LocalDateTime introduced;
+	protected LocalDateTime discontinued;
+	protected Company company;
 	
-	public Computer(int id, String name, String introduced, String discontinued, int company_id) {
+	public Computer(int id, String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.company_id = company_id;
+		this.company = company;
 	}
 	
 	public int getId() {
@@ -23,16 +27,16 @@ public class Computer {
 		return name;
 	}
 	
-	public String getIntroduced() {
+	public LocalDateTime getIntroduced() {
 		return introduced;
 	}
 	
-	public String getDiscontinued() {
+	public LocalDateTime getDiscontinued() {
 		return discontinued;
 	}
 	
-	public int getCompany_id() {
-		return company_id;
+	public Company getCompany() {
+		return company;
 	}
 	
 
@@ -44,7 +48,7 @@ public class Computer {
 	
 	public String toStringDetails() {
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
-				+ ", company_id=" + company_id + "]";
+				+ ", company=" + company + "]";
 	}
 
 	@Override

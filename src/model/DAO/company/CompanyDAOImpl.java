@@ -60,7 +60,18 @@ public class CompanyDAOImpl implements CompanyDAO{
 			result.add(new Company(r.getInt(1),r.getString(2)));
 		}
 		return new Pages<Company>(result,page);
-		
 	}
 	
+	public Company getCompany(int id) throws SQLException {
+		logger.info("Get all companies");
+		PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
+		s.setInt(1, id);
+		ResultSet r = s.executeQuery();
+		Company result = null;
+		if( r.next() ){
+			result = new Company(r.getInt(1),r.getString(2));
+		}
+		return result;
+	}
+
 }
