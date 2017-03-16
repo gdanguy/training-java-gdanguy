@@ -9,14 +9,18 @@ import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
 import main.Main;
-import model.company.PagesCompanies;
+import model.Pages;
+import model.company.Company;
 import model.computer.Computer;
-import model.computer.PagesComputers;
 import model.db.company.CompanyDB;
 import model.db.computer.ComputerDB;
 
 public class CLIService {
 	private static Logger logger = LoggerFactory.getLogger(CLIService.class);
+	public static final String NEXT_PAGE = "+";
+	public static final String PREVIOUS_PAGE = "-";
+	public static final String TYPE_COMPUTER = "computer";
+	public static final String TYPE_COMPANY = "company";
 	
 	/**
 	 * Returns a String containing the list of options
@@ -73,10 +77,10 @@ public class CLIService {
 		try{
 			switch( action ){
 				case Config.LIST_COMPUTER :
-					listComputers().display();
+					displayListComputers();
 					return "";
 				case Config.LIST_COMPANIES :
-					listCompanies().display();
+					displayListCompanies();
 					return "";
 				case Config.SHOW_COMPUTER_DETAILS :
 					id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
@@ -107,7 +111,42 @@ public class CLIService {
 	}
 	
 	
-    private static Computer inputComputer() {
+    private static void displayListCompanies() throws ClassNotFoundException, SQLException {
+    	displayList(TYPE_COMPANY);
+	}
+
+	private static void displayListComputers() throws ClassNotFoundException, SQLException {
+    	displayList(TYPE_COMPUTER);
+	}
+	
+	private static void displayList(String type) throws ClassNotFoundException, SQLException{
+		Pages<?> list = list(type);
+		System.out.println(list);
+		if( list.isEmpty() ){
+			System.out.println("No item wanted in the database");
+		}else{
+			System.out.println(list);
+			boolean quit;
+			do{
+				quit = true;
+				String input = lireSaisieUtilisateur("Type '"+NEXT_PAGE+"' for next page, '"+PREVIOUS_PAGE+"' for previous page, other for quit");
+				if( input.equals(NEXT_PAGE) ){
+					list = list(type,list.getNextPage());
+					quit = false;
+					if( list.isEmpty() ){
+						list = listCompanies(list.getPreviousPage());
+					}
+					System.out.println(list);
+				}else if( input.equals(PREVIOUS_PAGE) ){
+					list = listCompanies(list.getPreviousPage());
+					quit = false;
+					System.out.println(list);
+				}
+			}while( !quit );
+		}
+	}
+
+	private static Computer inputComputer() {
     	logger.info("Input new Computer");
     	try{
 	    	String name = lireSaisieUtilisateur("Enter computer Name : ");
@@ -138,29 +177,43 @@ public class CLIService {
     	}
 	}
 
+    private static Pages<?> list(String type) throws ClassNotFoundException, SQLException {
+    	return list(type,0);
+    }
+    
+    private static Pages<?> list(String type, int page) throws ClassNotFoundException, SQLException {
+    	if(type.equals(TYPE_COMPANY))
+    		return listCompanies(page);
+    	else if(type.equals(TYPE_COMPUTER))
+    		return listComputers(page);
+    	return null;
+    }
+    
 	/**
-	 * List computers
+	 * Get a page computers
+     * @param page
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static PagesComputers listComputers() throws ClassNotFoundException, SQLException{
+	public static Pages<Computer> listComputers(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Computers");
 		ComputerDB db = new ComputerDB();
-		PagesComputers result = new PagesComputers(db.getAllComputer());
+		Pages<Computer> result = db.getPageComputer(page);
 		return result;
 	}
 	
     /**
-     * List companies
+     * Get a page of companies
+     * @param page
      * @return
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-	public static PagesCompanies listCompanies() throws ClassNotFoundException, SQLException{
+	public static Pages<Company> listCompanies(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Companies");
 		CompanyDB db = new CompanyDB();
-		PagesCompanies result = new PagesCompanies(db.getCompanies());
+		Pages<Company> result = db.getPageCompanies(page);
 		return result;
 	}
 	

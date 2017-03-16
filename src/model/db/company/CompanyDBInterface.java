@@ -1,10 +1,12 @@
 package model.db.company;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
+import model.Pages;
 import model.company.Company;
 
 public interface CompanyDBInterface {
-	public ArrayList<Company> getCompanies() throws SQLException;
+	
+	public Pages<Company> getCompanies() throws SQLException;
+	public Pages<Company> getPageCompanies(int page) throws SQLException;
 }

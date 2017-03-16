@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import configuration.Config;
+import model.Pages;
 import model.company.Company;
 
 public class CompanyDB implements CompanyDBInterface{
@@ -41,19 +42,24 @@ public class CompanyDB implements CompanyDBInterface{
 	}
 
 	/**
-	 * This method returns the list of companies.
+	 * This method returns the first page of companies.
 	 * @return
 	 * @throws SQLException 
 	 */
-	public ArrayList<Company> getCompanies() throws SQLException {
+	public Pages<Company> getCompanies() throws SQLException {
+		return getPageCompanies(0);
+	}
+	
+
+	public Pages<Company> getPageCompanies(int page) throws SQLException {
 		logger.info("Get all companies");
-		PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
+		PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company LIMIT "+Pages.PAGE_SIZE+" OFFSET "+page*Pages.PAGE_SIZE);
 		ResultSet r = s.executeQuery();
 		ArrayList<Company> result = new ArrayList<>();
-		while(r.next()){
+		while( r.next() ){
 			result.add(new Company(r.getInt(1),r.getString(2)));
 		}
-		return result;
+		return new Pages<Company>(result,page);
 		
 	}
 	

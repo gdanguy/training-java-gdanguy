@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.mysql.jdbc.MysqlDataTruncation;
 
 import configuration.Config;
+import model.Pages;
 import model.computer.Computer;
 
 public class ComputerDB implements ComputerDBInterface{
@@ -45,20 +46,29 @@ public class ComputerDB implements ComputerDBInterface{
 	}
 
 	/**
-	 * This method returns the list of computers.
+	 * This method returns the first page of computers.
 	 * @return
 	 * @throws SQLException 
 	 */
-	public ArrayList<Computer> getAllComputer() throws SQLException {
+	public Pages<Computer> getAllComputer() throws SQLException {
+		return getPageComputer(0);
+	}
+	
+	/**
+	 * This method returns the page of computers.
+	 * @param page
+	 * @return
+	 * @throws SQLException
+	 */
+	public Pages<Computer> getPageComputer(int page) throws SQLException {
 		logger.info("Get all computers");
-		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer");
+		PreparedStatement s = conn.prepareStatement("SELECT computer.id, computer.name, introduced, discontinued , company_id FROM computer LIMIT "+Pages.PAGE_SIZE+" OFFSET "+page*Pages.PAGE_SIZE);
 		ResultSet r = s.executeQuery();
 		ArrayList<Computer> result = new ArrayList<>();
-		while(r.next()){
+		while( r.next() ){
 			result.add(new Computer(r.getInt(1),r.getString(2),r.getString(3),r.getString(4),r.getInt(5)));
 		}
-		return result;
-		
+		return new Pages<Computer>(result,page);
 	}
 
 	/**
