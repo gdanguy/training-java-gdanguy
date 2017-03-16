@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import com.mysql.jdbc.MysqlDataTruncation;
 import model.Pages;
+import model.DAO.company.CompanyDAOImpl;
+import model.DAO.computer.ComputerDAOImpl;
 import model.company.Company;
 import model.computer.Computer;
-import model.db.company.CompanyDAOImpl;
-import model.db.computer.ComputerDAOImpl;
 
 public class DAOServiceImpl implements DAOService{
 	private Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);

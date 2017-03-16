@@ -1,4 +1,4 @@
-package model.db.computer;
+package model.DAO.computer;
 
 import java.sql.SQLException;
 

@@ -1,4 +1,4 @@
-package model.db.company;
+package model.DAO.company;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
