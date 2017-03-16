@@ -9,8 +9,8 @@ import com.mysql.jdbc.MysqlDataTruncation;
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
-import model.db.company.CompanyDBImpl;
-import model.db.computer.ComputerDBImpl;
+import model.db.company.CompanyDAOImpl;
+import model.db.computer.ComputerDAOImpl;
 
 public class DAOServiceImpl implements DAOService{
 	private Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
@@ -38,7 +38,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public Pages<Computer> listComputers(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Computers");
-		ComputerDBImpl db = new ComputerDBImpl();
+		ComputerDAOImpl db = new ComputerDAOImpl();
 		Pages<Computer> result = db.getPageComputer(page);
 		return result;
 	}
@@ -52,7 +52,7 @@ public class DAOServiceImpl implements DAOService{
      */
 	public Pages<Company> listCompanies(int page) throws ClassNotFoundException, SQLException{
 		logger.info("List all Companies");
-		CompanyDBImpl db = new CompanyDBImpl();
+		CompanyDAOImpl db = new CompanyDAOImpl();
 		Pages<Company> result = db.getPageCompanies(page);
 		return result;
 	}
@@ -75,7 +75,7 @@ public class DAOServiceImpl implements DAOService{
 	}
 	
 	public Computer getComputer(int id) throws ClassNotFoundException, SQLException{
-		ComputerDBImpl db = new ComputerDBImpl();
+		ComputerDAOImpl db = new ComputerDAOImpl();
 		return db.getComputerDetails(id);
 	}
 	
@@ -88,7 +88,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		logger.info("Create a computer, "+computer);
-		ComputerDBImpl db = new ComputerDBImpl();
+		ComputerDAOImpl db = new ComputerDAOImpl();
 		return db.createComputer(computer).toStringDetails();
 	}
 	
@@ -101,7 +101,7 @@ public class DAOServiceImpl implements DAOService{
      */
 	public String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
 		logger.info("Update a Computer, new : "+computer);
-		ComputerDBImpl db = new ComputerDBImpl();
+		ComputerDAOImpl db = new ComputerDAOImpl();
 		return db.updateComputer(computer).toStringDetails();
 	}
 	
@@ -114,7 +114,7 @@ public class DAOServiceImpl implements DAOService{
 	 */
 	public String deleteComputer(int id) throws ClassNotFoundException, SQLException{
 		logger.info("Delete a computer, id = "+id);
-		ComputerDBImpl db = new ComputerDBImpl();
+		ComputerDAOImpl db = new ComputerDAOImpl();
 		return db.deleteComputer(id);
 	}
 }

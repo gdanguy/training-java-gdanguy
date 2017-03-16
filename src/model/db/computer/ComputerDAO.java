@@ -7,7 +7,7 @@ import com.mysql.jdbc.MysqlDataTruncation;
 import model.computer.Computer;
 import model.Pages;
 
-public interface ComputerDBInterface {
+public interface ComputerDAO {
 
 	Pages<Computer> getAllComputer() throws SQLException;
 	Pages<Computer> getPageComputer(int page) throws SQLException;

@@ -19,8 +19,8 @@ import configuration.Config;
 import model.Pages;
 import model.computer.Computer;
 
-public class ComputerDB implements ComputerDBInterface{
-	private static Logger logger = LoggerFactory.getLogger(ComputerDB.class);
+public class ComputerDAOImpl implements ComputerDAO{
+	private static Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 	private Connection conn;
 
 	/**
@@ -28,7 +28,7 @@ public class ComputerDB implements ComputerDBInterface{
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public ComputerDB() throws ClassNotFoundException, SQLException {
+	public ComputerDAOImpl() throws ClassNotFoundException, SQLException {
 		logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);

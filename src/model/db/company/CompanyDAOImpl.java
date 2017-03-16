@@ -14,8 +14,8 @@ import configuration.Config;
 import model.Pages;
 import model.company.Company;
 
-public class CompanyDB implements CompanyDBInterface{
-	private static Logger logger = LoggerFactory.getLogger(CompanyDB.class);
+public class CompanyDAOImpl implements CompanyDAO{
+	private static Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
 	private Connection conn;
 
 	/**
@@ -23,7 +23,7 @@ public class CompanyDB implements CompanyDBInterface{
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public CompanyDB() throws ClassNotFoundException, SQLException {
+	public CompanyDAOImpl() throws ClassNotFoundException, SQLException {
 		logger.info("Connection to the database");
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection(Config.URL_DB, Config.USER_DB, Config.PASSWORD_DB);
