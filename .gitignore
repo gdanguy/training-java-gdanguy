@@ -7,6 +7,7 @@
 bin/
 build/
 tmp/
+target/
 WebContent/WEB-INF/lib/
 *.tmp
 *.bak
