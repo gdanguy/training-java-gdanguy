@@ -1,6 +1,18 @@
+#IDE
+.idea/
+*.iml
 
-#Maven
-/target/**
+
+### Maven ###
+target/
+pom.xml.*
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Exclude maven wrapper
+!/.mvn/wrapper/maven-wrapper.jar
 
 ### Eclipse ###
 

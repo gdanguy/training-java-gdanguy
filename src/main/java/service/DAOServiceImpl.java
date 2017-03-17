@@ -4,8 +4,6 @@ import java.sql.SQLException;
 
 import org.slf4j.LoggerFactory;
 
-import com.mysql.jdbc.MysqlDataTruncation;
-
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
@@ -14,110 +12,124 @@ import model.dao.company.CompanyDAOImpl;
 import model.dao.computer.ComputerDAO;
 import model.dao.computer.ComputerDAOImpl;
 
-public class DAOServiceImpl implements DAOService{
-	private org.slf4j.Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
-	public static final String TYPE_COMPUTER = "computer";
-	public static final String TYPE_COMPANY = "company";
+public class DAOServiceImpl implements DAOService {
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
 
-    public Pages<?> list(String type) throws ClassNotFoundException, SQLException {
-    	return list(type,0);
+    /**
+     * Get the first page of Company or Computer.
+     * @param type TYPE_COMPUTER or TYPE_COMPANY
+     * @return the first page of Company or Computer
+     * @throws SQLException if SQL fail
+     */
+    public Pages<?> list(String type) throws SQLException {
+        return list(type, 0);
     }
-    
-    public Pages<?> list(String type, int page) throws ClassNotFoundException, SQLException {
-    	
-    	if(type.equals(TYPE_COMPANY))
-    		return listCompanies(page);
-    	else if(type.equals(TYPE_COMPUTER))
-    		return listComputers(page);
-    	return null;
+
+    /**
+     * Get a page of Company or Computer.
+     * @param type TYPE_COMPUTER or TYPE_COMPANY
+     * @param page int
+     * @return a page of Company or Computer
+     * @throws SQLException if SQL fail
+     */
+    public Pages<?> list(String type, int page) throws SQLException {
+
+        if (type.equals(TYPE_COMPANY)) {
+            return listCompanies(page);
+        } else if (type.equals(TYPE_COMPUTER)) {
+            return listComputers(page);
+        }
+        return null;
     }
-    
-	/**
-	 * Get a page computers
-     * @param page
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public Pages<Computer> listComputers(int page) throws ClassNotFoundException, SQLException{
-		logger.info("List all Computers");
-		ComputerDAOImpl db = ComputerDAO.getInstance();
-		Pages<Computer> result = db.getPageComputer(page);
-		return result;
-	}
-	
+
     /**
-     * Get a page of companies
-     * @param page
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * Get a page of Computer.
+     * @param page int
+     * @return a page of Computer
+     * @throws SQLException if SQL fail
      */
-	public Pages<Company> listCompanies(int page) throws ClassNotFoundException, SQLException{
-		logger.info("List all Companies");
-		CompanyDAOImpl db = CompanyDAO.getInstance();
-		Pages<Company> result = db.getPageCompanies(page);
-		return result;
-	}
-	
+    public Pages<Computer> listComputers(int page) throws SQLException {
+        logger.info("List all Computers");
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        Pages<Computer> result = db.getPageComputer(page);
+        return result;
+    }
+
     /**
-     * Show computer details (the detailed information of only one computer)
-     * @param id
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * Get a page of Company.
+     * @param page int
+     * @return a page of Company
+     * @throws SQLException if SQL fail
      */
-	public String showComputerdetails(int id) throws ClassNotFoundException, SQLException{
-		logger.info("Get a computers, id ="+id);
-		Computer result = getComputer(id);
-		if( result == null ){
-			return "No computer corresponding in the database";
-		}else{
-			return result.toStringDetails();
-		}
-	}
-	
-	public Computer getComputer(int id) throws ClassNotFoundException, SQLException{
-		ComputerDAOImpl db = ComputerDAO.getInstance();
-		return db.getComputerDetails(id);
-	}
-	
-	/**
-	 * Create a computer, the id of parameter is no matter.
-	 * @param computer
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public String createComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
-		logger.info("Create a computer, "+computer);
-		ComputerDAOImpl db = ComputerDAO.getInstance();
-		return db.createComputer(computer).toStringDetails();
-	}
-	
+    public Pages<Company> listCompanies(int page) throws SQLException {
+        logger.info("List all Companies");
+        CompanyDAOImpl db = CompanyDAO.getInstance();
+        Pages<Company> result = db.getPageCompanies(page);
+        return result;
+    }
+
     /**
-     * Update a computer
-     * @param computer
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * Get details of one Computer.
+     * @param id of the Computer
+     * @return String
+     * @throws SQLException if SQL fail
      */
-	public String updateComputer(Computer computer) throws ClassNotFoundException, SQLException, NumberFormatException, MysqlDataTruncation{
-		logger.info("Update a Computer, new : "+computer);
-		ComputerDAOImpl db = ComputerDAO.getInstance();
-		return db.updateComputer(computer).toStringDetails();
-	}
-	
-	/**
-	 * Delete a computer
-	 * @param id
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public String deleteComputer(int id) throws ClassNotFoundException, SQLException{
-		logger.info("Delete a computer, id = "+id);
-		ComputerDAOImpl db = ComputerDAO.getInstance();
-		return db.deleteComputer(id);
-	}
+    public String showComputerdetails(int id) throws SQLException {
+        logger.info("Get a computers, id =" + id);
+        Computer result = getComputer(id);
+        if (result == null) {
+            return "No computer corresponding in the database";
+        } else {
+            return result.toStringDetails();
+        }
+    }
+
+    /**
+     * Get one Computer.
+     * @param id of the Computer
+     * @return Computer
+     * @throws SQLException if SQL fail
+     */
+    public Computer getComputer(int id) throws SQLException {
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        return db.getComputerDetails(id);
+    }
+
+    /**
+     * Create a Computer in DataBase.
+     * @param computer to insert
+     * @return Computer in a String format
+     * @throws SQLException if SQL fail
+     * @throws NumberFormatException if bad parameter
+     */
+    public String createComputer(Computer computer) throws SQLException, NumberFormatException {
+        logger.info("Create a computer, " + computer);
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        return db.createComputer(computer).toStringDetails();
+    }
+
+    /**
+     * Update a Computer in DataBase.
+     * @param computer to insert
+     * @return Computer in a String format
+     * @throws SQLException if SQL fail
+     * @throws NumberFormatException if bad parameter
+     */
+    public String updateComputer(Computer computer) throws SQLException, NumberFormatException {
+        logger.info("Update a Computer, new : " + computer);
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        return db.updateComputer(computer).toStringDetails();
+    }
+
+    /**
+     * Delete a Computer in DataBase.
+     * @param id of the Computer
+     * @return "Delete a computer, id = " + id
+     * @throws SQLException if SQL fail
+     */
+    public String deleteComputer(int id) throws SQLException {
+        logger.info("Delete a computer, id = " + id);
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        return db.deleteComputer(id);
+    }
 }

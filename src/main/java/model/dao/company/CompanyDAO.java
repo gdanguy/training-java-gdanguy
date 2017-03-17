@@ -6,11 +6,28 @@ import model.Pages;
 import model.company.Company;
 
 public interface CompanyDAO {
-	
-	public Pages<Company> getCompanies() throws SQLException;
-	public Pages<Company> getPageCompanies(int page) throws SQLException;
-	
-	public static CompanyDAOImpl getInstance() {
-		return CompanyDAOImpl.INSTANCE;
-	}
+
+    /**
+     * Get a page of companies.
+     * @param page who pages is needed
+     * @return Pages<Company> contains companies wanted
+     * @throws SQLException if SQL fails
+     */
+    Pages<Company> getPageCompanies(int page) throws SQLException;
+
+    /**
+     * Get a company by id.
+     * @param id corresponding to the company wanted
+     * @return Company wanted
+     * @throws SQLException if SQL fails
+     */
+    Company getCompany(int id) throws SQLException;
+
+    /**
+     * Return Instance of DAO.
+     * @return a DAO Instance
+     */
+    static CompanyDAOImpl getInstance() {
+        return CompanyDAOImpl.INSTANCE;
+    }
 }
