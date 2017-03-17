@@ -1,5 +1,6 @@
 
-# Created by https://www.gitignore.io/api/eclipse,java
+#Maven
+/target/**
 
 ### Eclipse ###
 
@@ -7,8 +8,6 @@
 bin/
 build/
 tmp/
-target/
-WebContent/WEB-INF/lib/
 *.tmp
 *.bak
 *.swp
@@ -17,6 +16,9 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+
+#Lib
+WebContent/WEB-INF/lib/
 
 # Eclipse Core
 .project
@@ -81,4 +83,3 @@ local.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# End of https://www.gitignore.io/api/eclipse,java
