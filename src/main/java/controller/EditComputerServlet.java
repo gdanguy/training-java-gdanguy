@@ -54,13 +54,11 @@ public class EditComputerServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             String name = request.getParameter("computerName");
             if (name.equals("")) {
-                if (old == null) {
-                    old = service.getComputer(id);
-                }
+                old = service.getComputer(id);
                 name = old.getName();
             }
             String intro = request.getParameter("introduced");
-            LocalDateTime introduced = null;
+            LocalDateTime introduced;
             if (intro == null || intro.equals("")) {
                 if (old == null) {
                     old = service.getComputer(id);
@@ -70,7 +68,7 @@ public class EditComputerServlet extends HttpServlet {
                 introduced = Computer.convertStringToLocalDateTime(intro);
             }
             String disco = request.getParameter("discontinued");
-            LocalDateTime discontinued = null;
+            LocalDateTime discontinued;
             if (disco == null || disco.equals("")) {
                 if (old == null) {
                     old = service.getComputer(id);
