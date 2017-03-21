@@ -66,7 +66,7 @@ public class DashboardServlet extends HttpServlet {
     }
 
     /**
-     * Call doGet.
+     * Search.
      * @param request jsp request
      * @param response jsp response
      * @throws ServletException if bug
