@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "DashboardServlet", urlPatterns = "/")
+@WebServlet(name = "DashboardServlet", urlPatterns = "/dashboard")
 public class DashboardServlet extends HttpServlet {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
     /**
@@ -33,11 +33,9 @@ public class DashboardServlet extends HttpServlet {
             }
             request.setAttribute("currentPage", currentPage);
             String size = request.getParameter("sizePages");
-            System.out.println("size = " + size);
             int sizePages = Pages.PAGE_SIZE;
             if (!(size == null || size.equals(""))) {
                 sizePages = Integer.parseInt(size);
-                System.out.println("modifier sizePage = " + sizePages);
             }
             int debut = 0;
             if (currentPage > 2) {
@@ -58,6 +56,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("listComputers", service.listComputers(currentPage, sizePages).getListPage());
         } catch (SQLException e) {
             logger.error("" + e);
+            request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 

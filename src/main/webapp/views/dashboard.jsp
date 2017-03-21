@@ -11,14 +11,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" rel="stylesheet" media="screen">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/main.css" type="text/css" rel="stylesheet" media="screen">
+
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="/"> Application - Computer Database </a>
+        <a class="navbar-brand" href="/dashboard"> Application - Computer Database </a>
     </div>
 </header>
 
@@ -43,7 +44,7 @@
         </div>
     </div>
 
-    <form id="deleteForm" action="#" method="POST">
+    <form id="deleteForm" action="/deleteComputer" method="POST">
         <input type="hidden" name="selection" value="">
     </form>
 
@@ -85,7 +86,7 @@
             <c:forEach var="computer"  items="${listComputers}" >
                 <tr>
                     <td class="editMode">
-                        <input type="checkbox" name="cb" class="cb" value="${computer.id}">
+                        <input type="checkbox" name="cb${computer.id}" class="cb" value="${computer.id}">
                     </td>
                     <td>
                         <a href="/editComputer?id=${computer.id}" onclick="">${computer.name}</a>
@@ -107,17 +108,17 @@
         <ul class="pagination">
             <c:if test="${debut > 0}">
                 <li>
-                    <a href="/?currentPage=${currentPage-1}&sizePages=${sizePages}" aria-label="Previous">
+                    <a href="/dashboard?currentPage=${currentPage-1}&sizePages=${sizePages}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
             </c:if>
             <c:forEach begin="${debut}" end="${fin}" varStatus="loop">
-                <li><a href="/?currentPage=${loop.index}&sizePages=${sizePages}">${loop.index}</a></li>
+                <li><a href="/dashboard?currentPage=${loop.index}&sizePages=${sizePages}">${loop.index}</a></li>
             </c:forEach>
             <c:if test="${fin > currentPage}">
             <li>
-                <a href="/?currentPage=${currentPage+1}&sizePages=${sizePages}" aria-label="Next">
+                <a href="/dashboard?currentPage=${currentPage+1}&sizePages=${sizePages}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -125,13 +126,13 @@
         </ul>
     </div>
     <div class="btn-group btn-group-sm pull-right" role="group" >
-        <form action="/?currentPage=${currentPage}&sizePages=10" method="post">
+        <form action="/dashboard?currentPage=${currentPage}&sizePages=10" method="post">
             <button type="submit" class="btn btn-default">10</button>
         </form>
-        <form action="/?currentPage=${currentPage}&sizePages=50" method="post">
+        <form action="/dashboard?currentPage=${currentPage}&sizePages=50" method="post">
             <button type="submit" class="btn btn-default">50</button>
         </form>
-        <form action="/?currentPage=${currentPage}&sizePages=100" method="post">
+        <form action="/dashboard?currentPage=${currentPage}&sizePages=100" method="post">
             <button type="submit" class="btn btn-default">100</button>
         </form>
     </div>

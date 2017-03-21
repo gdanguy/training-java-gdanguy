@@ -73,7 +73,8 @@ public class AddComputerServlet extends HttpServlet {
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
         } catch (SQLException e) {
             logger.error("" + e);
+            request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
-        request.getRequestDispatcher("/").forward(request, response);
+        request.getRequestDispatcher("/dashboard").forward(request, response);
     }
 }
