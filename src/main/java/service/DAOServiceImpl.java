@@ -81,6 +81,19 @@ public class DAOServiceImpl implements DAOService {
     }
 
     /**
+     * Get a page of Computer with a search.
+     * @param search word research
+     * @return a page of Computer
+     * @throws SQLException if SQL fail
+     */
+    public Pages<Computer> listComputers(String search) throws SQLException {
+        logger.info("List all Computers");
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        Pages<Computer> result = db.getPageComputer(search);
+        return result;
+    }
+
+    /**
      * Get a page of Company.
      * @param page int
      * @return a page of Company

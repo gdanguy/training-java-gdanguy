@@ -54,6 +54,14 @@ public interface DAOService {
     Pages<Computer> listComputers(int page, int sizePage) throws SQLException;
 
     /**
+     * Get a page of Computer with a search.
+     * @param search word researched
+     * @return a page of Computer
+     * @throws SQLException if SQL fail
+     */
+    Pages<Computer> listComputers(String search) throws SQLException;
+
+    /**
      * Get a page of Company.
      * @param page int
      * @return a page of Company

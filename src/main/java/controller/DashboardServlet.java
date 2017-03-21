@@ -1,6 +1,7 @@
 package controller;
 
 import model.Pages;
+import model.computer.Computer;
 import org.slf4j.LoggerFactory;
 import service.DAOService;
 import service.DAOServiceImpl;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = "/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -33,9 +35,11 @@ public class DashboardServlet extends HttpServlet {
             }
             request.setAttribute("currentPage", currentPage);
             String size = request.getParameter("sizePages");
+            System.out.println("size = " + size);
             int sizePages = Pages.PAGE_SIZE;
             if (!(size == null || size.equals(""))) {
                 sizePages = Integer.parseInt(size);
+                System.out.println("modifier sizePage = " + sizePages);
             }
             int debut = 0;
             if (currentPage > 2) {
@@ -56,7 +60,6 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("listComputers", service.listComputers(currentPage, sizePages).getListPage());
         } catch (SQLException e) {
             logger.error("" + e);
-            request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 
@@ -71,6 +74,22 @@ public class DashboardServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        try {
+            String search = request.getParameter("search");
+            if (search == null || search.equals("")) {
+                doGet(request, response);
+            }
+            request.setAttribute("currentPage", 0);
+            DAOService service = new DAOServiceImpl();
+            ArrayList<Computer> listComputer = service.listComputers(search).getListPage();
+            request.setAttribute("debut", 0);
+            request.setAttribute("fin", 0);
+            request.setAttribute("countComputer", listComputer.size());
+            request.setAttribute("sizePages", listComputer.size());
+            request.setAttribute("listComputers", listComputer);
+        } catch (SQLException e) {
+            logger.error("" + e);
+        }
+        request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
     }
 }

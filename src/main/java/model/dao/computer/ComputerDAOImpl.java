@@ -78,6 +78,30 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     /**
+     * This method returns the page of computers with a sizePage of sizePage.
+     * @param search word researched
+     * @return Pages<Computer> corresponds to the page
+     * @throws SQLException if SQL request fail
+     */
+    public Pages<Computer> getPageComputer(String search) throws SQLException {
+        logger.info("Get all computers");
+        conn = Utils.openConnection();
+        PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+                + " FROM computer c1"
+                + " LEFT JOIN company c2 ON c1.company_id = c2.id"
+                + " WHERE c1.name LIKE '%" + search + "%'");
+        ResultSet r = s.executeQuery();
+        ArrayList<Computer> result = new ArrayList<>();
+        while (r.next()) {
+            result.add(makeComputerWithResultSet(r));
+        }
+        r.close();
+        s.close();
+        Utils.closeConnection(conn);
+        return new Pages<Computer>(result, 0);
+    }
+
+    /**
      * This method returns a computer identified by its id.
      * @param id of the computer
      * @return ths Computer wanted

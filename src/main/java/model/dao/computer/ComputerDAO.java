@@ -23,6 +23,23 @@ public interface ComputerDAO {
     Pages<Computer> getPageComputer(int page) throws SQLException;
 
     /**
+     * This method returns the page of computers with a sizePage of sizePage.
+     * @param page corresponds to the page's number to be retrieved
+     * @param sizePage size of a page
+     * @return Pages<Computer> corresponds to the page
+     * @throws SQLException if SQL request fail
+     */
+    Pages<Computer> getPageComputer(int page, int sizePage) throws SQLException;
+
+    /**
+     * This method returns the page of computers with a sizePage of sizePage.
+     * @param search word researched
+     * @return Pages<Computer> corresponds to the page
+     * @throws SQLException if SQL request fail
+     */
+    Pages<Computer> getPageComputer(String search) throws SQLException;
+
+    /**
      * This method returns a computer identified by its id.
      * @param id of the computer
      * @return ths Computer wanted
