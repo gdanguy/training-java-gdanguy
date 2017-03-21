@@ -49,12 +49,23 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @throws SQLException if SQL request fail
      */
     public Pages<Computer> getPageComputer(int page) throws SQLException {
+        return getPageComputer(page, Pages.PAGE_SIZE);
+    }
+
+    /**
+     * This method returns the page of computers with a sizePage of sizePage.
+     * @param page corresponds to the page's number to be retrieved
+     * @param sizePage size of a page
+     * @return Pages<Computer> corresponds to the page
+     * @throws SQLException if SQL request fail
+     */
+    public Pages<Computer> getPageComputer(int page, int sizePage) throws SQLException {
         logger.info("Get all computers");
         conn = Utils.openConnection();
         PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                 + " FROM computer c1"
                 + " LEFT JOIN company c2 ON c1.company_id = c2.id"
-                + " LIMIT " + Pages.PAGE_SIZE + " OFFSET " + page * Pages.PAGE_SIZE);
+                + " LIMIT " + sizePage + " OFFSET " + page * sizePage);
         ResultSet r = s.executeQuery();
         ArrayList<Computer> result = new ArrayList<>();
         while (r.next()) {
@@ -63,7 +74,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         r.close();
         s.close();
         Utils.closeConnection(conn);
-        return new Pages<Computer>(result, page);
+        return new Pages<Computer>(result, page, sizePage);
     }
 
     /**

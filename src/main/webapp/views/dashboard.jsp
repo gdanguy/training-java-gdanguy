@@ -11,9 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <!-- Bootstrap -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/font-awesome.css" rel="stylesheet" media="screen">
-    <link href="../css/main.css" rel="stylesheet" media="screen">
+    <link href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" rel="stylesheet" media="screen">
+    <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet" media="screen">
+    <link href="${pageContext.request.contextPath}/css/main.css" type="text/css" rel="stylesheet" media="screen">
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
@@ -85,7 +85,7 @@
             <c:forEach var="computer"  items="${listComputers}" >
                 <tr>
                     <td class="editMode">
-                        <input type="checkbox" name="cb" class="cb" value="0">
+                        <input type="checkbox" name="cb" class="cb" value="${computer.id}">
                     </td>
                     <td>
                         <a href="/editComputer?id=${computer.id}" onclick="">${computer.name}</a>
@@ -105,33 +105,41 @@
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
         <ul class="pagination">
+            <c:if test="${debut > 0}">
+                <li>
+                    <a href="/?currentPage=${currentPage-1}&sizePages=${sizePages}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            </c:if>
+            <c:forEach begin="${debut}" end="${fin}" varStatus="loop">
+                <li><a href="/?currentPage=${loop.index}&sizePages=${sizePages}">${loop.index}</a></li>
+            </c:forEach>
+            <c:if test="${fin > currentPage}">
             <li>
-                <a href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next">
+                <a href="/?currentPage=${currentPage+1}&sizePages=${sizePages}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
+            </c:if>
         </ul>
     </div>
     <div class="btn-group btn-group-sm pull-right" role="group" >
-        <button type="button" class="btn btn-default">10</button>
-        <button type="button" class="btn btn-default">50</button>
-        <button type="button" class="btn btn-default">100</button>
+        <form action="/?currentPage=${currentPage}&sizePages=10" method="post">
+            <button type="submit" class="btn btn-default">10</button>
+        </form>
+        <form action="/?currentPage=${currentPage}&sizePages=50" method="post">
+            <button type="submit" class="btn btn-default">50</button>
+        </form>
+        <form action="/?currentPage=${currentPage}&sizePages=100" method="post">
+            <button type="submit" class="btn btn-default">100</button>
+        </form>
     </div>
 
 </footer>
-<script src="../js/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/dashboard.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
+<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
 
 </body>
 </html>

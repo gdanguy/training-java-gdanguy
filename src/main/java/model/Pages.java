@@ -3,10 +3,11 @@ package model;
 import java.util.ArrayList;
 
 public class Pages<T> {
-    public static final int PAGE_SIZE = 20;
+    public static final int PAGE_SIZE = 10;
 
     protected ArrayList<T> listObjects = new ArrayList<>();
     protected int currentPage;
+    protected int pageSize = PAGE_SIZE;
 
     /**
      * Constructor.
@@ -18,6 +19,20 @@ public class Pages<T> {
             this.listObjects.add(list.get(i));
         }
         this.currentPage = page;
+    }
+
+    /**
+     * Constructor.
+     * @param list contains the ArrayList to copy
+     * @param page correspond to the currentPage
+     * @param pageSize the page size
+     */
+    public Pages(ArrayList<T> list, int page, int pageSize) {
+        for (int i = 0; i < list.size(); i++) {
+            this.listObjects.add(list.get(i));
+        }
+        this.currentPage = page;
+        this.pageSize = pageSize;
     }
 
     /**
@@ -54,6 +69,14 @@ public class Pages<T> {
      */
     public int getCurrentPage() {
         return currentPage;
+    }
+
+    /**
+     * Get the page size.
+     * @return the page size
+     */
+    public int getPageSize() {
+        return pageSize;
     }
 
     /**

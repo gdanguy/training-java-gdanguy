@@ -45,6 +45,15 @@ public interface DAOService {
     Pages<Computer> listComputers(int page) throws SQLException;
 
     /**
+     * Get a page of Computer with a size of sizePage.
+     * @param page int
+     * @param sizePage int
+     * @return a page of Computer
+     * @throws SQLException if SQL fail
+     */
+    Pages<Computer> listComputers(int page, int sizePage) throws SQLException;
+
+    /**
      * Get a page of Company.
      * @param page int
      * @return a page of Company

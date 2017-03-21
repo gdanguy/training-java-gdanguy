@@ -67,6 +67,20 @@ public class DAOServiceImpl implements DAOService {
     }
 
     /**
+     * Get a page of Computer with a size of sizePage.
+     * @param page int
+     * @param sizePage int
+     * @return a page of Computer
+     * @throws SQLException if SQL fail
+     */
+    public Pages<Computer> listComputers(int page, int sizePage) throws SQLException {
+        logger.info("List all Computers");
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        Pages<Computer> result = db.getPageComputer(page, sizePage);
+        return result;
+    }
+
+    /**
      * Get a page of Company.
      * @param page int
      * @return a page of Company
