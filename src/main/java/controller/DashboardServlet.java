@@ -34,4 +34,16 @@ public class DashboardServlet extends HttpServlet {
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 
     }
+
+    /**
+     * Call doGet.
+     * @param request jsp request
+     * @param response jsp response
+     * @throws ServletException if bug
+     * @throws IOException if bug
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 }

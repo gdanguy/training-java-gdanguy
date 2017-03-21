@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -120,7 +121,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 "Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
                 , Statement.RETURN_GENERATED_KEYS);
         s.setString(1, computer.getName());
-        s.setInt(2, computer.getCompany().getId());
+        if (computer.getCompany() != null) {
+            s.setInt(2, computer.getCompany().getId());
+        } else {
+            s.setNull(2, Types.INTEGER);
+        }
         s.setTimestamp(3, computer.getIntroducedTimeStamp());
         s.setTimestamp(4, computer.getDiscontinuedTimeStamp());
 
@@ -160,7 +165,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                 , Statement.RETURN_GENERATED_KEYS);
         s.setString(1, modifiedComputer.getName());
-        s.setInt(2, modifiedComputer.getCompany().getId());
+        if (modifiedComputer.getCompany() != null) {
+            s.setInt(2, modifiedComputer.getCompany().getId());
+        } else {
+            s.setNull(2, Types.INTEGER);
+        }
         s.setTimestamp(3, modifiedComputer.getIntroducedTimeStamp());
         s.setTimestamp(4, modifiedComputer.getDiscontinuedTimeStamp());
         s.setInt(5, modifiedComputer.getId());

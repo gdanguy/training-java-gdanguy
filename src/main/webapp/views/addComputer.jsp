@@ -23,19 +23,19 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action="addComputer" method="POST">
+                    <form action="/addComputer" method="POST">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date">
+                                <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>
+                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued"  name="discontinued" placeholder="Discontinued date">
+                                <label for="discontinued">Discontinued date (Format DD-MM-YYYY)</label>
+                                <input type="date" class="form-control" id="discontinued"  name="discontinued" placeholder="Discontinued date" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>

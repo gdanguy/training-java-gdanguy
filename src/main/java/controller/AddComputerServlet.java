@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class AddComputerServlet extends HttpServlet {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 
+
     /**
      * Forward the addComputer jsp.
      * @param request no change
@@ -28,6 +29,7 @@ public class AddComputerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+
             DAOService service = new DAOServiceImpl();
             request.setAttribute("listCompany", service.listAllCompanies());
         } catch (SQLException e) {
@@ -53,21 +55,20 @@ public class AddComputerServlet extends HttpServlet {
                 name = "no name";
             }
             String intro = request.getParameter("introduced");
-            LocalDateTime introduced = null;
+            LocalDateTime introduced;
             if (intro == null || intro.equals("")) {
-                intro = null;
+                introduced = null;
+            } else {
+                introduced = Computer.convertStringToLocalDateTime(intro);
             }
             String disco = request.getParameter("discontinued");
-            LocalDateTime discontinued = null;
+            LocalDateTime discontinued;
             if (disco == null || disco.equals("")) {
                 discontinued = null;
+            } else {
+                discontinued = Computer.convertStringToLocalDateTime(disco);
             }
             int companyId = Integer.parseInt(request.getParameter("companyId"));
-            System.out.println(id);
-            System.out.println(name);
-            System.out.println(intro + " -> " + introduced);
-            System.out.println(disco + " -> " + discontinued);
-            System.out.println(companyId);
             service.createComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
         } catch (SQLException e) {

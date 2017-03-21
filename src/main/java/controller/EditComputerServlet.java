@@ -60,22 +60,24 @@ public class EditComputerServlet extends HttpServlet {
                 name = old.getName();
             }
             String intro = request.getParameter("introduced");
-            //TODO faire la gestion du LocalDateTime
             LocalDateTime introduced = null;
-            if (intro.equals("")) {
+            if (intro == null || intro.equals("")) {
                 if (old == null) {
                     old = service.getComputer(id);
                 }
                 introduced = old.getIntroduced();
+            } else {
+                introduced = Computer.convertStringToLocalDateTime(intro);
             }
             String disco = request.getParameter("discontinued");
-            //TODO faire la gestion du LocalDateTime
             LocalDateTime discontinued = null;
-            if (disco.equals("")) {
+            if (disco == null || disco.equals("")) {
                 if (old == null) {
                     old = service.getComputer(id);
                 }
                 discontinued = old.getIntroduced();
+            } else {
+                discontinued = Computer.convertStringToLocalDateTime(disco);
             }
             int companyId = Integer.parseInt(request.getParameter("companyId"));
 
