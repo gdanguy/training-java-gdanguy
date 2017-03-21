@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,16 @@ import model.dao.computer.ComputerDAOImpl;
 
 public class DAOServiceImpl implements DAOService {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
+
+    /**
+     * Get the number of Computer.
+     * @return the number of computer in DataBase
+     * @throws SQLException if no result
+     */
+    public int countComputers() throws SQLException {
+        ComputerDAOImpl db = ComputerDAO.getInstance();
+        return db.countComputers();
+    }
 
     /**
      * Get the first page of Company or Computer.
@@ -131,5 +142,29 @@ public class DAOServiceImpl implements DAOService {
         logger.info("Delete a computer, id = " + id);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.deleteComputer(id);
+    }
+
+    /**
+     * Get a company by id.
+     * @param id corresponding to the company wanted
+     * @return Company wanted
+     * @throws SQLException if SQL fails
+     */
+    public Company getCompany(int id) throws SQLException {
+        if (id < 0) {
+           return null;
+        }
+        CompanyDAOImpl db = CompanyDAO.getInstance();
+        return db.getCompany(id);
+    }
+
+    /**
+     * Return all companies.
+     * @return a ArrayList with all companies
+     * @throws SQLException if SQL fail
+     */
+    public ArrayList<Company> listAllCompanies() throws SQLException {
+        CompanyDAOImpl db = CompanyDAO.getInstance();
+        return db.getAllCompany();
     }
 }

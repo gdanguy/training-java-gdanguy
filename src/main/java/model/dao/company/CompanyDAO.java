@@ -1,6 +1,7 @@
 package model.dao.company;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.Pages;
 import model.company.Company;
@@ -22,6 +23,13 @@ public interface CompanyDAO {
      * @throws SQLException if SQL fails
      */
     Company getCompany(int id) throws SQLException;
+
+    /**
+     * Return all companies.
+     * @return a ArrayList with all companies
+     * @throws SQLException if SQL fail
+     */
+    ArrayList<Company> getAllCompany() throws SQLException;
 
     /**
      * Return Instance of DAO.

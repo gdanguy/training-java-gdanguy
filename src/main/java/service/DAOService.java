@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import model.Pages;
 import model.company.Company;
@@ -9,6 +10,15 @@ import model.computer.Computer;
 public interface DAOService {
     String TYPE_COMPUTER = "computer";
     String TYPE_COMPANY = "company";
+
+
+    /**
+     * Get the number of Computer.
+     * @return the number of computer in DataBase
+     * @throws SQLException if no result
+     */
+    int countComputers() throws SQLException;;
+
     /**
      * Get the first page of Company or Computer.
      * @param type TYPE_COMPUTER or TYPE_COMPANY
@@ -83,4 +93,19 @@ public interface DAOService {
      * @throws SQLException if SQL fail
      */
     String deleteComputer(int id) throws SQLException;
+
+    /**
+     * Get a company by id.
+     * @param id corresponding to the company wanted
+     * @return Company wanted
+     * @throws SQLException if SQL fails
+     */
+    Company getCompany(int id) throws SQLException;
+
+    /**
+     * Return all companies.
+     * @return a ArrayList with all companies
+     * @throws SQLException if SQL fail
+     */
+    ArrayList<Company> listAllCompanies() throws SQLException;
 }

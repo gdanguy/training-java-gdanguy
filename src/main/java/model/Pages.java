@@ -24,7 +24,7 @@ public class Pages<T> {
      * Get the ArrayList containing a T page.
      * @return the ArrayList containing a T page
      */
-    protected ArrayList<T> getListPage() {
+    public ArrayList<T> getListPage() {
         return listObjects;
     }
 

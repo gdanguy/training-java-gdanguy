@@ -8,6 +8,13 @@ import model.computer.Computer;
 public interface ComputerDAO {
 
     /**
+     * Get the number of Computer.
+     * @return the number of computer in DataBase
+     * @throws SQLException if no result
+     */
+    int countComputers() throws SQLException;
+
+    /**
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
      * @return Pages<Computer> corresponds to the page

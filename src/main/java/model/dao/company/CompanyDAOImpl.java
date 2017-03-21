@@ -34,6 +34,8 @@ public enum CompanyDAOImpl implements CompanyDAO {
         while (r.next()) {
             result.add(new Company(r.getInt(1), r.getString(2)));
         }
+        r.close();
+        s.close();
         Utils.closeConnection(conn);
         return new Pages<Company>(result, page);
     }
@@ -54,6 +56,28 @@ public enum CompanyDAOImpl implements CompanyDAO {
         if (r.next()) {
             result = new Company(r.getInt(1), r.getString(2));
         }
+        r.close();
+        s.close();
+        Utils.closeConnection(conn);
+        return result;
+    }
+
+    /**
+     * Return all companies.
+     * @return a ArrayList with all companies
+     * @throws SQLException if SQL fail
+     */
+    public ArrayList<Company> getAllCompany() throws SQLException {
+        logger.info("Get all companies");
+        conn = Utils.openConnection();
+        PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
+        ResultSet r = s.executeQuery();
+        ArrayList<Company> result = new ArrayList<>();
+        while (r.next()) {
+            result.add(new Company(r.getInt(1), r.getString(2)));
+        }
+        r.close();
+        s.close();
         Utils.closeConnection(conn);
         return result;
     }

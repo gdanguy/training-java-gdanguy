@@ -5,6 +5,7 @@
 
 ### Maven ###
 target/
+out/
 pom.xml.*
 release.properties
 dependency-reduced-pom.xml
