@@ -75,12 +75,11 @@ public class EditComputerServlet extends HttpServlet {
                 if (old == null) {
                     old = service.getComputer(id);
                 }
-                discontinued = old.getIntroduced();
+                discontinued = old.getDiscontinued();
             } else {
                 discontinued = Computer.convertStringToLocalDateTime(disco);
             }
             int companyId = Integer.parseInt(request.getParameter("companyId"));
-
 
             service.updateComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
