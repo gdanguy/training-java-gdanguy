@@ -6,15 +6,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import model.Pages;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
-import service.DAOServiceImpl;
+import service.dao.DAOServiceImpl;
 
 public class CLIControleur {
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(CLIControleur.class);
+    private Logger logger = LoggerFactory.getLogger(CLIControleur.class);
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static final String NEXT_PAGE = "+";

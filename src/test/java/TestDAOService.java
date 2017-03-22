@@ -1,6 +1,5 @@
 import model.Pages;
 import model.computer.Computer;
-import model.company.Company;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
 import model.dao.company.CompanyDAOImpl;
@@ -8,8 +7,8 @@ import model.dao.computer.ComputerDAOImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import service.DAOService;
-import service.DAOServiceImpl;
+import service.dao.DAOService;
+import service.dao.DAOServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

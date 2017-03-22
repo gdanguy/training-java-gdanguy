@@ -1,8 +1,9 @@
 package controller;
 
 import org.slf4j.LoggerFactory;
-import service.DAOService;
-import service.DAOServiceImpl;
+import org.slf4j.Logger;
+import service.dao.DAOService;
+import service.dao.DAOServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 
 @WebServlet(name = "DeleteComputerServlet", urlPatterns = "/deleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
+    private Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
     /**
      * Delete selected computer.
      * @param request r

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import model.Pages;
 import model.company.Company;
@@ -19,7 +20,7 @@ import utils.Utils;
 public enum ComputerDAOImpl implements ComputerDAO {
     INSTANCE;
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
+    private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     private Connection conn;
 
     /**

@@ -1,10 +1,11 @@
-package service;
+package service.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import model.Pages;
 import model.company.Company;
@@ -15,7 +16,7 @@ import model.dao.computer.ComputerDAO;
 import model.dao.computer.ComputerDAOImpl;
 
 public class DAOServiceImpl implements DAOService {
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
+    private Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
 
     /**
      * Get the number of Computer.

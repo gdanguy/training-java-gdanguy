@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import model.Pages;
 import model.company.Company;
@@ -15,7 +16,7 @@ import utils.Utils;
 public enum CompanyDAOImpl implements CompanyDAO {
     INSTANCE;
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
+    private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
     private Connection conn = null;
 
     /**

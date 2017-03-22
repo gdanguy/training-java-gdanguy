@@ -2,8 +2,9 @@ package controller;
 
 import model.computer.Computer;
 import org.slf4j.LoggerFactory;
-import service.DAOService;
-import service.DAOServiceImpl;
+import org.slf4j.Logger;
+import service.dao.DAOService;
+import service.dao.DAOServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 
 @WebServlet(name = "AddComputerServlet", urlPatterns = "/addComputer")
 public class AddComputerServlet extends HttpServlet {
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
+    private Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 
 
     /**
