@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -43,9 +44,9 @@ public class CLIControleur {
 
     /**
      * Main of the CLI.
-     * @throws SQLException is SQL fail
+     * @throws DAOException is SQL fail
      */
-    public void displayUserInterface() throws SQLException {
+    public void displayUserInterface() throws DAOException {
         System.out.println("Welcome, type " + HELP + " for the list of commands");
         String result = "";
         do {
@@ -99,9 +100,9 @@ public class CLIControleur {
      * Call the method corresponding to the parameter.
      * @param action Action wanted
      * @return String
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    public String choixAction(String action) throws SQLException {
+    public String choixAction(String action) throws DAOException {
         logger.info("Choose action : '" + action + "'\n");
         int id;
         try {
@@ -140,9 +141,9 @@ public class CLIControleur {
     /**
      * Instructs the user to enter information to generate a computer.
      * @return return message
-     * @throws SQLException is SQL fail
+     * @throws DAOException is SQL fail
      */
-    private Computer userInputComputer() throws SQLException {
+    private Computer userInputComputer() throws DAOException {
         logger.info("User input new Computer");
         try {
             String name = lireSaisieUtilisateur("Enter computer Name : ");
@@ -173,9 +174,9 @@ public class CLIControleur {
      * @param oldComputer old information
      * @param id id of the computer
      * @return Computer
-     * @throws SQLException is SQL fail
+     * @throws DAOException is SQL fail
      */
-    private Computer userInputComputer(Computer oldComputer, int id) throws SQLException {
+    private Computer userInputComputer(Computer oldComputer, int id) throws DAOException {
         logger.info("User input new Computer, old : " + oldComputer);
         try {
             String name = lireSaisieUtilisateur("Enter computer Name (before : " + oldComputer.getName() + ") : ");
@@ -205,26 +206,26 @@ public class CLIControleur {
 
     /**
      * display the List of Companies.
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    private void displayListCompanies() throws SQLException {
+    private void displayListCompanies() throws DAOException {
         displayList(DAOServiceImpl.TYPE_COMPANY);
     }
 
     /**
      * display the List of Computer.
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    private void displayListComputers() throws SQLException {
+    private void displayListComputers() throws DAOException {
         displayList(DAOServiceImpl.TYPE_COMPUTER);
     }
 
     /**
      * display list of Computer or Company.
      * @param type TYPE_COMPUTER or TYPE_COMPANY
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    private void displayList(String type) throws SQLException {
+    private void displayList(String type) throws DAOException {
         Pages<?> list = service.list(type);
         if (list.isEmpty()) {
             System.out.println("No item wanted in the database");

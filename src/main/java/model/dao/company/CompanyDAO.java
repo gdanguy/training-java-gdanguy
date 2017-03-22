@@ -1,10 +1,10 @@
 package model.dao.company;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Pages;
 import model.company.Company;
+import model.dao.DAOException;
 
 public interface CompanyDAO {
 
@@ -12,31 +12,31 @@ public interface CompanyDAO {
      * Get a page of companies.
      * @param page who pages is needed
      * @return Pages<Company> contains companies wanted
-     * @throws SQLException if SQL fails
+     * @throws DAOException if SQL fails
      */
-    Pages<Company> getPageCompanies(int page) throws SQLException;
+    Pages<Company> getPageCompanies(int page) throws DAOException;
 
     /**
      * Get a company by id.
      * @param id corresponding to the company wanted
      * @return Company wanted
-     * @throws SQLException if SQL fails
+     * @throws DAOException if SQL fails
      */
-    Company getCompany(int id) throws SQLException;
+    Company getCompany(int id) throws DAOException;
 
     /**
      * Return all companies.
      * @return a ArrayList with all companies
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    ArrayList<Company> getAllCompany() throws SQLException;
+    ArrayList<Company> getAllCompany() throws DAOException;
 
     /**
      * Get the number of Companies.
      * @return the number of companies in DataBase
-     * @throws SQLException if no result
+     * @throws DAOException if no result
      */
-    int countCompanies() throws SQLException;
+    int countCompanies() throws DAOException;
 
     /**
      * Return Instance of DAO.

@@ -9,4 +9,12 @@ public class ErrorValidateur extends java.lang.Exception {
         super(message);
     }
 
+    /**
+     * Constructor.
+     * @param e Exception
+     */
+    public ErrorValidateur(Exception e) {
+        super(e.getMessage(), e.getCause());
+    }
+
 }

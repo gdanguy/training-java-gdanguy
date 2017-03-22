@@ -1,6 +1,7 @@
 package controller;
 
 import model.computer.Computer;
+import model.dao.DAOException;
 import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @WebServlet(name = "EditComputerServlet", urlPatterns = "/editComputer")
@@ -34,7 +34,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
             DAOService service = new DAOServiceImpl();
             request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
             request.setAttribute("listCompany", service.listAllCompanies());
-        } catch (SQLException e) {
+        } catch (DAOException e) {
             logger.error("" + e);
         }
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
@@ -69,7 +69,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
 
             service.updateComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
-        } catch (SQLException e) {
+        } catch (DAOException e) {
             logger.error("" + e);
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }

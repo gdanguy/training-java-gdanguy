@@ -1,5 +1,6 @@
 package controller;
 
+import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "DeleteComputerServlet", urlPatterns = "/deleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
@@ -31,7 +31,7 @@ public class DeleteComputerServlet extends HttpServlet {
                 service.deleteComputer(Integer.parseInt(computerToDelete[i]));
             }
             request.getRequestDispatcher("/dashboard").forward(request, response);
-        } catch (SQLException e) {
+        } catch (DAOException e) {
             logger.error("" + e);
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }

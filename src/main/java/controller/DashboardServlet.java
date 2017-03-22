@@ -2,6 +2,7 @@ package controller;
 
 import model.Pages;
 import model.computer.Computer;
+import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
@@ -12,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = "/dashboard")
@@ -59,7 +59,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("countComputer", nbComputer);
             request.setAttribute("sizePages", sizePages);
             request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
-        } catch (SQLException e) {
+        } catch (DAOException e) {
             logger.error("" + e);
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
@@ -88,7 +88,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("countComputer", listComputer.size());
             request.setAttribute("sizePages", listComputer.size());
             request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
-        } catch (SQLException e) {
+        } catch (DAOException e) {
             logger.error("" + e);
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);

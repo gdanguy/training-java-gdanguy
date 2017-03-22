@@ -1,6 +1,5 @@
 package service.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.dto.computer.ComputerDTO;
@@ -14,6 +13,7 @@ import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
 import model.dao.computer.ComputerDAO;
 import model.dao.computer.ComputerDAOImpl;
+import model.dao.DAOException;
 
 public class DAOServiceImpl implements DAOService {
     private Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
@@ -21,9 +21,8 @@ public class DAOServiceImpl implements DAOService {
     /**
      * Get the number of Computer.
      * @return the number of computer in DataBase
-     * @throws SQLException if no result
      */
-    public int countComputers() throws SQLException {
+    public int countComputers() throws DAOException {
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.countComputers();
     }
@@ -32,9 +31,9 @@ public class DAOServiceImpl implements DAOService {
      * Get the first page of Company or Computer.
      * @param type TYPE_COMPUTER or TYPE_COMPANY
      * @return the first page of Company or Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<?> list(String type) throws SQLException {
+    public Pages<?> list(String type) throws DAOException {
         return list(type, 0);
     }
 
@@ -43,9 +42,9 @@ public class DAOServiceImpl implements DAOService {
      * @param type TYPE_COMPUTER or TYPE_COMPANY
      * @param page int
      * @return a page of Company or Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<?> list(String type, int page) throws SQLException {
+    public Pages<?> list(String type, int page) throws DAOException {
 
         if (type.equals(TYPE_COMPANY)) {
             return listCompanies(page);
@@ -59,9 +58,9 @@ public class DAOServiceImpl implements DAOService {
      * Get a page of Computer.
      * @param page int
      * @return a page of Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<Computer> listComputers(int page) throws SQLException {
+    public Pages<Computer> listComputers(int page) throws DAOException {
         logger.info("List all Computers");
         ComputerDAOImpl db = ComputerDAO.getInstance();
         Pages<Computer> result = db.getPageComputer(page);
@@ -73,9 +72,9 @@ public class DAOServiceImpl implements DAOService {
      * @param page int
      * @param sizePage int
      * @return a page of Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<Computer> listComputers(int page, int sizePage) throws SQLException {
+    public Pages<Computer> listComputers(int page, int sizePage) throws DAOException {
         logger.info("List all Computers");
         ComputerDAOImpl db = ComputerDAO.getInstance();
         Pages<Computer> result = db.getPageComputer(page, sizePage);
@@ -86,9 +85,9 @@ public class DAOServiceImpl implements DAOService {
      * Get a page of Computer with a search.
      * @param search word research
      * @return a page of Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<Computer> listComputers(String search) throws SQLException {
+    public Pages<Computer> listComputers(String search) throws DAOException {
         logger.info("List all Computers");
         ComputerDAOImpl db = ComputerDAO.getInstance();
         Pages<Computer> result = db.getPageComputer(search);
@@ -99,9 +98,9 @@ public class DAOServiceImpl implements DAOService {
      * Get a page of Company.
      * @param page int
      * @return a page of Company
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Pages<Company> listCompanies(int page) throws SQLException {
+    public Pages<Company> listCompanies(int page) throws DAOException {
         logger.info("List all Companies");
         CompanyDAOImpl db = CompanyDAO.getInstance();
         Pages<Company> result = db.getPageCompanies(page);
@@ -112,9 +111,9 @@ public class DAOServiceImpl implements DAOService {
      * Get details of one Computer.
      * @param id of the Computer
      * @return String
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public String showComputerdetails(int id) throws SQLException {
+    public String showComputerdetails(int id) throws DAOException {
         logger.info("Get a computers, id =" + id);
         Computer result = getComputer(id);
         if (result == null) {
@@ -128,9 +127,9 @@ public class DAOServiceImpl implements DAOService {
      * Get one Computer.
      * @param id of the Computer
      * @return Computer
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public Computer getComputer(int id) throws SQLException {
+    public Computer getComputer(int id) throws DAOException {
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.getComputerDetails(id);
     }
@@ -139,10 +138,10 @@ public class DAOServiceImpl implements DAOService {
      * Create a Computer in DataBase.
      * @param computer to insert
      * @return Computer in a String format
-     * @throws SQLException if SQL fail
      * @throws NumberFormatException if bad parameter
+     * @throws DAOException if model bug
      */
-    public String createComputer(Computer computer) throws SQLException, NumberFormatException {
+    public String createComputer(Computer computer)  throws DAOException, NumberFormatException {
         logger.info("Create a computer, " + computer);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.createComputer(computer).toStringDetails();
@@ -152,10 +151,10 @@ public class DAOServiceImpl implements DAOService {
      * Update a Computer in DataBase.
      * @param computer to insert
      * @return Computer in a String format
-     * @throws SQLException if SQL fail
      * @throws NumberFormatException if bad parameter
+     * @throws DAOException if model bug
      */
-    public String updateComputer(Computer computer) throws SQLException, NumberFormatException {
+    public String updateComputer(Computer computer) throws DAOException, NumberFormatException {
         logger.info("Update a Computer, new : " + computer);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.updateComputer(computer).toStringDetails();
@@ -165,9 +164,9 @@ public class DAOServiceImpl implements DAOService {
      * Delete a Computer in DataBase.
      * @param id of the Computer
      * @return "Delete a computer, id = " + id
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public String deleteComputer(int id) throws SQLException {
+    public String deleteComputer(int id) throws DAOException {
         logger.info("Delete a computer, id = " + id);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         return db.deleteComputer(id);
@@ -177,9 +176,9 @@ public class DAOServiceImpl implements DAOService {
      * Get a company by id.
      * @param id corresponding to the company wanted
      * @return Company wanted
-     * @throws SQLException if SQL fails
+     * @throws DAOException if model bug
      */
-    public Company getCompany(int id) throws SQLException {
+    public Company getCompany(int id) throws DAOException {
         if (id < 0) {
            return null;
         }
@@ -190,9 +189,9 @@ public class DAOServiceImpl implements DAOService {
     /**
      * Return all companies.
      * @return a ArrayList with all companies
-     * @throws SQLException if SQL fail
+     * @throws DAOException if model bug
      */
-    public ArrayList<Company> listAllCompanies() throws SQLException {
+    public ArrayList<Company> listAllCompanies() throws DAOException {
         CompanyDAOImpl db = CompanyDAO.getInstance();
         return db.getAllCompany();
     }
