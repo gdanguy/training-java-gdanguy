@@ -18,6 +18,25 @@ public enum CompanyDAOImpl implements CompanyDAO {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
     private Connection conn = null;
 
+    /**
+     * Get the number of Companies.
+     * @return the number of companies in DataBase
+     * @throws SQLException if no result
+     */
+    public int countCompanies() throws SQLException {
+        logger.info("Count computers");
+        conn = Utils.openConnection();
+        PreparedStatement s = conn.prepareStatement("SELECT COUNT(*) FROM company");
+        ResultSet r = s.executeQuery();
+        int result = -1;
+        if (r.next()) {
+            result = (r.getInt(1));
+        }
+        r.close();
+        s.close();
+        Utils.closeConnection(conn);
+        return result;
+    }
 
     /**
      * Get a page of companies.

@@ -90,7 +90,7 @@
                     </td>
                     <td>${computer.introduced}</td>
                     <td>${computer.discontinued}</td>
-                    <td>${computer.company.name}</td>
+                    <td>${computer.companyName}</td>
 
                 </tr>
             </c:forEach>
@@ -122,7 +122,7 @@
             </c:if>
         </ul>
     </div>
-    <div class="btn-group btn-group-sm pull-right" role="group" >
+    <div  id="pagination" class="btn-group btn-group-sm pull-right" role="group" >
         <form action="/dashboard?currentPage=${currentPage}&sizePages=10" method="post">
             <button type="submit" class="btn btn-default">10</button>
         </form>

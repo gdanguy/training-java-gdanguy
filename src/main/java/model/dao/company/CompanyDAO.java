@@ -32,6 +32,13 @@ public interface CompanyDAO {
     ArrayList<Company> getAllCompany() throws SQLException;
 
     /**
+     * Get the number of Companies.
+     * @return the number of companies in DataBase
+     * @throws SQLException if no result
+     */
+    int countCompanies() throws SQLException;
+
+    /**
      * Return Instance of DAO.
      * @return a DAO Instance
      */

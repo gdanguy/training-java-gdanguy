@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
+import model.dto.computer.ComputerDTO;
 
 public interface DAOService {
     String TYPE_COMPUTER = "computer";
@@ -125,4 +126,18 @@ public interface DAOService {
      * @throws SQLException if SQL fail
      */
     ArrayList<Company> listAllCompanies() throws SQLException;
+
+    /**
+     * Convert Pages<Computer> to Pages<ComputerDTO>.
+     * @param pages Pages of Computer
+     * @return the Pages<ComputerDTO> generated
+     */
+    Pages<ComputerDTO> convertComputerToComputerDTO(Pages<Computer> pages);
+
+    /**
+     * Convert ArrayList<Computer> to ArrayList<ComputerDTO>.
+     * @param list ArrayList of Computer
+     * @return the ArrayList<ComputerDTO> generated
+     */
+    ArrayList<ComputerDTO> convertComputerToComputerDTO(ArrayList<Computer> list);
 }

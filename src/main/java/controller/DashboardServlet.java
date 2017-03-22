@@ -18,6 +18,8 @@ import java.util.ArrayList;
 @WebServlet(name = "DashboardServlet", urlPatterns = "/dashboard")
 public class DashboardServlet extends HttpServlet {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
+    private static final int NB_PAGINATION = 10;
+
     /**
      * Set data for the Dashboard.
      * @param request jsp request
@@ -42,14 +44,14 @@ public class DashboardServlet extends HttpServlet {
                 System.out.println("modifier sizePage = " + sizePages);
             }
             int debut = 0;
-            if (currentPage > 2) {
-                debut = currentPage - 2;
+            if (currentPage > NB_PAGINATION) {
+                debut = currentPage - NB_PAGINATION;
             }
             DAOService service = new DAOServiceImpl();
             int nbComputer = service.countComputers();
             int fin = nbComputer / sizePages;
-            if (currentPage + 2 < fin) {
-                fin = currentPage + 2;
+            if (currentPage + NB_PAGINATION < fin) {
+                fin = currentPage + NB_PAGINATION;
             } else if (currentPage > fin) {
                 currentPage = fin;
             }
@@ -57,7 +59,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("fin", fin);
             request.setAttribute("countComputer", nbComputer);
             request.setAttribute("sizePages", sizePages);
-            request.setAttribute("listComputers", service.listComputers(currentPage, sizePages).getListPage());
+            request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
         } catch (SQLException e) {
             logger.error("" + e);
         }

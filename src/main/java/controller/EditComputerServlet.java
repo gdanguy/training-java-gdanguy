@@ -1,6 +1,7 @@
 package controller;
 
 import model.computer.Computer;
+import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import service.DAOService;
 import service.DAOServiceImpl;
@@ -31,7 +32,7 @@ public class EditComputerServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             request.setAttribute("id", id);
             DAOService service = new DAOServiceImpl();
-            request.setAttribute("computer", service.getComputer(id));
+            request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
             request.setAttribute("listCompany", service.listAllCompanies());
         } catch (SQLException e) {
             logger.error("" + e);

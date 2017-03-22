@@ -39,7 +39,7 @@
                                 <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="${computer.discontinued}" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                             </div>
                             <div class="form-group">
-                                <label for="companyId">Company</label>
+                                <label for="companyId">Company (Previous : ${computer.companyName})</label>
                                 <select class="form-control" id="companyId" name="companyId" >
                                     <option value="-1">--</option>
                                     <c:forEach var="company"  items="${listCompany}" >
