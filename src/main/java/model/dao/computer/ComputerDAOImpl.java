@@ -60,7 +60,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @throws SQLException if SQL request fail
      */
     public Pages<Computer> getPageComputer(int page, int sizePage) throws SQLException {
-        logger.info("Get all computers");
+        logger.info("Get page " + page + ", computers of " + sizePage);
         conn = Utils.openConnection();
         PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                 + " FROM computer c1"
@@ -84,7 +84,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @throws SQLException if SQL request fail
      */
     public Pages<Computer> getPageComputer(String search) throws SQLException {
-        logger.info("Get all computers");
+        logger.info("Get Search computers : " + search);
         conn = Utils.openConnection();
         PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                 + " FROM computer c1"

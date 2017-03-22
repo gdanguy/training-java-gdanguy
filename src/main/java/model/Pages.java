@@ -97,6 +97,38 @@ public class Pages<T> {
     }
 
     /**
+     * Equals Methode.
+     * @param o other object
+     * @return true if equals, else false
+     */
+    @Override
+    public boolean equals(Object o) {
+        Pages<T> page = (Pages<T>) o;
+        if (page.getPageSize() != this.pageSize) {
+            return false;
+        }
+        boolean equals = true;
+        int i = 0;
+        while (i < this.pageSize && equals) {
+            equals = page.getListPage().get(i) == this.listObjects.get(i);
+            i++;
+        }
+        return equals;
+    }
+
+    /**
+     * Hash Code.
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        int result = listObjects != null ? listObjects.hashCode() : 0;
+        result = 31 * result + currentPage;
+        result = 31 * result + pageSize;
+        return result;
+    }
+
+    /**
      * Add a Object in the ArrayList.
      * @param t the object
      */

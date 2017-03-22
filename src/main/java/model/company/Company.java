@@ -39,4 +39,24 @@ public class Company {
         return "Company [id=" + id + ", name=" + name + "]";
     }
 
+    /**
+     * Hash Code.
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    /**
+     * Equals Methode.
+     * @param o other object
+     * @return true if equals, else false
+     */
+    @Override
+    public boolean equals(Object o) {
+        return this.id == ((Company) o).getId();
+    }
 }

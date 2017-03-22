@@ -121,6 +121,30 @@ public class Computer {
     }
 
     /**
+     * Equals Methode.
+     * @param o other object
+     * @return true if equals, else false
+     */
+    @Override
+    public boolean equals(Object o) {
+        return this.id == ((Computer) o).getId();
+    }
+
+    /**
+     * Hash Code.
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (introduced != null ? introduced.hashCode() : 0);
+        result = 31 * result + (discontinued != null ? discontinued.hashCode() : 0);
+        result = 31 * result + (company != null ? company.hashCode() : 0);
+        return result;
+    }
+
+    /**
      * Convert String to LocalDateTime.
      * @param date in String format
      * @return date in LocalDateTime format
