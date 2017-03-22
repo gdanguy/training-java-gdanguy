@@ -22,6 +22,8 @@ public class TestDAOService {
     private CompanyDAOImpl dbCompany = CompanyDAO.getInstance();
     private int id;
     private static final String NAME_COMPUTER_TEST = "TestComputer";
+    private static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
+    private static final String NAME_COMPUTER_TEST_3 = "TestComputer3";
 
     /**
      * Create a TestComputer.
@@ -40,6 +42,8 @@ public class TestDAOService {
     public void after() throws SQLException{
         service.deleteComputer(id);
     }
+
+    //Computer
 
     /**
      * Test.
@@ -72,54 +76,52 @@ public class TestDAOService {
 
         //Test found all computer
         int count = service.countComputers();
-        assertTrue("Test : Found all computer", service.listComputers(0,count).getListPage().size() == count);
+        assertTrue("Test : Found all computer", service.listComputers(0, count).getListPage().size() == count);
     }
 
-    /**
-     * Test.
-     * service.listCompanies(int page)
-     * @throws SQLException if bug
-     */
     @Test
-    public void listCompanies() throws SQLException {
+    public void testGetComputer() throws SQLException {
+       Computer search1 = service.listComputers(0).getListPage().get(0);
+       assertEquals("Test : Search by id a Computer", search1, service.getComputer(search1.getId()));
+    }
+
+    @Test
+    public void testShowComputerdetails() throws SQLException {
+        Computer search1 = service.listComputers(0).getListPage().get(0);
+        assertEquals("Test : Search by id a Computer, compare String details", search1.toStringDetails(), service.showComputerdetails(search1.getId()));
+    }
+
+    @Test
+    public void testCreateDeleteUpdateComputer() throws SQLException, NumberFormatException {
+        Pages<Computer> result = service.listComputers(NAME_COMPUTER_TEST_2);
+        int exist = result.getListPage().size();
+
+        int idComputer = Integer.parseInt(service.createComputer(new Computer(NAME_COMPUTER_TEST_2,null,null,null)).split("id=")[1].split(",")[0]);
+
+        result = service.listComputers(NAME_COMPUTER_TEST_2);
+        assertTrue("Test : The computer is add ", result.getListPage().size() == (exist + 1));
+
+        result = service.listComputers(NAME_COMPUTER_TEST_3);
+        exist = result.getListPage().size();
+
+        service.updateComputer(new Computer(idComputer,NAME_COMPUTER_TEST_3,null,null,null));
+
+        result = service.listComputers(NAME_COMPUTER_TEST_3);
+        assertTrue("Test : The computer is update ", result.getListPage().size() == (exist + 1));
+
+        service.deleteComputer(idComputer);
+
+        result = service.listComputers(NAME_COMPUTER_TEST_3);
+        assertTrue("Test : The computer is delete ", result.getListPage().size() == exist);
+    }
+
+    //Company
+
+    @Test
+    public void testListAllCompanies() throws SQLException {
         //Test found all companies.
         int count = dbCompany.countCompanies();
         assertTrue("Test found all companies", service.listAllCompanies().size() == count);
     }
-    /*
-    @Test
-    public void showComputerdetails() throws SQLException {
 
-    }
-
-    @Test
-    public void getComputer() throws SQLException {
-
-    }
-
-    @Test
-    public void createComputer() throws SQLException, NumberFormatException {
-
-    }
-
-    @Test
-    public void updateComputer() throws SQLException, NumberFormatException {
-
-    }
-
-    @Test
-    public void deleteComputer() throws SQLException {
-
-    }
-
-    @Test
-    public void getCompany() throws SQLException {
-
-    }
-
-    @Test
-    public void listAllCompanies() throws SQLException {
-
-    }
-    */
 }
