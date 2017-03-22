@@ -21,6 +21,7 @@ public class DAOServiceImpl implements DAOService {
     /**
      * Get the number of Computer.
      * @return the number of computer in DataBase
+     * @throws DAOException if model bug
      */
     public int countComputers() throws DAOException {
         ComputerDAOImpl db = ComputerDAO.getInstance();

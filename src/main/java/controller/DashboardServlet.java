@@ -40,7 +40,6 @@ public class DashboardServlet extends HttpServlet {
             int sizePages = Pages.PAGE_SIZE;
             if (!(size == null || size.equals(""))) {
                 sizePages = Integer.parseInt(size);
-                System.out.println("modifier sizePage = " + sizePages);
             }
             int debut = 0;
             if (currentPage > NB_PAGINATION) {
@@ -60,7 +59,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("sizePages", sizePages);
             request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
         } catch (DAOException e) {
-            logger.error("" + e);
+            logger.error(e.toString());
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 
@@ -89,7 +88,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("sizePages", listComputer.size());
             request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
         } catch (DAOException e) {
-            logger.error("" + e);
+            logger.error(e.toString());
         }
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
     }

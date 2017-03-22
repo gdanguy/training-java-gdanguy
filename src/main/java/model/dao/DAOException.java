@@ -2,7 +2,7 @@ package model.dao;
 
 import java.sql.SQLException;
 
-public class DAOException extends Exception{
+public class DAOException extends Exception {
     /**
      * Constructor.
      * @param message message of Exception
@@ -17,5 +17,14 @@ public class DAOException extends Exception{
      */
     public DAOException(SQLException e) {
         super(e.getMessage(), e.getCause());
+    }
+
+    /**
+     * To String.
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return "DAOExeption " + this.getMessage() + " : " + this.getMessage();
     }
 }

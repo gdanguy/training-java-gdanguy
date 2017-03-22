@@ -7,16 +7,18 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import service.validator.ValidatorFront;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
 @WebServlet(name = "EditComputerServlet", urlPatterns = "/editComputer")
-public class EditComputerServlet extends UpdateComputerServlet {
+public class EditComputerServlet extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
 
     /**
@@ -35,7 +37,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
             request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
             request.setAttribute("listCompany", service.listAllCompanies());
         } catch (DAOException e) {
-            logger.error("" + e);
+            logger.error(e.toString());
         }
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }
@@ -57,11 +59,11 @@ public class EditComputerServlet extends UpdateComputerServlet {
             if (name.equals("")) {
                 name = old.getName();
             }
-            LocalDateTime introduced = convertStringToLocalDateTime(request.getParameter("introduced"));
+            LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
             if (introduced == null) {
                 introduced = old.getIntroduced();
             }
-            LocalDateTime discontinued = convertStringToLocalDateTime(request.getParameter("discontinued"));
+            LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
             if (discontinued == null) {
                 discontinued = old.getDiscontinued();
             }
@@ -70,7 +72,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
             service.updateComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
         } catch (DAOException e) {
-            logger.error("" + e);
+            logger.error(e.toString());
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
         request.getRequestDispatcher("/dashboard").forward(request, response);

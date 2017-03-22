@@ -1,12 +1,19 @@
 package service.validator;
 
-public abstract class Validator {
+import model.computer.Computer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+
+public abstract class ValidatorFront {
+    private static Logger logger = LoggerFactory.getLogger(ValidatorFront.class);
     public static final String REGEX_DATE = "^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$";
     public static final String REGEX_NAME = "^[A-Za-z0-9 ]{0,39}[A-Za-z0-9]$";
     public static final String REGEX_INT = "^-?\\\\d+$";
 
     /**
-     * Validator for Date.
+     * ValidatorFront for Date.
      * @param date the date to validate
      * @throws ErrorValidateur if synthaxe problem
      */
@@ -17,7 +24,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for Name.
+     * ValidatorFront for Name.
      * @param name the name to validate
      * @throws ErrorValidateur if synthaxe problem
      */
@@ -30,7 +37,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for int.
+     * ValidatorFront for int.
      * @param intToValidate the int to validate
      * @throws ErrorValidateur if synthaxe problem
      */
@@ -41,7 +48,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for int with null is a error.
+     * ValidatorFront for int with null is a error.
      * @param intToValidate the int to validate
      * @throws ErrorValidateur if synthaxe problem
      */
@@ -51,6 +58,36 @@ public abstract class Validator {
         }
         if (!(intToValidate.matches(REGEX_INT))) {
             throw new ErrorValidateur("Error int format, format expected : " + REGEX_INT + " but actually : " + intToValidate);
+        }
+    }
+
+    /**
+     * If name is not valid return 'no name' else return name.
+     * @param name String to validate
+     * @return 'no name' or name
+     */
+    public static String getValidName(String name) {
+        try {
+            nameValidator(name);
+            return name;
+        } catch (ErrorValidateur e) {
+            logger.warn(e.toString());
+            return "no name";
+        }
+    }
+
+    /**
+     * Convert user's input into LocalDateTime.
+     * @param date user's input
+     * @return LocalDateTime
+     */
+    public static LocalDateTime convertStringToLocalDateTime(String date) {
+        try {
+            dateValidate(date);
+            return Computer.convertStringToLocalDateTime(date);
+        } catch (ErrorValidateur e) {
+            logger.warn(e.toString());
+            return null;
         }
     }
 }

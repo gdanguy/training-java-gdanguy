@@ -1,16 +1,14 @@
-
-import java.sql.SQLException;
-
 import cli.CLIControleur;
+import model.dao.DAOException;
 
 
 public class Main {
     /**
      * Run the CLI.
      * @param args no use
-     * @throws SQLException if SQL fail
+     * @throws DAOException if SQL fail
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws DAOException {
         CLIControleur cli = new CLIControleur();
         cli.displayUserInterface();
     }

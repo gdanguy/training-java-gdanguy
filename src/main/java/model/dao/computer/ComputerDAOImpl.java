@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
-import model.dao.DAOException;
 import utils.Utils;
 
 public enum ComputerDAOImpl implements ComputerDAO {
@@ -53,7 +52,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
      * @return Pages<Computer> corresponds to the page
-     * @throws SQLException if SQL request fail
+     * @throws DAOException if SQL request fail
      */
     public Pages<Computer> getPageComputer(int page) throws DAOException {
         return getPageComputer(page, Pages.PAGE_SIZE);

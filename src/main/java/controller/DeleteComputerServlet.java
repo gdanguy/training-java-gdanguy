@@ -32,7 +32,7 @@ public class DeleteComputerServlet extends HttpServlet {
             }
             request.getRequestDispatcher("/dashboard").forward(request, response);
         } catch (DAOException e) {
-            logger.error("" + e);
+            logger.error(e.toString());
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
     }
