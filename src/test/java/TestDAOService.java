@@ -1,4 +1,5 @@
 import model.Pages;
+import model.dao.DAOException;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
@@ -9,10 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import model.dao.DAOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import java.sql.SQLException;
+
 
 public class TestDAOService {
 
@@ -26,19 +28,19 @@ public class TestDAOService {
 
     /**
      * Create a TestComputer.
-     * @throws SQLException if bug
+     * @throws DAOException if bug
      */
     @Before
-    public void before() throws SQLException{
+    public void before() throws DAOException{
         id = Integer.parseInt(service.createComputer(new Computer(NAME_COMPUTER_TEST,null,null,null)).split("id=")[1].split(",")[0]);
     }
 
     /**
      * Delete the TestComputer.
-     * @throws SQLException if bug
+     * @throws DAOException if bug
      */
     @After
-    public void after() throws SQLException{
+    public void after() throws DAOException{
         service.deleteComputer(id);
     }
 
@@ -47,10 +49,10 @@ public class TestDAOService {
     /**
      * Test.
      * service.countComputers();
-     * @throws SQLException if bug
+     * @throws DAOException if bug
      */
     @Test
-    public void testCountComputers() throws SQLException{
+    public void testCountComputers() throws DAOException{
         int countService = service.countComputers();
         assertTrue("The number of computers returned by the Service corresponds to the base number", countService == dbComputer.countComputers());
     }
@@ -60,10 +62,10 @@ public class TestDAOService {
      * service.listComputers(int page)
      * service.listComputers(int page, int sizePage)
      * service.listComputers(String search)
-     * @throws SQLException if bug
+     * @throws DAOException if bug
      */
     @Test
-    public void testListComputers() throws SQLException {
+    public void testListComputers() throws DAOException {
         //Test sizePage default
         Pages<Computer> pages1 = service.listComputers(0);
         Pages<Computer> pages2 = service.listComputers(0, Pages.PAGE_SIZE);
@@ -79,19 +81,19 @@ public class TestDAOService {
     }
 
     @Test
-    public void testGetComputer() throws SQLException {
+    public void testGetComputer() throws DAOException {
        Computer search1 = service.listComputers(0).getListPage().get(0);
        assertEquals("Test : Search by id a Computer", search1, service.getComputer(search1.getId()));
     }
 
     @Test
-    public void testShowComputerdetails() throws SQLException {
+    public void testShowComputerdetails() throws DAOException {
         Computer search1 = service.listComputers(0).getListPage().get(0);
         assertEquals("Test : Search by id a Computer, compare String details", search1.toStringDetails(), service.showComputerdetails(search1.getId()));
     }
 
     @Test
-    public void testCreateDeleteUpdateComputer() throws SQLException, NumberFormatException {
+    public void testCreateDeleteUpdateComputer() throws DAOException, NumberFormatException {
         Pages<Computer> result = service.listComputers(NAME_COMPUTER_TEST_2);
         int exist = result.getListPage().size();
 
@@ -117,7 +119,7 @@ public class TestDAOService {
     //Company
 
     @Test
-    public void testListAllCompanies() throws SQLException {
+    public void testListAllCompanies() throws DAOException {
         //Test found all companies.
         int count = dbCompany.countCompanies();
         assertTrue("Test found all companies", service.listAllCompanies().size() == count);
