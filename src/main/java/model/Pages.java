@@ -1,9 +1,13 @@
 package model;
 
+import model.dao.computer.ComputerDAOImpl;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 public class Pages<T> {
     public static final int PAGE_SIZE = 10;
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     protected ArrayList<T> listObjects = new ArrayList<>();
     protected int currentPage;
@@ -104,13 +108,13 @@ public class Pages<T> {
     @Override
     public boolean equals(Object o) {
         Pages<T> page = (Pages<T>) o;
-        if (page.getPageSize() != this.pageSize) {
+        if (page.getPageSize() != this.pageSize || page.getCurrentPage() != this.currentPage) {
             return false;
         }
         boolean equals = true;
         int i = 0;
         while (i < this.pageSize && equals) {
-            equals = page.getListPage().get(i) == this.listObjects.get(i);
+            equals = page.getListPage().get(i).equals(this.listObjects.get(i));
             i++;
         }
         return equals;
