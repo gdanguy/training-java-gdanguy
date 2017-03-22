@@ -25,7 +25,7 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" pattern="[A-Za-z0-9 ]{1,40}">
+                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" pattern="^[A-Za-z0-9 ]{0,39}[A-Za-z0-9]$">
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>

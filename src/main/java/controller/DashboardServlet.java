@@ -37,7 +37,6 @@ public class DashboardServlet extends HttpServlet {
             }
             request.setAttribute("currentPage", currentPage);
             String size = request.getParameter("sizePages");
-            System.out.println("size = " + size);
             int sizePages = Pages.PAGE_SIZE;
             if (!(size == null || size.equals(""))) {
                 sizePages = Integer.parseInt(size);

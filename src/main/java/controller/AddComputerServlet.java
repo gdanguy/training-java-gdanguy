@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import service.validator.ErrorValidateur;
+import service.validator.Validator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @WebServlet(name = "AddComputerServlet", urlPatterns = "/addComputer")
-public class AddComputerServlet extends HttpServlet {
+public class AddComputerServlet extends UpdateComputerServlet {
     private Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 
 
@@ -30,7 +31,6 @@ public class AddComputerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-
             DAOService service = new DAOServiceImpl();
             request.setAttribute("listCompany", service.listAllCompanies());
         } catch (SQLException e) {
@@ -52,24 +52,16 @@ public class AddComputerServlet extends HttpServlet {
             DAOService service = new DAOServiceImpl();
             int id = -1;
             String name = request.getParameter("computerName");
-            if (name.equals("")) {
+            try {
+                Validator.nameValidator(name);
+            } catch (ErrorValidateur e) {
+                logger.warn(e.toString());
                 name = "no name";
             }
-            String intro = request.getParameter("introduced");
-            LocalDateTime introduced;
-            if (intro == null || intro.equals("")) {
-                introduced = null;
-            } else {
-                introduced = Computer.convertStringToLocalDateTime(intro);
-            }
-            String disco = request.getParameter("discontinued");
-            LocalDateTime discontinued;
-            if (disco == null || disco.equals("")) {
-                discontinued = null;
-            } else {
-                discontinued = Computer.convertStringToLocalDateTime(disco);
-            }
+            LocalDateTime introduced = convertStringToLocalDateTime(request.getParameter("introduced"));
+            LocalDateTime discontinued = convertStringToLocalDateTime(request.getParameter("discontinued"));
             int companyId = Integer.parseInt(request.getParameter("companyId"));
+
             service.createComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
         } catch (SQLException e) {

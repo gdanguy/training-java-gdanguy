@@ -9,7 +9,6 @@ import service.dao.DAOServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @WebServlet(name = "EditComputerServlet", urlPatterns = "/editComputer")
-public class EditComputerServlet extends HttpServlet {
+public class EditComputerServlet extends UpdateComputerServlet {
     private Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
 
     /**
@@ -52,32 +51,19 @@ public class EditComputerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             DAOService service = new DAOServiceImpl();
-            Computer old = null;
             int id = Integer.parseInt(request.getParameter("id"));
+            Computer old = service.getComputer(id);
             String name = request.getParameter("computerName");
             if (name.equals("")) {
-                old = service.getComputer(id);
                 name = old.getName();
             }
-            String intro = request.getParameter("introduced");
-            LocalDateTime introduced;
-            if (intro == null || intro.equals("")) {
-                if (old == null) {
-                    old = service.getComputer(id);
-                }
+            LocalDateTime introduced = convertStringToLocalDateTime(request.getParameter("introduced"));
+            if (introduced == null) {
                 introduced = old.getIntroduced();
-            } else {
-                introduced = Computer.convertStringToLocalDateTime(intro);
             }
-            String disco = request.getParameter("discontinued");
-            LocalDateTime discontinued;
-            if (disco == null || disco.equals("")) {
-                if (old == null) {
-                    old = service.getComputer(id);
-                }
+            LocalDateTime discontinued = convertStringToLocalDateTime(request.getParameter("discontinued"));
+            if (discontinued == null) {
                 discontinued = old.getDiscontinued();
-            } else {
-                discontinued = Computer.convertStringToLocalDateTime(disco);
             }
             int companyId = Integer.parseInt(request.getParameter("companyId"));
 
