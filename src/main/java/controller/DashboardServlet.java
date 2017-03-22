@@ -88,7 +88,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("fin", 0);
             request.setAttribute("countComputer", listComputer.size());
             request.setAttribute("sizePages", listComputer.size());
-            request.setAttribute("listComputers", listComputer);
+            request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
         } catch (SQLException e) {
             logger.error("" + e);
         }
