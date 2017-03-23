@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 public abstract class ValidatorFront {
     private static Logger logger = LoggerFactory.getLogger(ValidatorFront.class);
     public static final String REGEX_DATE = "^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$";
-    public static final String REGEX_NAME = "^[A-Za-z0-9 ]{0,39}[A-Za-z0-9]$";
+    public static final String REGEX_NAME = "^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$";
     public static final String REGEX_INT = "^-?\\\\d+$";
+    public static final String NAME_DEFAULT = "no name";
 
     /**
      * ValidatorFront for Date.
@@ -72,7 +73,7 @@ public abstract class ValidatorFront {
             return name;
         } catch (ErrorValidateur e) {
             logger.warn(e.toString());
-            return "no name";
+            return NAME_DEFAULT;
         }
     }
 

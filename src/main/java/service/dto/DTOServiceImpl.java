@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by ebiz on 23/03/17.
  */
-public class DTOServiceImpl implements DTOService{
+public class DTOServiceImpl implements DTOService {
 
     /**
      * Convert Pages<Computer> to Pages<ComputerDTO>.

@@ -2,7 +2,6 @@ package service.dao;
 
 import java.util.ArrayList;
 
-import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 

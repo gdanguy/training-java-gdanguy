@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
-import model.dto.computer.ComputerDTO;
 
 public interface DAOService {
     String TYPE_COMPUTER = "computer";
