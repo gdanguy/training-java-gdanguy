@@ -14,6 +14,7 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/main.css" type="text/css" rel="stylesheet" media="screen">
+    <link href="${pageContext.request.contextPath}/css/dashboard.css" type="text/css" rel="stylesheet" media="screen">
 
 </head>
 <body>
