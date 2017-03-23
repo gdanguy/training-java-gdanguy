@@ -2,6 +2,7 @@
            uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt"
            uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="page" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -14,8 +15,6 @@
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet" media="screen">
     <link href="${pageContext.request.contextPath}/css/main.css" type="text/css" rel="stylesheet" media="screen">
-    <link href="${pageContext.request.contextPath}/css/dashboard.css" type="text/css" rel="stylesheet" media="screen">
-
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top">
@@ -79,23 +78,8 @@
             </tr>
 
             </thead>
-
             <!-- Browse attribute computers -->
-            <c:forEach var="computer"  items="${listComputers}" >
-                <tr>
-                    <td class="editMode">
-                        <input type="checkbox" name="cb${computer.id}" class="cb" value="${computer.id}">
-                    </td>
-                    <td>
-                        <a href="/editComputer?id=${computer.id}" onclick="">${computer.name}</a>
-                    </td>
-                    <td>${computer.introduced}</td>
-                    <td>${computer.discontinued}</td>
-                    <td>${computer.companyName}</td>
-
-                </tr>
-            </c:forEach>
-
+            <page:listeComputer computer="${computer}"></page:listeComputer>
             </tbody>
         </table>
     </div>
@@ -103,36 +87,12 @@
 
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
-        <ul class="pagination">
-            <c:if test="${debut > 0}">
-                <li>
-                    <a href="/dashboard?currentPage=${currentPage-1}&sizePages=${sizePages}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            </c:if>
-            <c:forEach begin="${debut}" end="${fin}" varStatus="loop">
-                <li><a href="/dashboard?currentPage=${loop.index}&sizePages=${sizePages}">${loop.index}</a></li>
-            </c:forEach>
-            <c:if test="${fin > currentPage}">
-            <li>
-                <a href="/dashboard?currentPage=${currentPage+1}&sizePages=${sizePages}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-            </c:if>
-        </ul>
+        <page:pagination currentPage="${currentPage}" debut="${debut}" fin="${fin}"></page:pagination>
     </div>
     <div  id="pagination" class="btn-group btn-group-sm pull-right" role="group" >
-        <form action="/dashboard?currentPage=${currentPage}&sizePages=10" method="post">
-            <button type="submit" class="btn btn-default">10</button>
-        </form>
-        <form action="/dashboard?currentPage=${currentPage}&sizePages=50" method="post">
-            <button type="submit" class="btn btn-default">50</button>
-        </form>
-        <form action="/dashboard?currentPage=${currentPage}&sizePages=100" method="post">
-            <button type="submit" class="btn btn-default">100</button>
-        </form>
+        <a href="/dashboard?page=0&sizePages=10" class="btn btn-default">10</a>
+        <a href="/dashboard?page=0&sizePages=50" class="btn btn-default">50</a>
+        <a href="/dashboard?page=0&sizePages=100" class="btn btn-default">100</a>
     </div>
 
 </footer>
