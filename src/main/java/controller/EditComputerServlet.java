@@ -1,7 +1,6 @@
 package controller;
 
 import model.computer.Computer;
-import model.dao.DAOException;
 import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -30,15 +29,11 @@ public class EditComputerServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            request.setAttribute("id", id);
-            DAOService service = new DAOServiceImpl();
-            request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
-            request.setAttribute("listCompany", service.listAllCompanies());
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        }
+        int id = Integer.parseInt(request.getParameter("id"));
+        request.setAttribute("id", id);
+        DAOService service = new DAOServiceImpl();
+        request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
+        request.setAttribute("listCompany", service.listAllCompanies());
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }
 
@@ -51,28 +46,27 @@ public class EditComputerServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            DAOService service = new DAOServiceImpl();
-            int id = Integer.parseInt(request.getParameter("id"));
-            Computer old = service.getComputer(id);
-            String name = request.getParameter("computerName");
-            if (name.equals("")) {
-                name = old.getName();
-            }
-            LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
-            if (introduced == null) {
-                introduced = old.getIntroduced();
-            }
-            LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
-            if (discontinued == null) {
-                discontinued = old.getDiscontinued();
-            }
-            int companyId = Integer.parseInt(request.getParameter("companyId"));
 
-            service.updateComputer(
+        DAOService service = new DAOServiceImpl();
+        int id = Integer.parseInt(request.getParameter("id"));
+        //old never null because we edit a existing Computer, if bug throw a DAOException
+        Computer old = service.getComputer(id);
+        String name = request.getParameter("computerName");
+        if (name.equals("")) {
+            name = old.getName();
+        }
+        LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
+        if (introduced == null) {
+            introduced = old.getIntroduced();
+        }
+        LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
+        if (discontinued == null) {
+            discontinued = old.getDiscontinued();
+        }
+        int companyId = Integer.parseInt(request.getParameter("companyId"));
+        boolean updateSucces = service.updateComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
-        } catch (DAOException e) {
-            logger.error(e.toString());
+        if (!updateSucces) {
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
         request.getRequestDispatcher("/dashboard").forward(request, response);

@@ -2,7 +2,6 @@ package controller;
 
 import model.Pages;
 import model.computer.Computer;
-import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
@@ -29,38 +28,34 @@ public class DashboardServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            String cp = request.getParameter("currentPage");
-            int currentPage = 0;
-            if (!(cp == null || cp.equals(""))) {
-                currentPage = Integer.parseInt(cp);
-            }
-            request.setAttribute("currentPage", currentPage);
-            String size = request.getParameter("sizePages");
-            int sizePages = Pages.PAGE_SIZE;
-            if (!(size == null || size.equals(""))) {
-                sizePages = Integer.parseInt(size);
-            }
-            int debut = 0;
-            if (currentPage > NB_PAGINATION) {
-                debut = currentPage - NB_PAGINATION;
-            }
-            DAOService service = new DAOServiceImpl();
-            int nbComputer = service.countComputers();
-            int fin = nbComputer / sizePages;
-            if (currentPage + NB_PAGINATION < fin) {
-                fin = currentPage + NB_PAGINATION;
-            } else if (currentPage > fin) {
-                currentPage = fin;
-            }
-            request.setAttribute("debut", debut);
-            request.setAttribute("fin", fin);
-            request.setAttribute("countComputer", nbComputer);
-            request.setAttribute("sizePages", sizePages);
-            request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
-        } catch (DAOException e) {
-            logger.error(e.toString());
+        String cp = request.getParameter("currentPage");
+        int currentPage = 0;
+        if (!(cp == null || cp.equals(""))) {
+            currentPage = Integer.parseInt(cp);
         }
+        request.setAttribute("currentPage", currentPage);
+        String size = request.getParameter("sizePages");
+        int sizePages = Pages.PAGE_SIZE;
+        if (!(size == null || size.equals(""))) {
+            sizePages = Integer.parseInt(size);
+        }
+        int debut = 0;
+        if (currentPage > NB_PAGINATION) {
+            debut = currentPage - NB_PAGINATION;
+        }
+        DAOService service = new DAOServiceImpl();
+        int nbComputer = service.countComputers();
+        int fin = nbComputer / sizePages;
+        if (currentPage + NB_PAGINATION < fin) {
+            fin = currentPage + NB_PAGINATION;
+        } else if (currentPage > fin) {
+            currentPage = fin;
+        }
+        request.setAttribute("debut", debut);
+        request.setAttribute("fin", fin);
+        request.setAttribute("countComputer", nbComputer);
+        request.setAttribute("sizePages", sizePages);
+        request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 
     }
@@ -74,22 +69,18 @@ public class DashboardServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            String search = request.getParameter("search");
-            if (search == null || search.equals("")) {
-                doGet(request, response);
-            }
-            request.setAttribute("currentPage", 0);
-            DAOService service = new DAOServiceImpl();
-            ArrayList<Computer> listComputer = service.listComputers(search).getListPage();
-            request.setAttribute("debut", 0);
-            request.setAttribute("fin", 0);
-            request.setAttribute("countComputer", listComputer.size());
-            request.setAttribute("sizePages", listComputer.size());
-            request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
-        } catch (DAOException e) {
-            logger.error(e.toString());
+        String search = request.getParameter("search");
+        if (search == null || search.equals("")) {
+            doGet(request, response);
         }
+        request.setAttribute("currentPage", 0);
+        DAOService service = new DAOServiceImpl();
+        ArrayList<Computer> listComputer = service.listComputers(search).getListPage();
+        request.setAttribute("debut", 0);
+        request.setAttribute("fin", 0);
+        request.setAttribute("countComputer", listComputer.size());
+        request.setAttribute("sizePages", listComputer.size());
+        request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
     }
 }

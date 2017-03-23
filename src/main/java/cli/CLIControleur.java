@@ -117,10 +117,18 @@ public class CLIControleur {
                     return service.showComputerdetails(id);
                 case CREATE_COMPUTER:
                     Computer c = userInputComputer();
-                    return service.createComputer(c);
+                    if (service.createComputer(c) >= 0) {
+                        return "Computer Created";
+                    } else {
+                        return "Error create computer";
+                    }
                 case UPDATE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    return service.updateComputer(userInputComputer(service.getComputer(id), id));
+                    if (service.updateComputer(userInputComputer(service.getComputer(id), id))) {
+                        return "Update computer done";
+                    } else {
+                        return "Error update computer";
+                    }
                 case DELETE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
                     return service.deleteComputer(id);

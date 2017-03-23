@@ -1,7 +1,6 @@
 package controller;
 
 import model.computer.Computer;
-import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 public class AddComputerServlet extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 
-
     /**
      * Forward the addComputer jsp.
      * @param request no change
@@ -30,12 +28,8 @@ public class AddComputerServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            DAOService service = new DAOServiceImpl();
-            request.setAttribute("listCompany", service.listAllCompanies());
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        }
+        DAOService service = new DAOServiceImpl();
+        request.setAttribute("listCompany", service.listAllCompanies());
         request.getRequestDispatcher("/views/addComputer.jsp").forward(request, response);
     }
 
@@ -48,18 +42,16 @@ public class AddComputerServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            DAOService service = new DAOServiceImpl();
-            int id = -1;
-            String name = ValidatorFront.getValidName(request.getParameter("computerName"));
-            LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
-            LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
-            int companyId = Integer.parseInt(request.getParameter("companyId"));
+        DAOService service = new DAOServiceImpl();
+        int id = DAOService.ECHEC_FLAG;
+        String name = ValidatorFront.getValidName(request.getParameter("computerName"));
+        LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
+        LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
+        int companyId = Integer.parseInt(request.getParameter("companyId"));
 
-            service.createComputer(
+        int updateSucces =  service.createComputer(
                     new Computer(id, name, introduced, discontinued, service.getCompany(companyId)));
-        } catch (DAOException e) {
-            logger.error(e.toString());
+        if (updateSucces < 0) {
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }
         request.getRequestDispatcher("/dashboard").forward(request, response);

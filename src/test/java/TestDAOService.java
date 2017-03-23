@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
-import model.dao.DAOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +31,7 @@ public class TestDAOService {
      */
     @Before
     public void before() throws DAOException{
-        id = Integer.parseInt(service.createComputer(new Computer(NAME_COMPUTER_TEST,null,null,null)).split("id=")[1].split(",")[0]);
+        id = service.createComputer(new Computer(NAME_COMPUTER_TEST,null,null,null));
     }
 
     /**
@@ -97,7 +96,9 @@ public class TestDAOService {
         Pages<Computer> result = service.listComputers(NAME_COMPUTER_TEST_2);
         int exist = result.getListPage().size();
 
-        int idComputer = Integer.parseInt(service.createComputer(new Computer(NAME_COMPUTER_TEST_2,null,null,null)).split("id=")[1].split(",")[0]);
+        int idComputer = service.createComputer(new Computer(NAME_COMPUTER_TEST_2,null,null,null));
+
+        assertTrue("Test : The computer is create, id > 0 expected, but " + idComputer, idComputer != DAOService.ECHEC_FLAG);
 
         result = service.listComputers(NAME_COMPUTER_TEST_2);
         assertTrue("Test : The computer is add ", result.getListPage().size() == (exist + 1));

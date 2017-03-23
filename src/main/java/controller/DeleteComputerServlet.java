@@ -1,6 +1,5 @@
 package controller;
 
-import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
@@ -26,15 +25,10 @@ public class DeleteComputerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DAOService service = new DAOServiceImpl();
         String[] computerToDelete = request.getParameter("selection").split(",");
-        try {
-            for (int i = 0; i < computerToDelete.length; i++) {
-                service.deleteComputer(Integer.parseInt(computerToDelete[i]));
-            }
-            request.getRequestDispatcher("/dashboard").forward(request, response);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            request.getRequestDispatcher("/views/500.html").forward(request, response);
+        for (int i = 0; i < computerToDelete.length; i++) {
+            service.deleteComputer(Integer.parseInt(computerToDelete[i]));
         }
+        request.getRequestDispatcher("/dashboard").forward(request, response);
     }
 
 }
