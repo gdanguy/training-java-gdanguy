@@ -243,25 +243,4 @@ public class DAOServiceImpl implements DAOService {
         }
     }
 
-    /**
-     * Convert Pages<Computer> to Pages<ComputerDTO>.
-     * @param pages Pages of Computer
-     * @return the Pages<ComputerDTO> generated
-     */
-    public Pages<ComputerDTO> convertComputerToComputerDTO(Pages<Computer> pages)  {
-        return new Pages<>(convertComputerToComputerDTO(pages.getListPage()), pages.getPageSize());
-    }
-
-    /**
-     * Convert ArrayList<Computer> to ArrayList<ComputerDTO>.
-     * @param list ArrayList of Computer
-     * @return the ArrayList<ComputerDTO> generated
-     */
-    public ArrayList<ComputerDTO> convertComputerToComputerDTO(ArrayList<Computer> list) {
-        ArrayList<ComputerDTO> result = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            result.add(new ComputerDTO(list.get(i)));
-        }
-        return result;
-    }
 }

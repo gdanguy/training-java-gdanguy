@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import service.dto.DTOService;
+import service.dto.DTOServiceImpl;
 import service.validator.ValidatorFront;
 
 import javax.servlet.ServletException;
@@ -31,9 +33,10 @@ public class EditComputerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         request.setAttribute("id", id);
-        DAOService service = new DAOServiceImpl();
-        request.setAttribute("computer", new ComputerDTO(service.getComputer(id)));
-        request.setAttribute("listCompany", service.listAllCompanies());
+        DAOService serviceDAO = new DAOServiceImpl();
+        DTOService serviceDTO = new DTOServiceImpl();
+        request.setAttribute("computer", new ComputerDTO(serviceDAO.getComputer(id)));
+        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(serviceDAO.listAllCompanies()));
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }
 

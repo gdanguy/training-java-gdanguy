@@ -111,17 +111,4 @@ public interface DAOService {
      */
     ArrayList<Company> listAllCompanies();
 
-    /**
-     * Convert Pages<Computer> to Pages<ComputerDTO>.
-     * @param pages Pages of Computer
-     * @return the Pages<ComputerDTO> generated
-     */
-    Pages<ComputerDTO> convertComputerToComputerDTO(Pages<Computer> pages);
-
-    /**
-     * Convert ArrayList<Computer> to ArrayList<ComputerDTO>.
-     * @param list ArrayList of Computer
-     * @return the ArrayList<ComputerDTO> generated
-     */
-    ArrayList<ComputerDTO> convertComputerToComputerDTO(ArrayList<Computer> list);
 }

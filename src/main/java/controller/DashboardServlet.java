@@ -5,6 +5,8 @@ import model.computer.Computer;
 import org.slf4j.LoggerFactory;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import service.dto.DTOService;
+import service.dto.DTOServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,8 +45,8 @@ public class DashboardServlet extends HttpServlet {
         if (currentPage > NB_PAGINATION) {
             debut = currentPage - NB_PAGINATION;
         }
-        DAOService service = new DAOServiceImpl();
-        int nbComputer = service.countComputers();
+        DAOService serviceDAO = new DAOServiceImpl();
+        int nbComputer = serviceDAO.countComputers();
         int fin = nbComputer / sizePages;
         if (currentPage + NB_PAGINATION < fin) {
             fin = currentPage + NB_PAGINATION;
@@ -55,7 +57,8 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute("fin", fin);
         request.setAttribute("countComputer", nbComputer);
         request.setAttribute("sizePages", sizePages);
-        request.setAttribute("listComputers", service.convertComputerToComputerDTO(service.listComputers(currentPage, sizePages)).getListPage());
+        DTOService serviceDTO = new DTOServiceImpl();
+        request.setAttribute("listComputers", serviceDTO.convertComputerToComputerDTO(serviceDAO.listComputers(currentPage, sizePages)).getListPage());
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 
     }
@@ -74,13 +77,14 @@ public class DashboardServlet extends HttpServlet {
             doGet(request, response);
         }
         request.setAttribute("currentPage", 0);
-        DAOService service = new DAOServiceImpl();
-        ArrayList<Computer> listComputer = service.listComputers(search).getListPage();
+        DAOService serviceDAO = new DAOServiceImpl();
+        ArrayList<Computer> listComputer = serviceDAO.listComputers(search).getListPage();
         request.setAttribute("debut", 0);
         request.setAttribute("fin", 0);
         request.setAttribute("countComputer", listComputer.size());
         request.setAttribute("sizePages", listComputer.size());
-        request.setAttribute("listComputers", service.convertComputerToComputerDTO(listComputer));
+        DTOService serviceDTO = new DTOServiceImpl();
+        request.setAttribute("listComputers", serviceDTO.convertComputerToComputerDTO(listComputer));
         request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
     }
 }
