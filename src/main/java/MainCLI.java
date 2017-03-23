@@ -2,7 +2,7 @@ import cli.CLIControleur;
 import model.dao.DAOException;
 
 
-public class Main {
+public class MainCLI {
     /**
      * Run the CLI.
      * @param args no use

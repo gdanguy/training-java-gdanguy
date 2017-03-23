@@ -42,7 +42,7 @@ public class CLIControleur {
     }
 
     /**
-     * Main of the CLI.
+     * MainCLI of the CLI.
      * @throws DAOException is SQL fail
      */
     public void displayUserInterface() throws DAOException {
