@@ -12,7 +12,7 @@ import model.Pages;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
-import service.dao.DAOServiceImpl;
+import service.CompanyServiceImpl;
 
 public class CLIControleur {
     private Logger logger = LoggerFactory.getLogger(CLIControleur.class);
@@ -32,13 +32,13 @@ public class CLIControleur {
 
     public static final DateTimeFormatter FORMATTEUR = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private DAOServiceImpl service;
+    private CompanyServiceImpl service;
 
     /**
      * Constructor.
      */
     public CLIControleur() {
-        service = new DAOServiceImpl();
+        service = new CompanyServiceImpl();
     }
 
     /**
@@ -169,7 +169,7 @@ public class CLIControleur {
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
             CompanyDAOImpl db = CompanyDAO.getInstance();
-            return new Computer(name, intro, disco, db.getCompany(companyId));
+            return new Computer(name, intro, disco, db.get(companyId));
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
             return null;
@@ -204,7 +204,7 @@ public class CLIControleur {
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : " + oldComputer.getCompany() + "): "));
             CompanyDAOImpl db = CompanyDAO.getInstance();
 
-            return new Computer(id, name, intro, disco, db.getCompany(companyId));
+            return new Computer(id, name, intro, disco, db.get(companyId));
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
             return null;
@@ -216,7 +216,7 @@ public class CLIControleur {
      * @throws DAOException if SQL fail
      */
     private void displayListCompanies() throws DAOException {
-        displayList(DAOServiceImpl.TYPE_COMPANY);
+        displayList(CompanyServiceImpl.TYPE_COMPANY);
     }
 
     /**
@@ -224,7 +224,7 @@ public class CLIControleur {
      * @throws DAOException if SQL fail
      */
     private void displayListComputers() throws DAOException {
-        displayList(DAOServiceImpl.TYPE_COMPUTER);
+        displayList(CompanyServiceImpl.TYPE_COMPUTER);
     }
 
     /**
@@ -246,11 +246,11 @@ public class CLIControleur {
                     list = service.list(type, list.getNextPage());
                     quit = false;
                     if (list.isEmpty()) {
-                        list = service.listCompanies(list.getPreviousPage());
+                        list = service.list(list.getPreviousPage());
                     }
                     System.out.println(list);
                 } else if (input.equals(PREVIOUS_PAGE)) {
-                    list = service.listCompanies(list.getPreviousPage());
+                    list = service.list(list.getPreviousPage());
                     quit = false;
                     System.out.println(list);
                 }

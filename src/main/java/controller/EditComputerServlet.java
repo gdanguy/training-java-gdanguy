@@ -3,8 +3,10 @@ package controller;
 import model.dto.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import service.dao.DAOService;
-import service.dao.DAOServiceImpl;
+import service.CompanyService;
+import service.CompanyServiceImpl;
+import service.ComputerService;
+import service.ComputerServiceImpl;
 import service.dto.DTOService;
 import service.dto.DTOServiceImpl;
 
@@ -29,10 +31,11 @@ public class EditComputerServlet extends UpdateComputerServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         request.setAttribute("id", id);
-        DAOService serviceDAO = new DAOServiceImpl();
+        ComputerService computerService = ComputerService.getInstance();
+        CompanyService companyService = CompanyService.getInstance();
         DTOService serviceDTO = new DTOServiceImpl();
-        request.setAttribute("computer", new ComputerDTO(serviceDAO.getComputer(id)));
-        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(serviceDAO.listAllCompanies()));
+        request.setAttribute("computer", new ComputerDTO(computerService.get(id)));
+        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(companyService.listAll()));
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }
 
@@ -45,8 +48,8 @@ public class EditComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DAOService service = new DAOServiceImpl();
-        boolean updateSucces = service.updateComputer(getComputerModified(request));
+        ComputerService service = ComputerService.getInstance();
+        boolean updateSucces = service.update(getComputerModified(request));
         if (!updateSucces) {
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }

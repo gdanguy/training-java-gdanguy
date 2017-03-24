@@ -2,8 +2,10 @@ package controller;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import service.dao.DAOService;
-import service.dao.DAOServiceImpl;
+import service.ComputerService;
+import service.ComputerServiceImpl;
+import service.CompanyService;
+import service.CompanyServiceImpl;
 import service.dto.DTOService;
 import service.dto.DTOServiceImpl;
 
@@ -26,9 +28,9 @@ public class AddComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DAOService serviceDAO = new DAOServiceImpl();
+        CompanyService serviceDAO = CompanyService.getInstance();
         DTOService serviceDTO = new DTOServiceImpl();
-        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(serviceDAO.listAllCompanies()));
+        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(serviceDAO.listAll()));
         request.getRequestDispatcher("/views/addComputer.jsp").forward(request, response);
     }
 
@@ -41,9 +43,9 @@ public class AddComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        DAOService service = new DAOServiceImpl();
+        ComputerService service = ComputerService.getInstance();
 
-        int updateSucces =  service.createComputer(getComputer(request));
+        int updateSucces =  service.create(getComputer(request));
         if (updateSucces < 0) {
             request.getRequestDispatcher("/views/500.html").forward(request, response);
         }

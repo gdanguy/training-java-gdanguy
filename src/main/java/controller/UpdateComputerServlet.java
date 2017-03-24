@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import model.company.Company;
 import model.computer.Computer;
-import service.dao.DAOService;
-import service.dao.DAOServiceImpl;
+import service.CompanyService;
+import service.CompanyServiceImpl;
+import service.ComputerService;
+import service.ComputerServiceImpl;
 import service.validator.ValidatorFront;
 
 import java.time.LocalDateTime;
@@ -22,13 +24,13 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      * @return the computer wanted
      */
     protected Computer getComputer(HttpServletRequest request) {
-        DAOService service = new DAOServiceImpl();
-        int id = DAOService.ECHEC_FLAG;
+        CompanyService service = CompanyService.getInstance();
+        int id = CompanyService.ECHEC_FLAG;
         String name = ValidatorFront.getValidName(request.getParameter("computerName"));
         LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
         LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
         int companyId = Integer.parseInt(request.getParameter("companyId"));
-        return new Computer(id, name, introduced, discontinued, service.getCompany(companyId));
+        return new Computer(id, name, introduced, discontinued, service.get(companyId));
     }
 
     /**
@@ -38,9 +40,9 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      */
     protected Computer getComputerModified(HttpServletRequest request) {
         Computer userInsert = getComputer(request);
-        DAOService service = new DAOServiceImpl();
+        ComputerService service = ComputerService.getInstance();
         int id = Integer.parseInt(request.getParameter("id"));
-        Computer old = service.getComputer(id);
+        Computer old = service.get(id);
         boolean notModified = true;
         String name = userInsert.getName();
         LocalDateTime introduced = userInsert.getIntroduced();

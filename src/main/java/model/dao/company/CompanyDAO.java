@@ -14,7 +14,7 @@ public interface CompanyDAO {
      * @return Pages<Company> contains companies wanted
      * @throws DAOException if SQL fails
      */
-    Pages<Company> getPageCompanies(int page) throws DAOException;
+    Pages<Company> getPage(int page) throws DAOException;
 
     /**
      * Get a company by id.
@@ -22,21 +22,21 @@ public interface CompanyDAO {
      * @return Company wanted
      * @throws DAOException if SQL fails
      */
-    Company getCompany(int id) throws DAOException;
+    Company get(int id) throws DAOException;
 
     /**
      * Return all companies.
      * @return a ArrayList with all companies
      * @throws DAOException if SQL fail
      */
-    ArrayList<Company> getAllCompany() throws DAOException;
+    ArrayList<Company> getAll() throws DAOException;
 
     /**
      * Get the number of Companies.
      * @return the number of companies in DataBase
      * @throws DAOException if no result
      */
-    int countCompanies() throws DAOException;
+    int count() throws DAOException;
 
     /**
      * Return Instance of DAO.

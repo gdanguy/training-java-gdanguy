@@ -11,7 +11,7 @@ public interface ComputerDAO {
      * @return the number of computer in DataBase
      * @throws DAOException if no result
      */
-    int countComputers() throws DAOException;
+    int count() throws DAOException;
 
     /**
      * This method returns the page of computers.
@@ -19,7 +19,7 @@ public interface ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPageComputer(int page) throws DAOException;
+    Pages<Computer> getPage(int page) throws DAOException;
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
@@ -28,7 +28,7 @@ public interface ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPageComputer(int page, int sizePage) throws DAOException;
+    Pages<Computer> getPage(int page, int sizePage) throws DAOException;
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
@@ -36,7 +36,7 @@ public interface ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPageComputer(String search) throws DAOException;
+    Pages<Computer> getPage(String search) throws DAOException;
 
     /**
      * This method returns a computer identified by its id.
@@ -44,7 +44,7 @@ public interface ComputerDAO {
      * @return ths Computer wanted
      * @throws DAOException if SQL request fail
      */
-    Computer getComputerDetails(int id) throws DAOException;
+    Computer getDetails(int id) throws DAOException;
 
     /**
      * This method adds a computer in the database regardless of its id and returns the computer completed with its id.
@@ -52,7 +52,7 @@ public interface ComputerDAO {
      * @return Computer generated
      * @throws DAOException if SQL fail
      */
-    Computer createComputer(Computer computer) throws DAOException;
+    Computer create(Computer computer) throws DAOException;
 
     /**
      * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
@@ -60,7 +60,7 @@ public interface ComputerDAO {
      * @return Computer updated
      * @throws DAOException if SQL fail
      */
-    Computer updateComputer(Computer computer) throws DAOException;
+    Computer update(Computer computer) throws DAOException;
 
     /**
      * This method removes the computer corresponding to the passed id as a parameter and returns a message confirming whether or not this deletion occurs.
@@ -68,19 +68,19 @@ public interface ComputerDAO {
      * @return if succes : "Computer " + id + " is deleted" or if fail : "Delete Computer failed, no rows affected."
      * @throws DAOException if SQL fail
      */
-    String deleteComputer(int id) throws DAOException;
+    String delete(int id) throws DAOException;
 
     /**
      * Delete the last computer added in the DAO.
      * @throws DAOException if delete failed
      */
-    void deleteLastComputer() throws DAOException;
+    void deleteLast() throws DAOException;
 
     /**
      * Get the first computer of the DataBase
      * @throws DAOException if sql failed
      */
-    Computer getFirstComputer() throws DAOException;
+    Computer getFirst() throws DAOException;
 
     /**
      * Return the Instance of DAO.

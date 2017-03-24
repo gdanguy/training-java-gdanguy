@@ -25,7 +25,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
      * @return the number of companies in DataBase
      * @throws DAOException if no result
      */
-    public int countCompanies() throws DAOException {
+    public int count() throws DAOException {
         logger.info("Count computers");
         try {
             conn = Utils.openConnection();
@@ -50,7 +50,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
      * @return Pages<Company> contains companies wanted
      * @throws DAOException if SQL fails
      */
-    public Pages<Company> getPageCompanies(int page) throws DAOException {
+    public Pages<Company> getPage(int page) throws DAOException {
         logger.info("Get all companies");
         try {
             conn = Utils.openConnection();
@@ -75,7 +75,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
      * @return Company wanted
      * @throws DAOException if SQL fails
      */
-    public Company getCompany(int id) throws DAOException {
+    public Company get(int id) throws DAOException {
         logger.info("Get all companies");
         try {
             conn = Utils.openConnection();
@@ -100,7 +100,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
      * @return a ArrayList with all companies
      * @throws DAOException if SQL fail
      */
-    public ArrayList<Company> getAllCompany() throws DAOException {
+    public ArrayList<Company> getAll() throws DAOException {
         logger.info("Get all companies");
         try {
             conn = Utils.openConnection();

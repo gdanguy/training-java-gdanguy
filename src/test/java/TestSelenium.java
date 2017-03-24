@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import service.dao.DAOService;
-import service.dao.DAOServiceImpl;
+import service.CompanyService;
+import service.CompanyServiceImpl;
 import model.computer.Computer;
 
 import java.util.NoSuchElementException;
@@ -42,7 +42,7 @@ public class TestSelenium{
 
         //Test number of computer
         String countWeb = driver.findElement(By.xpath("//*[@id=\"homeTitle\"]")).getText();
-        DAOService service = new DAOServiceImpl();
+        CompanyService service = new CompanyServiceImpl();
         int countDAO = service.countComputers();
         assertEquals("Correct number display", (countDAO + " Computers found"),countWeb);
 
@@ -58,6 +58,8 @@ public class TestSelenium{
 
         //pagination
         //TODO
+        //boucle cherche un ordinateur
+        //tant que trouve pas clique sur '>>' dans la pagination
 
         driver.close();
     }
@@ -66,7 +68,7 @@ public class TestSelenium{
     public void testCreateComputer() throws InterruptedException {
         driver.get(baseUrl);
 
-        DAOService service = new DAOServiceImpl();
+        CompanyService service = new CompanyServiceImpl();
         int countComputer = service.countComputers();
 
         //go to add page
@@ -88,7 +90,7 @@ public class TestSelenium{
     public void testEditComputer() throws InterruptedException {
         driver.get(baseUrl);
 
-        DAOService service= new DAOServiceImpl();
+        CompanyService service= new CompanyServiceImpl();
         Computer c = service.getFirstComputer();
 
         //go to add page

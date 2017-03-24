@@ -8,8 +8,8 @@ import model.dao.computer.ComputerDAOImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import service.dao.DAOService;
-import service.dao.DAOServiceImpl;
+import service.CompanyService;
+import service.CompanyServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestDAOService {
 
-    private DAOService service = new DAOServiceImpl();
+    private CompanyService service = new CompanyServiceImpl();
     private ComputerDAOImpl dbComputer = ComputerDAO.getInstance();
     private CompanyDAOImpl dbCompany = CompanyDAO.getInstance();
     private int id;
@@ -47,20 +47,20 @@ public class TestDAOService {
 
     /**
      * Test.
-     * service.countComputers();
+     * service.count();
      * @throws DAOException if bug
      */
     @Test
     public void testCountComputers() throws DAOException{
         int countService = service.countComputers();
-        assertTrue("The number of computers returned by the Service corresponds to the base number", countService == dbComputer.countComputers());
+        assertTrue("The number of computers returned by the Service corresponds to the base number", countService == dbComputer.count());
     }
 
     /**
      * Test.
-     * service.listComputers(int page)
-     * service.listComputers(int page, int sizePage)
-     * service.listComputers(String search)
+     * service.list(int page)
+     * service.list(int page, int sizePage)
+     * service.list(String search)
      * @throws DAOException if bug
      */
     @Test
@@ -98,7 +98,7 @@ public class TestDAOService {
 
         int idComputer = service.createComputer(new Computer(NAME_COMPUTER_TEST_2,null,null,null));
 
-        assertTrue("Test : The computer is create, id > 0 expected, but " + idComputer, idComputer != DAOService.ECHEC_FLAG);
+        assertTrue("Test : The computer is create, id > 0 expected, but " + idComputer, idComputer != CompanyService.ECHEC_FLAG);
 
         result = service.listComputers(NAME_COMPUTER_TEST_2);
         assertTrue("Test : The computer is add ", result.getListPage().size() == (exist + 1));
@@ -122,8 +122,8 @@ public class TestDAOService {
     @Test
     public void testListAllCompanies() throws DAOException {
         //Test found all companies.
-        int count = dbCompany.countCompanies();
-        assertTrue("Test found all companies", service.listAllCompanies().size() == count);
+        int count = dbCompany.count();
+        assertTrue("Test found all companies", service.listAll().size() == count);
     }
 
 }

@@ -29,7 +29,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return the number of computer in DataBase
      * @throws DAOException if no result
      */
-    public int countComputers() throws DAOException {
+    public int count() throws DAOException {
         logger.info("Count computers");
         try {
             conn = Utils.openConnection();
@@ -54,8 +54,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPageComputer(int page) throws DAOException {
-        return getPageComputer(page, Pages.PAGE_SIZE);
+    public Pages<Computer> getPage(int page) throws DAOException {
+        return getPage(page, Pages.PAGE_SIZE);
     }
 
     /**
@@ -65,7 +65,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPageComputer(int page, int sizePage) throws DAOException {
+    public Pages<Computer> getPage(int page, int sizePage) throws DAOException {
         logger.info("Get page " + page + ", computers of " + sizePage);
         try {
             conn = Utils.openConnection();
@@ -93,7 +93,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return Pages<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPageComputer(String search) throws DAOException {
+    public Pages<Computer> getPage(String search) throws DAOException {
         logger.info("Get Search computers : " + search);
         try {
             conn = Utils.openConnection();
@@ -121,7 +121,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return ths Computer wanted
      * @throws DAOException if SQL request fail
      */
-    public Computer getComputerDetails(int id) throws DAOException {
+    public Computer getDetails(int id) throws DAOException {
         logger.info("Get computer : " + id);
         try {
             conn = Utils.openConnection();
@@ -171,7 +171,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return Computer generated
      * @throws DAOException if SQL fail
      */
-    public Computer createComputer(Computer computer) throws DAOException {
+    public Computer create(Computer computer) throws DAOException {
         logger.info("Create computer : " + computer);
         try {
             conn = Utils.openConnection();
@@ -219,7 +219,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return Computer updated
      * @throws DAOException if SQL fail
      */
-    public Computer updateComputer(Computer modifiedComputer) throws DAOException {
+    public Computer update(Computer modifiedComputer) throws DAOException {
         logger.info("Update a computer : " + modifiedComputer);
         try {
             conn = Utils.openConnection();
@@ -257,7 +257,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return if succes : "Computer " + id + " is deleted" or if fail : "Delete Computer failed, no rows affected."
      * @throws DAOException if SQL fail
      */
-    public String deleteComputer(int id) throws DAOException {
+    public String delete(int id) throws DAOException {
         logger.info("Delete a computer : " + id);
         try {
             conn = Utils.openConnection();
@@ -283,7 +283,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * Delete the last computer added in the DAO.
      * @throws DAOException if delete failed
      */
-    public void deleteLastComputer() throws DAOException {
+    public void deleteLast() throws DAOException {
         logger.info("Delete last computer");
         try {
             int id = getLastComputerId();
@@ -308,10 +308,10 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * Get the first computer of the DataBase
      * @throws DAOException if sql failed
      */
-    public Computer getFirstComputer() throws DAOException {
+    public Computer getFirst() throws DAOException {
         try {
             int id = getFirstComputerId();
-            return getComputerDetails(id);
+            return getDetails(id);
         } catch (SQLException e) {
             throw new DAOException(e);
         }

@@ -1,67 +1,40 @@
-package service.dao;
-
-import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+package service;
 
 import model.Pages;
-import model.company.Company;
 import model.computer.Computer;
-import model.dao.company.CompanyDAO;
-import model.dao.company.CompanyDAOImpl;
+import model.dao.DAOException;
 import model.dao.computer.ComputerDAO;
 import model.dao.computer.ComputerDAOImpl;
-import model.dao.DAOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DAOServiceImpl implements DAOService {
-    private Logger logger = LoggerFactory.getLogger(DAOServiceImpl.class);
+
+public enum ComputerServiceImpl implements ComputerService {
+    INSTANCE;
+    private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
 
     /**
      * Get the number of Computer.
      * @return the number of computer in DataBase
      */
-    public int countComputers() {
+    public int count() {
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            return db.countComputers();
+            return db.count();
         } catch (DAOException e) {
             logger.error(e.toString());
             return ECHEC_FLAG;
         }
     }
 
-    /**
-     * Get the first page of Company or Computer.
-     * @param type TYPE_COMPUTER or TYPE_COMPANY
-     * @return the first page of Company or Computer
-     */
-    public Pages<?> list(String type) {
-        return list(type, 0);
-    }
-
-    /**
-     * Get a page of Company or Computer.
-     * @param type TYPE_COMPUTER or TYPE_COMPANY
-     * @param page int
-     * @return a page of Company or Computer
-     */
-    public Pages<?> list(String type, int page) {
-        if (type.equals(TYPE_COMPANY)) {
-            return listCompanies(page);
-        } else if (type.equals(TYPE_COMPUTER)) {
-            return listComputers(page);
-        }
-        return null;
-    }
 
     /**
      * Get a page of Computer.
      * @param page int
      * @return a page of Computer
      */
-    public Pages<Computer> listComputers(int page) {
-        return listComputers(page, Pages.PAGE_SIZE);
+    public Pages<Computer> list(int page) {
+        return list(page, Pages.PAGE_SIZE);
     }
 
     /**
@@ -70,11 +43,11 @@ public class DAOServiceImpl implements DAOService {
      * @param sizePage int
      * @return a page of Computer
      */
-    public Pages<Computer> listComputers(int page, int sizePage) {
+    public Pages<Computer> list(int page, int sizePage) {
         logger.info("List all Computers");
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            Pages<Computer> result = db.getPageComputer(page, sizePage);
+            Pages<Computer> result = db.getPage(page, sizePage);
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());
@@ -87,28 +60,11 @@ public class DAOServiceImpl implements DAOService {
      * @param search word research
      * @return a page of Computer
      */
-    public Pages<Computer> listComputers(String search) {
+    public Pages<Computer> list(String search) {
         logger.info("List all Computers");
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            Pages<Computer> result = db.getPageComputer(search);
-            return result;
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
-    }
-
-    /**
-     * Get a page of Company.
-     * @param page int
-     * @return a page of Company
-     */
-    public Pages<Company> listCompanies(int page) {
-        logger.info("List all Companies");
-        try {
-            CompanyDAOImpl db = CompanyDAO.getInstance();
-            Pages<Company> result = db.getPageCompanies(page);
+            Pages<Computer> result = db.getPage(search);
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());
@@ -121,9 +77,9 @@ public class DAOServiceImpl implements DAOService {
      * @param id of the Computer
      * @return String
      */
-    public String showComputerdetails(int id) {
+    public String showdetails(int id) {
         logger.info("Get a computers, id =" + id);
-        Computer result = getComputer(id);
+        Computer result = get(id);
         if (result == null) {
             return "No computer corresponding in the database";
         } else {
@@ -136,10 +92,10 @@ public class DAOServiceImpl implements DAOService {
      * @param id of the Computer
      * @return Computer
      */
-    public Computer getComputer(int id) {
+    public Computer get(int id) {
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            return db.getComputerDetails(id);
+            return db.getDetails(id);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
@@ -153,11 +109,11 @@ public class DAOServiceImpl implements DAOService {
      * @throws NumberFormatException if bad parameter
      * @throws DAOException if model bug
      */
-    public int createComputer(Computer computer) {
+    public int create(Computer computer) {
         logger.info("Create a computer, " + computer);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         try {
-            Computer result = db.createComputer(computer);
+            Computer result = db.create(computer);
             if (result != null) {
                 return result.getId();
             }
@@ -174,11 +130,11 @@ public class DAOServiceImpl implements DAOService {
      * @param computer to insert
      * @return if computer was uptaded
      */
-    public boolean updateComputer(Computer computer) {
+    public boolean update(Computer computer) {
         logger.info("Update a Computer, new : " + computer);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         try {
-            Computer computerUpdated = db.updateComputer(computer);
+            Computer computerUpdated = db.update(computer);
             if (computerUpdated != null) {
                return true;
             }
@@ -195,7 +151,7 @@ public class DAOServiceImpl implements DAOService {
      * @param id of the Computer
      * @return "Delete a computer, id = " + id
      */
-    public String deleteComputer(int id) {
+    public String delete(int id) {
         logger.info("Delete a computer, id = " + id);
         if (id < 0) {
             logger.error("Invalid ID");
@@ -203,7 +159,7 @@ public class DAOServiceImpl implements DAOService {
         } else {
             try {
                 ComputerDAOImpl db = ComputerDAO.getInstance();
-                return db.deleteComputer(id);
+                return db.delete(id);
             } catch (DAOException e) {
                 logger.error(e.toString());
                 return null;
@@ -212,43 +168,12 @@ public class DAOServiceImpl implements DAOService {
     }
 
     /**
-     * Get a company by id.
-     * @param id corresponding to the company wanted
-     * @return Company wanted
-     */
-    public Company getCompany(int id) {
-        if (id < 0) {
-           return null;
-        }
-        try {
-            CompanyDAOImpl db = CompanyDAO.getInstance();
-            return db.getCompany(id);
-        } catch (DAOException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Return all companies.
-     * @return a ArrayList with all companies
-     */
-    public ArrayList<Company> listAllCompanies() {
-        try {
-            CompanyDAO db = CompanyDAO.getInstance();
-            return db.getAllCompany();
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
-    }
-
-    /**
      * Get the first computer of the DataBase
      */
-    public Computer getFirstComputer() {
+    public Computer getFirst() {
         try {
             ComputerDAO db = ComputerDAO.getInstance();
-            return db.getFirstComputer();
+            return db.getFirst();
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
@@ -258,10 +183,10 @@ public class DAOServiceImpl implements DAOService {
     /**
      * Delete the last computer added in the DAO.
      */
-    public void deleteLastComputer() {
+    public void deleteLast() {
         try {
             ComputerDAO dao = ComputerDAO.getInstance();
-            dao.deleteLastComputer();
+            dao.deleteLast();
         } catch (DAOException e) {
             logger.error(e.toString());
         }
