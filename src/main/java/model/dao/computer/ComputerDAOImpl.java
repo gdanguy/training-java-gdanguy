@@ -286,16 +286,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public void deleteLastComputer() throws DAOException {
         logger.info("Delete last computer");
         try {
+            int id = getLastComputerId();
             conn = Utils.openConnection();
-            PreparedStatement s = conn.prepareStatement(
-                    "SELECT id FROM computer ORDER BY id DESC");
-            ResultSet r = s.executeQuery();
-            if (!r.next()) {
-                throw new DAOException("No Computer in DataBase");
-            }
-            int id = r.getInt(1);
-            s.close();
-            s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+            PreparedStatement s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
             s.setInt(1, id);
 
             int affectedRows = s.executeUpdate();
@@ -309,5 +302,45 @@ public enum ComputerDAOImpl implements ComputerDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    /**
+     * Get the first computer of the DataBase
+     * @throws DAOException if sql failed
+     */
+    public Computer getFirstComputer() throws DAOException {
+        try {
+            int id = getFirstComputerId();
+            return getComputerDetails(id);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    private int getLastComputerId() throws SQLException, DAOException {
+        return getFirstLastComputerId(true);
+    }
+
+    private int getFirstComputerId() throws  SQLException, DAOException {
+        return getFirstLastComputerId(false);
+    }
+
+    private int getFirstLastComputerId(boolean last) throws  SQLException, DAOException {
+        String ordre = "";
+        if (last) {
+            ordre = " DESC ";
+        }
+        conn = Utils.openConnection();
+        PreparedStatement s = conn.prepareStatement(
+                "SELECT id FROM computer ORDER BY id" + ordre);
+        ResultSet r = s.executeQuery();
+        if (!r.next()) {
+            throw new DAOException("No Computer in DataBase");
+        }
+        int id = r.getInt(1);
+        r.close();
+        s.close();
+        Utils.closeConnection(conn);
+        return id;
     }
 }

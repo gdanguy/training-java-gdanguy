@@ -6,14 +6,12 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
+import model.computer.Computer;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class TestSelenium{
     private WebDriver driver;
@@ -84,6 +82,38 @@ public class TestSelenium{
         service.deleteLastComputer();
 
         driver.close();
+    }
+
+    @Test
+    public void testEditComputer() throws InterruptedException {
+        driver.get(baseUrl);
+
+        DAOService service= new DAOServiceImpl();
+        Computer c = service.getFirstComputer();
+
+        //go to add page
+        driver.findElement(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr[1]/td[2]/a")).click();
+
+        //update name a computer
+        WebElement name = driver.findElement(By.xpath("//*[@id=\"computerName\"]"));
+        name.sendKeys(TestDAOService.NAME_COMPUTER_TEST_2);
+        driver.findElement(By.xpath("//*[@id=\"main\"]/div/div/div/form/div/input")).click();
+
+        WebElement nameList = driver.findElement(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr[1]/td[2]/a"));
+        assertEquals("Verif the name was changed", nameList.getText(), TestDAOService.NAME_COMPUTER_TEST_2);
+
+        //return set name previous status
+        nameList.click();
+        name = driver.findElement(By.xpath("//*[@id=\"computerName\"]"));
+        name.sendKeys(c.getName());
+        driver.findElement(By.xpath("//*[@id=\"main\"]/div/div/div/form/div/input")).click();
+
+        nameList = driver.findElement(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr[1]/td[2]/a"));
+        assertEquals("Verif the name was changed", nameList.getText(), TestDAOService.NAME_COMPUTER_TEST_2);
+
+        driver.close();
+
+
     }
 
     private boolean isElementPresent(By by) {

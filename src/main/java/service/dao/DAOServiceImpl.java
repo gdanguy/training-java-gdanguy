@@ -234,8 +234,21 @@ public class DAOServiceImpl implements DAOService {
      */
     public ArrayList<Company> listAllCompanies() {
         try {
-            CompanyDAOImpl db = CompanyDAO.getInstance();
+            CompanyDAO db = CompanyDAO.getInstance();
             return db.getAllCompany();
+        } catch (DAOException e) {
+            logger.error(e.toString());
+            return null;
+        }
+    }
+
+    /**
+     * Get the first computer of the DataBase
+     */
+    public Computer getFirstComputer() {
+        try {
+            ComputerDAO db = ComputerDAO.getInstance();
+            return db.getFirstComputer();
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;

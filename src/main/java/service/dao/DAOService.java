@@ -114,4 +114,9 @@ public interface DAOService {
      * Delete the last computer added in the DAO.
      */
     void deleteLastComputer();
+
+    /**
+     * Get the first computer of the DataBase
+     */
+    Computer getFirstComputer();
 }

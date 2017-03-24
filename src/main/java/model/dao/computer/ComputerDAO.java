@@ -77,6 +77,12 @@ public interface ComputerDAO {
     void deleteLastComputer() throws DAOException;
 
     /**
+     * Get the first computer of the DataBase
+     * @throws DAOException if sql failed
+     */
+    Computer getFirstComputer() throws DAOException;
+
+    /**
      * Return the Instance of DAO.
      * @return the Instance of DAO
      */
