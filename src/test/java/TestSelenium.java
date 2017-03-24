@@ -1,23 +1,21 @@
-import org.apache.commons.lang3.time.StopWatch;
+import model.Pages;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import service.dao.DAOService;
 import service.dao.DAOServiceImpl;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class TestSelenium {
+public class TestSelenium{
     private WebDriver driver;
     private String baseUrl = "http://localhost:8080/dashboard";
     private boolean acceptNextAlert = true;
@@ -27,7 +25,7 @@ public class TestSelenium {
     public void getStrated() {
         System.setProperty("webdriver.chrome.driver", "/home/ebiz/projet2/training-java-gdanguy/src/test/resources/chromedriver");
         driver = new ChromeDriver();
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
         driver.manage().window().maximize();
     }
 
@@ -41,15 +39,50 @@ public class TestSelenium {
     }
 
     @Test
-    public void testSelenium() {
+    public void testDashboard() throws InterruptedException{
         driver.get(baseUrl);
-        StopWatch pageLoad = new StopWatch();
-        pageLoad.start();
+
+        //Test number of computer
         String countWeb = driver.findElement(By.xpath("//*[@id=\"homeTitle\"]")).getText();
         DAOService service = new DAOServiceImpl();
         int countDAO = service.countComputers();
         assertEquals("Correct number display", (countDAO + " Computers found"),countWeb);
-        pageLoad.reset();
+
+        //Test number of computer in list
+        int countComputer = driver.findElements(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr")).size();
+        assertEquals("Correct number of cumputer list display", Pages.PAGE_SIZE, countComputer);
+        driver.findElement(By.xpath("//*[@id=\"pagination\"]/a[2]")).click();
+        countComputer = driver.findElements(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr")).size();
+        assertEquals("Correct number of cumputer list display", 50, countComputer);
+        driver.findElement(By.xpath("//*[@id=\"pagination\"]/a[3]")).click();
+        countComputer = driver.findElements(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr")).size();
+        assertEquals("Correct number of cumputer list display", 100, countComputer);
+
+        //pagination
+        //TODO
+
+        driver.close();
+    }
+
+    @Test
+    public void testCreateComputer() throws InterruptedException {
+        driver.get(baseUrl);
+
+        DAOService service = new DAOServiceImpl();
+        int countComputer = service.countComputers();
+
+        //go to add page
+        driver.findElement(By.xpath("//*[@id=\"addComputer\"]")).click();
+
+        //Add a computer
+        WebElement name = driver.findElement(By.xpath("//*[@id=\"computerName\"]"));
+        name.sendKeys(TestDAOService.NAME_COMPUTER_TEST);
+        driver.findElement(By.xpath("//*[@id=\"main\"]/div/div/div/form/div/input")).click();
+
+        //Verif in DataBase
+        assertTrue("Check Computer added in DataBase", service.countComputers() == countComputer + 1);
+        service.deleteLastComputer();
+
         driver.close();
     }
 

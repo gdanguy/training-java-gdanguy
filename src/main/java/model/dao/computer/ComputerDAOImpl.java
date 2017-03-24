@@ -278,4 +278,36 @@ public enum ComputerDAOImpl implements ComputerDAO {
             throw new DAOException(e);
         }
     }
+
+    /**
+     * Delete the last computer added in the DAO.
+     * @throws DAOException if delete failed
+     */
+    public void deleteLastComputer() throws DAOException {
+        logger.info("Delete last computer");
+        try {
+            conn = Utils.openConnection();
+            PreparedStatement s = conn.prepareStatement(
+                    "SELECT id FROM computer ORDER BY id DESC");
+            ResultSet r = s.executeQuery();
+            if (!r.next()) {
+                throw new DAOException("No Computer in DataBase");
+            }
+            int id = r.getInt(1);
+            s.close();
+            s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+            s.setInt(1, id);
+
+            int affectedRows = s.executeUpdate();
+            if (affectedRows == 0) {
+                s.close();
+                Utils.closeConnection(conn);
+                throw new SQLException("Delete Computer failed, no rows affected.");
+            }
+            s.close();
+            Utils.closeConnection(conn);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
 }

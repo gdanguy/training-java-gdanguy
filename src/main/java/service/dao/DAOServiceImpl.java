@@ -242,4 +242,15 @@ public class DAOServiceImpl implements DAOService {
         }
     }
 
+    /**
+     * Delete the last computer added in the DAO.
+     */
+    public void deleteLastComputer() {
+        try {
+            ComputerDAO dao = ComputerDAO.getInstance();
+            dao.deleteLastComputer();
+        } catch (DAOException e) {
+            logger.error(e.toString());
+        }
+    }
 }

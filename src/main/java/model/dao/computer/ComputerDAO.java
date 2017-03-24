@@ -71,6 +71,12 @@ public interface ComputerDAO {
     String deleteComputer(int id) throws DAOException;
 
     /**
+     * Delete the last computer added in the DAO.
+     * @throws DAOException if delete failed
+     */
+    void deleteLastComputer() throws DAOException;
+
+    /**
      * Return the Instance of DAO.
      * @return the Instance of DAO
      */

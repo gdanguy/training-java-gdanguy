@@ -21,9 +21,9 @@ public class TestDAOService {
     private ComputerDAOImpl dbComputer = ComputerDAO.getInstance();
     private CompanyDAOImpl dbCompany = CompanyDAO.getInstance();
     private int id;
-    private static final String NAME_COMPUTER_TEST = "TestComputer";
-    private static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
-    private static final String NAME_COMPUTER_TEST_3 = "TestComputer3";
+    public static final String NAME_COMPUTER_TEST = "TestComputer";
+    public static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
+    public static final String NAME_COMPUTER_TEST_3 = "TestComputer3";
 
     /**
      * Create a TestComputer.

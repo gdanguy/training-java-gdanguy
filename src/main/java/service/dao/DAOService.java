@@ -110,4 +110,8 @@ public interface DAOService {
      */
     ArrayList<Company> listAllCompanies();
 
+    /**
+     * Delete the last computer added in the DAO.
+     */
+    void deleteLastComputer();
 }
