@@ -6,7 +6,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Computer Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
