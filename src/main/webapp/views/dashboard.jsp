@@ -28,20 +28,20 @@
         </h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
-                <form id="searchForm" action="/dashboard" method="POST" class="form-inline">
+                <form id="searchForm" action=<page:link link="/dashboard"></page:link> method="POST" class="form-inline">
                     <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
                     <input type="submit" id="searchsubmit" value="Filter by name"
                            class="btn btn-primary" />
                 </form>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" id="addComputer" href="/addComputer">Add Computer</a>
+                <a class="btn btn-success" id="addComputer" href=<page:link link="/addComputer"></page:link>>Add Computer</a>
                 <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
             </div>
         </div>
     </div>
 
-    <form id="deleteForm" action="/deleteComputer" method="POST">
+    <form id="deleteForm" action=<page:link link="/deleteComputer"></page:link> method="POST">
         <input type="hidden" name="selection" value="">
     </form>
 
@@ -79,7 +79,7 @@
 
             </thead>
             <!-- Browse attribute computers -->
-            <page:listeComputer computer="${computer}"></page:listeComputer>
+            <page:listeComputer listComputers="${listComputers}"></page:listeComputer>
             </tbody>
         </table>
     </div>
@@ -90,9 +90,9 @@
         <page:pagination currentPage="${currentPage}" debut="${debut}" fin="${fin}"></page:pagination>
     </div>
     <div  id="pagination" class="btn-group btn-group-sm pull-right" role="group" >
-        <a href="/dashboard?page=0&sizePages=10" class="btn btn-default">10</a>
-        <a href="/dashboard?page=0&sizePages=50" class="btn btn-default">50</a>
-        <a href="/dashboard?page=0&sizePages=100" class="btn btn-default">100</a>
+        <a href=<page:link link="/dashboard" page="0" sizePages="10"></page:link> class="btn btn-default">10</a>
+        <a href=<page:link link="/dashboard" page="0" sizePages="50"></page:link> class="btn btn-default">50</a>
+        <a href=<page:link link="/dashboard" page="0" sizePages="100"></page:link> class="btn btn-default">100</a>
     </div>
 
 </footer>

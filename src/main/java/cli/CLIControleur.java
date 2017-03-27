@@ -12,7 +12,10 @@ import model.Pages;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
+import service.CompanyService;
 import service.CompanyServiceImpl;
+import service.ComputerService;
+import service.ComputerServiceImpl;
 
 public class CLIControleur {
     private Logger logger = LoggerFactory.getLogger(CLIControleur.class);
@@ -32,17 +35,22 @@ public class CLIControleur {
 
     public static final DateTimeFormatter FORMATTEUR = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private CompanyServiceImpl service;
+    public static final String TYPE_COMPUTER = "computer";
+    public static final String TYPE_COMPANY = "company";
+
+    private CompanyServiceImpl serviceCompany;
+    private ComputerServiceImpl serviceComputer;
 
     /**
      * Constructor.
      */
     public CLIControleur() {
-        service = new CompanyServiceImpl();
+        serviceCompany = CompanyService.getInstance();
+        serviceComputer = ComputerService.getInstance();
     }
 
     /**
-     * MainCLI of the CLI.
+     * cli.MainCLI of the CLI.
      * @throws DAOException is SQL fail
      */
     public void displayUserInterface() throws DAOException {
@@ -114,24 +122,24 @@ public class CLIControleur {
                     return "";
                 case SHOW_COMPUTER_DETAILS:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    return service.showComputerdetails(id);
+                    return serviceComputer.get(id).toStringDetails();
                 case CREATE_COMPUTER:
                     Computer c = userInputComputer();
-                    if (service.createComputer(c) >= 0) {
+                    if (serviceComputer.create(c) >= 0) {
                         return "Computer Created";
                     } else {
                         return "Error create computer";
                     }
                 case UPDATE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    if (service.updateComputer(userInputComputer(service.getComputer(id), id))) {
+                    if (serviceComputer.update(userInputComputer(serviceComputer.get(id), id))) {
                         return "Update computer done";
                     } else {
                         return "Error update computer";
                     }
                 case DELETE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    return service.deleteComputer(id);
+                    return serviceComputer.delete(id);
                 case HELP:
                     return listeOption();
                 case QUIT:
@@ -216,7 +224,7 @@ public class CLIControleur {
      * @throws DAOException if SQL fail
      */
     private void displayListCompanies() throws DAOException {
-        displayList(CompanyServiceImpl.TYPE_COMPANY);
+        displayList(TYPE_COMPANY);
     }
 
     /**
@@ -224,7 +232,7 @@ public class CLIControleur {
      * @throws DAOException if SQL fail
      */
     private void displayListComputers() throws DAOException {
-        displayList(CompanyServiceImpl.TYPE_COMPUTER);
+        displayList(TYPE_COMPUTER);
     }
 
     /**
@@ -233,7 +241,13 @@ public class CLIControleur {
      * @throws DAOException if SQL fail
      */
     private void displayList(String type) throws DAOException {
-        Pages<?> list = service.list(type);
+        Pages<?> list;
+        if (type.equals(TYPE_COMPANY)) {
+            list = serviceCompany.list(0);
+        } else {
+            list = serviceComputer.list(0);
+        }
+
         if (list.isEmpty()) {
             System.out.println("No item wanted in the database");
         } else {
@@ -243,14 +257,26 @@ public class CLIControleur {
                 quit = true;
                 String input = lireSaisieUtilisateur("Type '" + NEXT_PAGE + "' for next page, '" + PREVIOUS_PAGE + "' for previous page, other for quit");
                 if (input.equals(NEXT_PAGE)) {
-                    list = service.list(type, list.getNextPage());
+                    if (type.equals(TYPE_COMPANY)) {
+                        list = serviceCompany.list(list.getNextPage());
+                    } else {
+                        list = serviceComputer.list(list.getNextPage());
+                    }
                     quit = false;
                     if (list.isEmpty()) {
-                        list = service.list(list.getPreviousPage());
+                        if (type.equals(TYPE_COMPANY)) {
+                            list = serviceCompany.list(list.getPreviousPage());
+                        } else {
+                            list = serviceComputer.list(list.getPreviousPage());
+                        }
                     }
                     System.out.println(list);
                 } else if (input.equals(PREVIOUS_PAGE)) {
-                    list = service.list(list.getPreviousPage());
+                    if (type.equals(TYPE_COMPANY)) {
+                        list = serviceCompany.list(list.getPreviousPage());
+                    } else {
+                        list = serviceComputer.list(list.getPreviousPage());
+                    }
                     quit = false;
                     System.out.println(list);
                 }

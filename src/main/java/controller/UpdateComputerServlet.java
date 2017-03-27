@@ -6,10 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import model.company.Company;
 import model.computer.Computer;
 import service.CompanyService;
-import service.CompanyServiceImpl;
 import service.ComputerService;
-import service.ComputerServiceImpl;
-import service.validator.ValidatorFront;
+import service.validator.Validator;
 
 import java.time.LocalDateTime;
 
@@ -26,9 +24,9 @@ public abstract class UpdateComputerServlet extends HttpServlet {
     protected Computer getComputer(HttpServletRequest request) {
         CompanyService service = CompanyService.getInstance();
         int id = CompanyService.ECHEC_FLAG;
-        String name = ValidatorFront.getValidName(request.getParameter("computerName"));
-        LocalDateTime introduced = ValidatorFront.convertStringToLocalDateTime(request.getParameter("introduced"));
-        LocalDateTime discontinued = ValidatorFront.convertStringToLocalDateTime(request.getParameter("discontinued"));
+        String name = Validator.getValidName(request.getParameter("computerName"));
+        LocalDateTime introduced = Validator.convertStringToLocalDateTime(request.getParameter("introduced"));
+        LocalDateTime discontinued = Validator.convertStringToLocalDateTime(request.getParameter("discontinued"));
         int companyId = Integer.parseInt(request.getParameter("companyId"));
         return new Computer(id, name, introduced, discontinued, service.get(companyId));
     }
@@ -48,7 +46,7 @@ public abstract class UpdateComputerServlet extends HttpServlet {
         LocalDateTime introduced = userInsert.getIntroduced();
         LocalDateTime discontinued = userInsert.getDiscontinued();
         Company company = userInsert.getCompany();
-        if (name.equals(ValidatorFront.NAME_DEFAULT)) {
+        if (!Validator.nameValidator(name)) {
             name = old.getName();
             notModified = false;
         }

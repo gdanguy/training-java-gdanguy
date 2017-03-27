@@ -1,14 +1,11 @@
 package controller;
 
-import model.dto.computer.ComputerDTO;
+import service.mappy.CompanyMapper;
+import service.mappy.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.CompanyService;
-import service.CompanyServiceImpl;
 import service.ComputerService;
-import service.ComputerServiceImpl;
-import service.dto.DTOService;
-import service.dto.DTOServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,9 +30,9 @@ public class EditComputerServlet extends UpdateComputerServlet {
         request.setAttribute("id", id);
         ComputerService computerService = ComputerService.getInstance();
         CompanyService companyService = CompanyService.getInstance();
-        DTOService serviceDTO = new DTOServiceImpl();
+        CompanyMapper companyMap = CompanyMapper.getInstance();
         request.setAttribute("computer", new ComputerDTO(computerService.get(id)));
-        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(companyService.listAll()));
+        request.setAttribute("listCompany", companyMap.toDTO(companyService.listAll()));
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }
 

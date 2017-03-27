@@ -1,4 +1,4 @@
-package model.dto.computer;
+package service.mappy.computer;
 
 import model.computer.Computer;
 
@@ -10,8 +10,8 @@ public class ComputerDTO {
     protected String name;
     protected String introduced;
     protected String discontinued;
-    protected Integer company_id;
-    protected String company_name;
+    protected Integer companyId;
+    protected String companyName;
 
     /**
      * Constructor.
@@ -31,11 +31,11 @@ public class ComputerDTO {
             this.discontinued = null;
         }
         if (c.getCompany() != null) {
-            this.company_id = c.getCompany().getId();
-            this.company_name = c.getCompany().getName();
+            this.companyId = c.getCompany().getId();
+            this.companyName = c.getCompany().getName();
         } else {
-            this.company_id = null;
-            this.company_name = null;
+            this.companyId = null;
+            this.companyName = null;
         }
     }
 
@@ -76,7 +76,7 @@ public class ComputerDTO {
      * @return the company id of the computer
      */
     public Integer getCompanyId() {
-        return company_id;
+        return companyId;
     }
 
     /**
@@ -84,6 +84,59 @@ public class ComputerDTO {
      * @return the company name of the computer
      */
     public String getCompanyName() {
-        return company_name;
+        return companyName;
+    }
+
+    /**
+     * To String.
+     * @return string
+     */
+    @Override
+    public String toString() {
+        return "ComputerDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", introduced='" + introduced + '\'' +
+                ", discontinued='" + discontinued + '\'' +
+                ", companyId=" + companyId +
+                ", companyName='" + companyName + '\'' +
+                '}';
+    }
+
+    /**
+     * Equals Methode.
+     * @param o other object
+     * @return true if equals, else false
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ComputerDTO that = (ComputerDTO) o;
+
+        if (id != that.id) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Hash Code.
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (introduced != null ? introduced.hashCode() : 0);
+        result = 31 * result + (discontinued != null ? discontinued.hashCode() : 0);
+        result = 31 * result + (companyId != null ? companyId.hashCode() : 0);
+        result = 31 * result + (companyName != null ? companyName.hashCode() : 0);
+        return result;
     }
 }

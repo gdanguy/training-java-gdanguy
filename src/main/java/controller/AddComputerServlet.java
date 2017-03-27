@@ -3,11 +3,8 @@ package controller;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import service.ComputerService;
-import service.ComputerServiceImpl;
 import service.CompanyService;
-import service.CompanyServiceImpl;
-import service.dto.DTOService;
-import service.dto.DTOServiceImpl;
+import service.mappy.CompanyMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +26,8 @@ public class AddComputerServlet extends UpdateComputerServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         CompanyService serviceDAO = CompanyService.getInstance();
-        DTOService serviceDTO = new DTOServiceImpl();
-        request.setAttribute("listCompany", serviceDTO.convertCompanyToCompanyDTO(serviceDAO.listAll()));
+        CompanyMapper computerMap = CompanyMapper.getInstance();
+        request.setAttribute("listCompany", computerMap.toDTO(serviceDAO.listAll()));
         request.getRequestDispatcher("/views/addComputer.jsp").forward(request, response);
     }
 

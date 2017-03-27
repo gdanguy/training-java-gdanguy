@@ -77,7 +77,8 @@ public interface ComputerService {
     void deleteLast();
 
     /**
-     * Get the first computer of the DataBase
+     * Get the first computer of the DataBase.
+     * @return Computer
      */
     Computer getFirst();
 

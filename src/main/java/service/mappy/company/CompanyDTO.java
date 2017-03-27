@@ -1,4 +1,4 @@
-package model.dto.company;
+package service.mappy.company;
 
 import model.company.Company;
 

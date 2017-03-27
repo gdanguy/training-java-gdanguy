@@ -168,7 +168,8 @@ public enum ComputerServiceImpl implements ComputerService {
     }
 
     /**
-     * Get the first computer of the DataBase
+     * Get the first computer of the DataBase.
+     * @return Computer
      */
     public Computer getFirst() {
         try {

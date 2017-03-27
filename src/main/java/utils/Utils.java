@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import model.dao.computer.ComputerDAOImpl;
 
 public abstract class Utils {
-    public static final String URL_DB = "jdbc:mysql://localhost/computer-database-db?useSSL=false";
+    public static final String URL_DB = "jdbc:mysql://localhost/computer-database-db?useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     public static final String USER_DB = "admincdb";
     public static final String PASSWORD_DB = "qwerty1234";
 

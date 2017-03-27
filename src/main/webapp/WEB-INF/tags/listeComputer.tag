@@ -1,5 +1,5 @@
-<%@ attribute name="computer" required="true"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ attribute name="listComputers" required="true" type="java.util.ArrayList"%>
 <!-- Browse attribute computers -->
 <c:forEach var="computer"  items="${listComputers}" >
     <tr>

@@ -286,7 +286,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public void deleteLast() throws DAOException {
         logger.info("Delete last computer");
         try {
-            int id = getLastComputerId();
+            int id = getLastId();
             conn = Utils.openConnection();
             PreparedStatement s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
             s.setInt(1, id);
@@ -305,27 +305,47 @@ public enum ComputerDAOImpl implements ComputerDAO {
     }
 
     /**
-     * Get the first computer of the DataBase
+     * Get the first computer of the DataBase.
      * @throws DAOException if sql failed
+     * @return Computer
      */
     public Computer getFirst() throws DAOException {
         try {
-            int id = getFirstComputerId();
+            int id = getFirstId();
             return getDetails(id);
         } catch (SQLException e) {
             throw new DAOException(e);
         }
     }
 
-    private int getLastComputerId() throws SQLException, DAOException {
-        return getFirstLastComputerId(true);
+    /**
+     * getLastId.
+     * @return int
+     * @throws SQLException if sql failed
+     * @throws DAOException if sql failed
+     */
+    private int getLastId() throws SQLException, DAOException {
+        return getFirstORLastId(true);
     }
 
-    private int getFirstComputerId() throws  SQLException, DAOException {
-        return getFirstLastComputerId(false);
+    /**
+     * getFirstId.
+     * @return int
+     * @throws SQLException if sql failed
+     * @throws DAOException if sql failed
+     */
+    private int getFirstId() throws  SQLException, DAOException {
+        return getFirstORLastId(false);
     }
 
-    private int getFirstLastComputerId(boolean last) throws  SQLException, DAOException {
+    /**
+     * getFirstORLastId.
+     * @param last true if you want the last id, false if you want the first
+     * @return int
+     * @throws SQLException if sql failed
+     * @throws DAOException if sql failed
+     */
+    private int getFirstORLastId(boolean last) throws  SQLException, DAOException {
         String ordre = "";
         if (last) {
             ordre = " DESC ";
