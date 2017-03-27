@@ -1,16 +1,18 @@
 package model.dao.company;
 
-import java.sql.*;
-
-import model.dao.DAOException;
-import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import model.Pages;
 import model.company.Company;
+import model.dao.DAOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.Utils;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public enum CompanyDAOImpl implements CompanyDAO {
     INSTANCE;

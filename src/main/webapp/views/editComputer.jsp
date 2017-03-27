@@ -24,20 +24,20 @@
                         id: ${id}
                     </div>
                     <h1>Edit Computer</h1>
-                    <form action="editComputer" method="POST">
+                    <form action="editComputer" method="POST" onsubmit="return validateDates();">
                         <input type="hidden" value="${computer.id}" id="id" name="id"/>
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="${computer.name}" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" >
+                                <input type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" >
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="${computer.introduced}" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
+                                <input type="date" class="form-control" id="introduced" name="introduced" value="${computer.introduced}" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date (Format DD-MM-YYYY)</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="${computer.discontinued}" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" value="${computer.discontinued}" pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company (Previous : ${computer.companyName})</label>
@@ -59,5 +59,8 @@
             </div>
         </div>
     </section>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/validate.js"></script>
 </body>
 </html>

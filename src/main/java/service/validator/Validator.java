@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public abstract class Validator {
     private static Logger logger = LoggerFactory.getLogger(Validator.class);
-    public static final String REGEX_DATE = "^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$";
+    public static final String REGEX_DATE = "^(([1][9][9][0-9])|([2-9][0-9]{3}))[-][0-1][0-9][-][0-3][0-9]$";
     public static final String REGEX_NAME = "^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$";
     public static final String REGEX_INT = "^-?\\\\d+$";
     public static final String NAME_DEFAULT = "no name";
@@ -96,7 +96,7 @@ public abstract class Validator {
      * @param date user's input
      * @return LocalDateTime
      */
-    public static LocalDateTime convertStringToLocalDateTime(String date) {
+    public static LocalDateTime parseString(String date) {
         if (dateValidate(date)) {
             return Computer.convertStringToLocalDateTime(date);
         }

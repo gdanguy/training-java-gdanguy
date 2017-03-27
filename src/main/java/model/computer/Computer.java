@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import model.company.Company;
 
 public class Computer {
-    public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final int FLAG_NO_ID = -1;
     protected int id;
     protected String name;
