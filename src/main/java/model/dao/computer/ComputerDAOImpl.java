@@ -100,7 +100,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
             PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
-                    + " WHERE c1.name LIKE '%" + search + "%'");
+                    + " WHERE c1.name LIKE '%" + search + "%'"
+                    + " OR c2.name LIKE '%" + search + "%'");
             ResultSet r = s.executeQuery();
             ArrayList<Computer> result = new ArrayList<>();
             while (r.next()) {
