@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import model.company.Company;
 import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ public class CLIControleur {
     public static final String CREATE_COMPUTER = "create a computer";
     public static final String UPDATE_COMPUTER = "update a computer";
     public static final String DELETE_COMPUTER = "delete a computer";
+    public static final String ADD_COMPANY = "create a company";
+    public static final String DELETE_COMPANY = "delete a company";
     public static final String QUIT = "quit";
     public static final String HELP = "help";
 
@@ -75,6 +78,8 @@ public class CLIControleur {
         message += CREATE_COMPUTER + "\n";
         message += UPDATE_COMPUTER + "\n";
         message += DELETE_COMPUTER + "\n";
+        message += ADD_COMPANY + "\n";
+        message += DELETE_COMPANY + "\n";
         message += HELP + "\n";
         message += QUIT;
         return message;
@@ -140,6 +145,17 @@ public class CLIControleur {
                 case DELETE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
                     return serviceComputer.delete(id);
+                case ADD_COMPANY:
+                    Company company = userInputCompany();
+                    id = serviceCompany.create(company);
+                    return new Company(id, company.getName()).toString() + " was created";
+                case DELETE_COMPANY:
+                    id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
+                    if (serviceCompany.delete(id)) {
+                        return "Company with id = " + id + " was deleted";
+                    } else {
+                        return "Company with id = " + id + " wasn't deleted";
+                    }
                 case HELP:
                     return listeOption();
                 case QUIT:
@@ -155,7 +171,7 @@ public class CLIControleur {
 
     /**
      * Instructs the user to enter information to generate a computer.
-     * @return return message
+     * @return return computer
      * @throws DAOException is SQL fail
      */
     private Computer userInputComputer() throws DAOException {
@@ -220,27 +236,40 @@ public class CLIControleur {
     }
 
     /**
-     * display the List of Companies.
-     * @throws DAOException if SQL fail
+     * Instructs the user to enter information to generate a company.
+     * @return return company
+     * @throws DAOException is SQL fail
      */
-    private void displayListCompanies() throws DAOException {
+    private Company userInputCompany() throws DAOException {
+        logger.info("User input new Company");
+        try {
+            String name = lireSaisieUtilisateur("Enter Company Name : ");
+            return new Company(name);
+        } catch (NullPointerException | NumberFormatException e) {
+            logger.error(e + "\n");
+            return null;
+        }
+    }
+
+    /**
+     * display the List of Companies.
+     */
+    private void displayListCompanies() {
         displayList(TYPE_COMPANY);
     }
 
     /**
      * display the List of Computer.
-     * @throws DAOException if SQL fail
      */
-    private void displayListComputers() throws DAOException {
+    private void displayListComputers() {
         displayList(TYPE_COMPUTER);
     }
 
     /**
      * display list of Computer or Company.
      * @param type TYPE_COMPUTER or TYPE_COMPANY
-     * @throws DAOException if SQL fail
      */
-    private void displayList(String type) throws DAOException {
+    private void displayList(String type) {
         Pages<?> list;
         if (type.equals(TYPE_COMPANY)) {
             list = serviceCompany.list(0);

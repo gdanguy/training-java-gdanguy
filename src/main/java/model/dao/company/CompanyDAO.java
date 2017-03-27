@@ -39,6 +39,22 @@ public interface CompanyDAO {
     int count() throws DAOException;
 
     /**
+     * Create a company.
+     * @param c company to create
+     * @return the id of the company
+     * @throws DAOException if fail
+     */
+    int create(Company c) throws DAOException;
+
+    /**
+     * Delete a company and all its computers.
+     * @param id the id of the company
+     * @return true if succes, false else
+     * @throws DAOException if fail
+     */
+    boolean delete(int id) throws DAOException;
+
+    /**
      * Return Instance of DAO.
      * @return a DAO Instance
      */

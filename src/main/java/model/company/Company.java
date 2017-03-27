@@ -15,6 +15,15 @@ public class Company {
     }
 
     /**
+     * Constructor.
+     * @param name the name of the Company
+     */
+    public Company(String name) {
+        this.id = -1;
+        this.name = name;
+    }
+
+    /**
      * Get id.
      * @return the id of the Company
      */

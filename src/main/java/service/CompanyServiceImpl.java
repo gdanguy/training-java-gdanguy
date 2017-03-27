@@ -62,4 +62,36 @@ public enum CompanyServiceImpl implements CompanyService {
             return null;
         }
     }
+
+    /**
+     * Delete a company and all its computers.
+     * @param id the id of the company
+     * @return true if succes, false else
+     */
+    public boolean delete(int id) {
+        try {
+            CompanyDAO dao = CompanyDAO.getInstance();
+            dao.delete(id);
+            return true;
+        } catch (DAOException e) {
+            logger.error(e.toString());
+            return false;
+        }
+    }
+
+
+    /**
+     * Create a company.
+     * @param c company to create
+     * @return the id of the company
+     */
+    public int create(Company c) {
+        try {
+            CompanyDAO dao = CompanyDAO.getInstance();
+            return dao.create(c);
+        } catch (DAOException e) {
+            logger.error(e.toString());
+            return ECHEC_FLAG;
+        }
+    }
 }

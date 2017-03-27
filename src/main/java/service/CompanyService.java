@@ -29,6 +29,20 @@ public interface CompanyService {
      */
     ArrayList<Company> listAll();
 
+    /**
+     * Delete a company and all its computers.
+     * @param id the id of the company
+     * @return true if succes, false else
+     */
+    boolean delete(int id);
+
+
+    /**
+     * Create a company.
+     * @param c company to create
+     * @return the id of the company
+     */
+    int create(Company c);
 
     /**
      * Return the Instance of CompanyServiceImpl.

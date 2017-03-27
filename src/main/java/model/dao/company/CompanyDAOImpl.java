@@ -1,9 +1,7 @@
 package model.dao.company;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+
 import model.dao.DAOException;
 import java.util.ArrayList;
 
@@ -119,4 +117,83 @@ public enum CompanyDAOImpl implements CompanyDAO {
         }
     }
 
+    /**
+     * Create a company.
+     * @param c company to create
+     * @return the id of the company
+     * @throws DAOException if fail
+     */
+    public int create(Company c) throws DAOException {
+        logger.info("Create computer : " + c);
+        try {
+            conn = Utils.openConnection();
+            PreparedStatement s = conn.prepareStatement(
+                    "Insert into company (name) values (?)"
+                    , Statement.RETURN_GENERATED_KEYS);
+            s.setString(1, c.getName());
+
+            int affectedRows = s.executeUpdate();
+
+            if (affectedRows == 0) {
+                s.close();
+                Utils.closeConnection(conn);
+                throw new SQLException("Creating Company failed, no rows affected.");
+            }
+
+            ResultSet generatedKeys = s.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int id = generatedKeys.getInt(1);
+                s.close();
+                Utils.closeConnection(conn);
+                return id;
+            } else {
+                generatedKeys.close();
+                s.close();
+                Utils.closeConnection(conn);
+                throw new SQLException("Creating Company failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Delete a company and all its computers.
+     * @param id the id of the company
+     * @return true if succes, false else
+     * @throws DAOException if fail
+     */
+    public boolean delete(int id) throws DAOException {
+        //TODO transaction
+        logger.info("Delete a company : " + id);
+        try {
+            conn = Utils.openConnection();
+            conn.setAutoCommit(false);
+            //Delete all computer of this company
+            PreparedStatement s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
+            s.setInt(1, id);
+            s.executeUpdate();
+
+            //delete the company
+            s = conn.prepareStatement("DELETE FROM company where id = ?");
+            s.setInt(1, id);
+
+            int affectedRows = s.executeUpdate();
+
+            if (affectedRows == 0) {
+                s.close();
+                conn.rollback();
+                conn.setAutoCommit(true);
+                Utils.closeConnection(conn);
+                throw new SQLException("Delete company failed, no rows affected.");
+            }
+            s.close();
+            conn.commit();
+            conn.setAutoCommit(true);
+            Utils.closeConnection(conn);
+            return true;
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
 }

@@ -191,6 +191,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             int affectedRows = s.executeUpdate();
 
             if (affectedRows == 0) {
+                s.close();
                 Utils.closeConnection(conn);
                 throw new SQLException("Creating Computer failed, no rows affected.");
             }
