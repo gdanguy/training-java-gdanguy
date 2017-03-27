@@ -1,7 +1,8 @@
 package utils;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 
 import org.slf4j.LoggerFactory;
@@ -9,11 +10,10 @@ import org.slf4j.LoggerFactory;
 import model.dao.computer.ComputerDAOImpl;
 
 public abstract class Utils {
-    public static final String URL_DB = "jdbc:mysql://localhost/computer-database-db?useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    public static final String USER_DB = "admincdb";
-    public static final String PASSWORD_DB = "qwerty1234";
-
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
+    private static final String CONFIG_FILE = "/db.properties";
+    private static final HikariConfig CFP = new HikariConfig(CONFIG_FILE);
+    private static final HikariDataSource DS = new HikariDataSource(CFP);
 
     /**
      * Connection to the DataBase.
@@ -21,14 +21,8 @@ public abstract class Utils {
      * @throws SQLException if SQL fail
      */
     public static Connection openConnection() throws SQLException {
-        try {
-            logger.info("Connection to the database");
-            Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection(URL_DB, USER_DB, PASSWORD_DB);
-        } catch (ClassNotFoundException e) {
-            logger.error("Error Connection : " + e);
-            return null;
-        }
+        logger.info("Open Connection");
+        return DS.getConnection();
     }
 
     /**
