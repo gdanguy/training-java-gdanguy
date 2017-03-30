@@ -1,4 +1,5 @@
 import model.Pages;
+import model.company.Company;
 import model.dao.DAOException;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
@@ -25,6 +26,8 @@ public class TestDAOService {
     public static final String NAME_COMPUTER_TEST = "TestComputer";
     public static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
     public static final String NAME_COMPUTER_TEST_3 = "TestComputer3";
+
+    public static final String NAME_COMPANY = "TestCompany";
 
     /**
      * Create a TestComputer.
@@ -126,5 +129,15 @@ public class TestDAOService {
         int count = dbCompany.count();
         assertTrue("Test found all companies", serviceCompany.listAll().size() == count);
     }
+
+    @Test
+    public void testCreateDeleteCompanies() throws DAOException {
+        int id = dbCompany.create(new Company(NAME_COMPANY));
+        assertTrue("Test Create a company", id>=0);
+        boolean succes = dbCompany.delete(id);
+        assertTrue("Test Delete a company", succes);
+    }
+
+
 
 }
