@@ -1,8 +1,13 @@
-function validateDates() {
+function validateComputer() {
+    var name = $("#computerName").val();
     var intro = $("#introduced").val();
     var disco = $("#discontinued").val();
     var dateMin = new Date(0);
     var dateMax = new Date();
+    if(name == "") {
+        alert("A name is required");
+        return false;
+    }
     if (intro == "" && disco == "") {
         return true;
     }

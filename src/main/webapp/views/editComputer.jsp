@@ -24,12 +24,12 @@
                         id: ${id}
                     </div>
                     <h1>Edit Computer</h1>
-                    <form action="editComputer" method="POST" onsubmit="return validateDates();">
+                    <form action="editComputer" method="POST" onsubmit="return validateComputer();">
                         <input type="hidden" value="${computer.id}" id="id" name="id"/>
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" >
+                                <input type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" required>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>

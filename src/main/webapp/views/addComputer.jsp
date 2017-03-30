@@ -22,11 +22,11 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action=<page:link link="/addComputer"></page:link> method="POST" onsubmit="return validateDates();">
+                    <form action=<page:link link="/addComputer"></page:link> method="POST" onsubmit="return validateComputer();">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" requered>
+                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" required>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>
