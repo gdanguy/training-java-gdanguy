@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "DeleteComputerServlet", urlPatterns = "/delete")
+@WebServlet(name = "DeleteComputerServlet", urlPatterns = "/deleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
     /**

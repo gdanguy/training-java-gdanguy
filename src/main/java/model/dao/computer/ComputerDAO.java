@@ -57,10 +57,10 @@ public interface ComputerDAO {
     /**
      * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
      * @param computer modifiedComputer with the id of the one to be modified and with its new attributes.
-     * @return Computer updated
+     * @return if Computer is updated
      * @throws DAOException if SQL fail
      */
-    Computer update(Computer computer) throws DAOException;
+    boolean update(Computer computer) throws DAOException;
 
     /**
      * This method removes the computer corresponding to the passed id as a parameter and returns a message confirming whether or not this deletion occurs.

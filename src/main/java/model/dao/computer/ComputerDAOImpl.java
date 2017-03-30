@@ -83,6 +83,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             Utils.closeConnection(conn);
             return new Pages<Computer>(result, page, sizePage);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -112,6 +113,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             Utils.closeConnection(conn);
             return new Pages<Computer>(result, 0);
         } catch (SQLException e) {
+            e.printStackTrace();
         throw new DAOException(e);
     }
     }
@@ -145,6 +147,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 return null;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -161,6 +164,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
             return new Computer(r.getInt(1), r.getString(2), intro, disco, new Company(r.getInt(5), r.getString(6)));
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -211,6 +215,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 throw new SQLException("Creating Computer failed, no ID obtained.");
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -218,24 +223,30 @@ public enum ComputerDAOImpl implements ComputerDAO {
     /**
      * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
      * @param modifiedComputer with the id of the one to be modified and with its new attributes.
-     * @return Computer updated
+     * @return if Computer is updated
      * @throws DAOException if SQL fail
      */
-    public Computer update(Computer modifiedComputer) throws DAOException {
+    public boolean update(Computer modifiedComputer) throws DAOException {
         logger.info("Update a computer : " + modifiedComputer);
         try {
             conn = Utils.openConnection();
             PreparedStatement s = conn.prepareStatement(
                     "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                     , Statement.RETURN_GENERATED_KEYS);
+            System.out.println(modifiedComputer.getName());
             s.setString(1, modifiedComputer.getName());
             if (modifiedComputer.getCompany() != null) {
+                System.out.println(modifiedComputer.getCompany().getId());
                 s.setInt(2, modifiedComputer.getCompany().getId());
             } else {
+                System.out.println("null");
                 s.setNull(2, Types.INTEGER);
             }
+            System.out.println(modifiedComputer.getIntroducedTimeStamp());
             s.setTimestamp(3, modifiedComputer.getIntroducedTimeStamp());
+            System.out.println(modifiedComputer.getIntroducedTimeStamp());
             s.setTimestamp(4, modifiedComputer.getDiscontinuedTimeStamp());
+            System.out.println(modifiedComputer.getId());
             s.setInt(5, modifiedComputer.getId());
 
             int affectedRows = s.executeUpdate();
@@ -247,8 +258,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
             }
             s.close();
             Utils.closeConnection(conn);
-            return modifiedComputer;
+            return true;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -277,6 +289,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             Utils.closeConnection(conn);
             return "Computer " + id + " is deleted";
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -302,6 +315,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             s.close();
             Utils.closeConnection(conn);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }
@@ -316,6 +330,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             int id = getFirstId();
             return getDetails(id);
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException(e);
         }
     }

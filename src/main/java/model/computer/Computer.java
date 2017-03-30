@@ -47,6 +47,19 @@ public class Computer {
     }
 
     /**
+     * Constructor with id and a Computer without id.
+     * @param id of computer
+     * @param c old computer without id
+     */
+    public Computer(int id, Computer c) {
+        this.id = id;
+        this.name = c.name;
+        this.introduced = c.introduced;
+        this.discontinued = c.discontinued;
+        this.company = c.company;
+    }
+
+    /**
      * Get id.
      * @return the id of the Computer
      */

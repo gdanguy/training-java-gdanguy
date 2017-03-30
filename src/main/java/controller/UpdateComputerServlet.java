@@ -25,11 +25,6 @@ public abstract class UpdateComputerServlet extends HttpServlet {
         CompanyService service = CompanyService.getInstance();
         int id = CompanyService.ECHEC_FLAG;
         String name = Validator.getValidName(request.getParameter("computerName"));
-        System.out.println();
-        System.out.println();
-        System.out.println(request.getParameter("introduced"));
-        System.out.println();
-        System.out.println();
         LocalDateTime introduced = Validator.parseString(request.getParameter("introduced"));
         LocalDateTime discontinued = Validator.parseString(request.getParameter("discontinued"));
         int companyId = Integer.parseInt(request.getParameter("companyId"));
@@ -56,11 +51,6 @@ public abstract class UpdateComputerServlet extends HttpServlet {
             notModified = false;
         }
         if (introduced == null) {
-            System.out.println();
-            System.out.println();
-            System.out.println("Not introduced");
-            System.out.println();
-            System.out.println();
             introduced = old.getIntroduced();
             notModified = false;
         }
@@ -69,18 +59,8 @@ public abstract class UpdateComputerServlet extends HttpServlet {
             notModified = false;
         }
         if (notModified) {
-            System.out.println();
-            System.out.println();
-            System.out.println("Not modified");
-            System.out.println();
-            System.out.println();
-            return userInsert;
+            return new Computer(id, userInsert);
         } else {
-            System.out.println();
-            System.out.println();
-            System.out.println("Modified");
-            System.out.println();
-            System.out.println();
             return new Computer(id, name, introduced, discontinued, company);
         }
     }

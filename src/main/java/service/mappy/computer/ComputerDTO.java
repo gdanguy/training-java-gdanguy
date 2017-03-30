@@ -5,7 +5,7 @@ import model.computer.Computer;
 import java.time.format.DateTimeFormatter;
 
 public class ComputerDTO {
-    public static final DateTimeFormatter FORMAT_COURT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    public static final DateTimeFormatter FORMAT_COURT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected int id;
     protected String name;
     protected String introduced;

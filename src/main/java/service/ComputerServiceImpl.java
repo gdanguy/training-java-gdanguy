@@ -45,9 +45,17 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public Pages<Computer> list(int page, int sizePage) {
         logger.info("List all Computers");
+        if (page < 0) {
+            logger.error("Invalid Page Number");
+            return null;
+        }
+        int p = page;
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            Pages<Computer> result = db.getPage(page, sizePage);
+            Pages<Computer> result = db.getPage(p, sizePage);
+            while (result.getListPage().size() == 0) {
+                result = db.getPage(--p, sizePage);
+            }
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());
@@ -134,10 +142,7 @@ public enum ComputerServiceImpl implements ComputerService {
         logger.info("Update a Computer, new : " + computer);
         ComputerDAOImpl db = ComputerDAO.getInstance();
         try {
-            Computer computerUpdated = db.update(computer);
-            if (computerUpdated != null) {
-               return true;
-            }
+            return db.update(computer);
         } catch (DAOException e) {
             logger.error(e.toString());
         } catch (NumberFormatException e) {
