@@ -233,20 +233,14 @@ public enum ComputerDAOImpl implements ComputerDAO {
             PreparedStatement s = conn.prepareStatement(
                     "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                     , Statement.RETURN_GENERATED_KEYS);
-            System.out.println(modifiedComputer.getName());
             s.setString(1, modifiedComputer.getName());
             if (modifiedComputer.getCompany() != null) {
-                System.out.println(modifiedComputer.getCompany().getId());
                 s.setInt(2, modifiedComputer.getCompany().getId());
             } else {
-                System.out.println("null");
                 s.setNull(2, Types.INTEGER);
             }
-            System.out.println(modifiedComputer.getIntroducedTimeStamp());
             s.setTimestamp(3, modifiedComputer.getIntroducedTimeStamp());
-            System.out.println(modifiedComputer.getIntroducedTimeStamp());
             s.setTimestamp(4, modifiedComputer.getDiscontinuedTimeStamp());
-            System.out.println(modifiedComputer.getId());
             s.setInt(5, modifiedComputer.getId());
 
             int affectedRows = s.executeUpdate();

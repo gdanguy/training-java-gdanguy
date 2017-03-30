@@ -22,8 +22,10 @@ public class Computer {
      * @param introduced of the Computer in DataBase
      * @param discontinued of the Computer in DataBase
      * @param company of the Computer in DataBase
+     * @throws RuntimeException if introduced < discontinued
      */
-    public Computer(int id, String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) {
+    public Computer(int id, String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) throws RuntimeException  {
+        testDate(introduced, discontinued);
         this.id = id;
         this.name = name;
         this.introduced = introduced;
@@ -37,8 +39,10 @@ public class Computer {
      * @param introduced of the Computer in DataBase
      * @param discontinued of the Computer in DataBase
      * @param company of the Computer in DataBase
+     * @throws RuntimeException if introduced < discontinued
      */
-    public Computer(String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) {
+    public Computer(String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) throws RuntimeException {
+        testDate(introduced, discontinued);
         this.id = FLAG_NO_ID;
         this.name = name;
         this.introduced = introduced;
@@ -57,6 +61,20 @@ public class Computer {
         this.introduced = c.introduced;
         this.discontinued = c.discontinued;
         this.company = c.company;
+    }
+
+    /**
+     * Test if introduced <= discontinued.
+     * @param introduced of the Computer in DataBase
+     * @param discontinued of the Computer in DataBase
+     * @throws RuntimeException if introduced > discontinued
+     */
+    private void testDate(LocalDateTime introduced, LocalDateTime discontinued) throws RuntimeException {
+        if (!(introduced == null && discontinued == null)) {
+            if ((introduced == null && discontinued != null) || (introduced != null && discontinued != null && (Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))))) {
+                throw new RuntimeException("Introduced is after Discontinued but it must be before");
+            }
+        }
     }
 
     /**
@@ -162,7 +180,7 @@ public class Computer {
      * @param date in String format
      * @return date in LocalDateTime format
      */
-    public static LocalDateTime convertStringToLocalDateTime(String date) {
+    public static LocalDateTime toLocalDateTime(String date) {
         return LocalDateTime.parse((date + " 00:00:00"), FORMAT);
     }
 }

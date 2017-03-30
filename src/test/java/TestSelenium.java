@@ -35,7 +35,7 @@ public class TestSelenium{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testDashboard() throws InterruptedException{
         driver.get(baseUrl);
 
@@ -60,7 +60,7 @@ public class TestSelenium{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testCreateDeleteComputer() throws InterruptedException {
 
         driver.get(baseUrl);
@@ -90,7 +90,7 @@ public class TestSelenium{
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testEditComputer() throws InterruptedException {
         driver.get(baseUrl);
 
