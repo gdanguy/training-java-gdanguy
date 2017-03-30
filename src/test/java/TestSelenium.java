@@ -1,4 +1,4 @@
-import model.Pages;
+import model.Page;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -41,7 +41,7 @@ public class TestSelenium{
 
         //Test number of computer in list
         int countComputer = driver.findElements(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr")).size();
-        assertEquals("Correct number of cumputer list display", Pages.PAGE_SIZE, countComputer);
+        assertEquals("Correct number of cumputer list display", Page.PAGE_SIZE, countComputer);
         click("//*[@id=\"pagination\"]/a[2]");
         countComputer = driver.findElements(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr")).size();
         assertEquals("Correct number of cumputer list display", 50, countComputer);

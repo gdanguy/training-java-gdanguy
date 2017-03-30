@@ -93,7 +93,7 @@ Javadoc? Comments? Use Slf4j-api logging library, with the most common implement
 Now that your backend skeleton is working, we want to add a second more user-friendly UI, such as a Web-UI.  
 As it will require more and more libraries (more JARs to include in the build path etc...), we should consider using a build manager.
 Moreover, testing is a very important aspect of QA, and testing libraries should be implemented before going any further, the same for logging.  
-Then, you can work on implementing all features on the provided static pages, using JSTL, Tags, Servlets, JSPs...  
+Then, you can work on implementing all features on the provided static page, using JSTL, Tags, Servlets, JSPs...  
 
 #### 4.3.1. Maven, Logging & Unit testing
 Refactor your project tree to match maven standards. (Tip: you should exit eclipse, move folders around, and reimport your project using File -> Import -> Existing maven projects).  
@@ -235,7 +235,7 @@ Change your DAO Implementation and use the JDBCTemplate from spring-jdbc to make
 #### 4.5.4. Spring MVC
 You can now forget about Servlets and use Spring MVC as Controller for your webapp.  
 Use Spring MVC validation annotations to validate your DTOs.  
-Add custom error pages.  
+Add custom error page.  
 
 #### 4.5.5. i18n
 Implement spring multilingual features (French/English).

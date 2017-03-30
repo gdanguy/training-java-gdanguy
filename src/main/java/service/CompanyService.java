@@ -2,7 +2,7 @@ package service;
 
 import java.util.ArrayList;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 
 public interface CompanyService {
@@ -14,7 +14,7 @@ public interface CompanyService {
      * @param page int
      * @return a page of Company
      */
-    Pages<Company> list(int page);
+    Page<Company> list(int page);
 
     /**
      * Get a company by id.

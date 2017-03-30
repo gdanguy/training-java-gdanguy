@@ -1,6 +1,6 @@
 package model.dao.company;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 import org.slf4j.Logger;
@@ -47,14 +47,14 @@ public enum CompanyDAOImpl implements CompanyDAO {
     /**
      * Get a page of companies.
      * @param page who pages is needed
-     * @return Pages<Company> contains companies wanted
+     * @return Page<Company> contains companies wanted
      * @throws DAOException if SQL fails
      */
-    public Pages<Company> getPage(int page) throws DAOException {
+    public Page<Company> getPage(int page) throws DAOException {
         logger.info("Get all companies");
         try {
             conn = Utils.openConnection();
-            PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Pages.PAGE_SIZE + " OFFSET " + page * Pages.PAGE_SIZE);
+            PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE);
             ResultSet r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
             while (r.next()) {
@@ -63,7 +63,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
             r.close();
             s.close();
             Utils.closeConnection(conn);
-            return new Pages<Company>(result, page);
+            return new Page<Company>(result, page);
         } catch (SQLException e) {
             throw new DAOException(e);
         }

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class Pages<T> {
+public class Page<T> {
     public static final int PAGE_SIZE = 10;
     private org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
@@ -18,7 +18,7 @@ public class Pages<T> {
      * @param list contains the ArrayList to copy
      * @param page correspond to the currentPage
      */
-    public Pages(ArrayList<T> list, int page) {
+    public Page(ArrayList<T> list, int page) {
         for (int i = 0; i < list.size(); i++) {
             this.listObjects.add(list.get(i));
         }
@@ -31,7 +31,7 @@ public class Pages<T> {
      * @param page correspond to the currentPage
      * @param pageSize the page size
      */
-    public Pages(ArrayList<T> list, int page, int pageSize) {
+    public Page(ArrayList<T> list, int page, int pageSize) {
         for (int i = 0; i < list.size(); i++) {
             this.listObjects.add(list.get(i));
         }
@@ -107,7 +107,7 @@ public class Pages<T> {
      */
     @Override
     public boolean equals(Object o) {
-        Pages<T> page = (Pages<T>) o;
+        Page<T> page = (Page<T>) o;
         if (page.getPageSize() != this.pageSize || page.getCurrentPage() != this.currentPage) {
             return false;
         }

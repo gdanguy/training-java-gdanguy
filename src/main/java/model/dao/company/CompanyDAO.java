@@ -2,7 +2,7 @@ package model.dao.company;
 
 import java.util.ArrayList;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 
@@ -11,10 +11,10 @@ public interface CompanyDAO {
     /**
      * Get a page of companies.
      * @param page who pages is needed
-     * @return Pages<Company> contains companies wanted
+     * @return Page<Company> contains companies wanted
      * @throws DAOException if SQL fails
      */
-    Pages<Company> getPage(int page) throws DAOException;
+    Page<Company> getPage(int page) throws DAOException;
 
     /**
      * Get a company by id.

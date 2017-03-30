@@ -9,7 +9,7 @@ import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import model.Pages;
+import model.Page;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
@@ -270,7 +270,7 @@ public class CLIControleur {
      * @param type TYPE_COMPUTER or TYPE_COMPANY
      */
     private void displayList(String type) {
-        Pages<?> list;
+        Page<?> list;
         if (type.equals(TYPE_COMPANY)) {
             list = serviceCompany.list(0);
         } else {

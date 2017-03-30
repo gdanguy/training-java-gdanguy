@@ -1,6 +1,6 @@
 package service;
 
-import model.Pages;
+import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
 import model.dao.computer.ComputerDAO;
@@ -33,8 +33,8 @@ public enum ComputerServiceImpl implements ComputerService {
      * @param page int
      * @return a page of Computer
      */
-    public Pages<Computer> list(int page) {
-        return list(page, Pages.PAGE_SIZE);
+    public Page<Computer> list(int page) {
+        return list(page, Page.PAGE_SIZE);
     }
 
     /**
@@ -43,7 +43,7 @@ public enum ComputerServiceImpl implements ComputerService {
      * @param sizePage int
      * @return a page of Computer
      */
-    public Pages<Computer> list(int page, int sizePage) {
+    public Page<Computer> list(int page, int sizePage) {
         logger.info("List all Computers");
         if (page < 0) {
             logger.error("Invalid Page Number");
@@ -52,7 +52,7 @@ public enum ComputerServiceImpl implements ComputerService {
         int p = page;
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            Pages<Computer> result = db.getPage(p, sizePage);
+            Page<Computer> result = db.getPage(p, sizePage);
             while (result.getListPage().size() == 0) {
                 result = db.getPage(--p, sizePage);
             }
@@ -68,11 +68,11 @@ public enum ComputerServiceImpl implements ComputerService {
      * @param search word research
      * @return a page of Computer
      */
-    public Pages<Computer> list(String search) {
+    public Page<Computer> list(String search) {
         logger.info("List all Computers");
         try {
             ComputerDAOImpl db = ComputerDAO.getInstance();
-            Pages<Computer> result = db.getPage(search);
+            Page<Computer> result = db.getPage(search);
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());

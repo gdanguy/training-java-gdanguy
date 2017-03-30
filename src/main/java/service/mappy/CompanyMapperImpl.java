@@ -1,6 +1,6 @@
 package service.mappy;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import service.mappy.company.CompanyDTO;
 
@@ -13,12 +13,12 @@ public enum CompanyMapperImpl implements CompanyMapper {
     INSTANCE;
 
     /**
-     * Convert Pages<Company> to Pages<CompanyDTO>.
-     * @param pages Pages of Company
-     * @return the Pages<CompanyDTO> generated
+     * Convert Page<Company> to Page<CompanyDTO>.
+     * @param page Page of Company
+     * @return the Page<CompanyDTO> generated
      */
-    public Pages<CompanyDTO> toDTO(Pages<Company> pages) {
-        return new Pages<>(toDTO(pages.getListPage()), pages.getPageSize());
+    public Page<CompanyDTO> toDTO(Page<Company> page) {
+        return new Page<>(toDTO(page.getListPage()), page.getPageSize());
     }
 
     /**

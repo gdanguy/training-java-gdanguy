@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
@@ -20,11 +20,11 @@ public enum CompanyServiceImpl implements CompanyService {
      * @param page int
      * @return a page of Company
      */
-    public Pages<Company> list(int page) {
+    public Page<Company> list(int page) {
         logger.info("List all Companies");
         try {
             CompanyDAOImpl db = CompanyDAO.getInstance();
-            Pages<Company> result = db.getPage(page);
+            Page<Company> result = db.getPage(page);
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());

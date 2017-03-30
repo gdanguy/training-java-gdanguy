@@ -1,4 +1,4 @@
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 import model.computer.Computer;
@@ -70,12 +70,12 @@ public class TestDAOService {
     @Test
     public void testListComputers() throws DAOException {
         //Test sizePage default
-        Pages<Computer> pages1 = serviceComputer.list(0);
-        Pages<Computer> pages2 = serviceComputer.list(0, Pages.PAGE_SIZE);
-        assertEquals("Test : The same return for both methods with the default sizes", pages1, pages2);
+        Page<Computer> page1 = serviceComputer.list(0);
+        Page<Computer> page2 = serviceComputer.list(0, Page.PAGE_SIZE);
+        assertEquals("Test : The same return for both methods with the default sizes", page1, page2);
 
         //Test simple research
-        Pages<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST);
+        Page<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST);
         assertTrue("Test : The computer is found ", result.getListPage().size() > 0);
 
         //Test found all computer
@@ -97,7 +97,7 @@ public class TestDAOService {
 
     @Test
     public void testCreateDeleteUpdateComputer() throws DAOException, NumberFormatException {
-        Pages<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST_2);
+        Page<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST_2);
         int exist = result.getListPage().size();
 
         int idComputer = serviceComputer.create(new Computer(NAME_COMPUTER_TEST_2,null,null,null));

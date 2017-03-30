@@ -1,6 +1,6 @@
 package controller;
 
-import model.Pages;
+import model.Page;
 import model.computer.Computer;
 import org.slf4j.LoggerFactory;
 import service.ComputerService;
@@ -35,7 +35,7 @@ public class DashboardServlet extends HttpServlet {
         }
         request.setAttribute("currentPage", currentPage);
         String size = request.getParameter("sizePages");
-        int sizePages = Pages.PAGE_SIZE;
+        int sizePages = Page.PAGE_SIZE;
         if (!(size == null || size.equals(""))) {
             sizePages = Integer.parseInt(size);
         }

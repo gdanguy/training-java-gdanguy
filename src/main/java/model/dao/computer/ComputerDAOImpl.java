@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import model.Page;
 import model.dao.DAOException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -13,7 +15,6 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import model.Pages;
 import model.company.Company;
 import model.computer.Computer;
 import utils.Utils;
@@ -51,21 +52,21 @@ public enum ComputerDAOImpl implements ComputerDAO {
     /**
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPage(int page) throws DAOException {
-        return getPage(page, Pages.PAGE_SIZE);
+    public Page<Computer> getPage(int page) throws DAOException {
+        return getPage(page, Page.PAGE_SIZE);
     }
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
      * @param page corresponds to the page's number to be retrieved
      * @param sizePage size of a page
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPage(int page, int sizePage) throws DAOException {
+    public Page<Computer> getPage(int page, int sizePage) throws DAOException {
         logger.info("Get page " + page + ", computers of " + sizePage);
         try {
             conn = Utils.openConnection();
@@ -81,7 +82,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             r.close();
             s.close();
             Utils.closeConnection(conn);
-            return new Pages<Computer>(result, page, sizePage);
+            return new Page<Computer>(result, page, sizePage);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
@@ -91,10 +92,10 @@ public enum ComputerDAOImpl implements ComputerDAO {
     /**
      * This method returns the page of computers with a sizePage of sizePage.
      * @param search word researched
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Pages<Computer> getPage(String search) throws DAOException {
+    public Page<Computer> getPage(String search) throws DAOException {
         logger.info("Get Search computers : " + search);
         try {
             conn = Utils.openConnection();
@@ -111,7 +112,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             r.close();
             s.close();
             Utils.closeConnection(conn);
-            return new Pages<Computer>(result, 0);
+            return new Page<Computer>(result, 0);
         } catch (SQLException e) {
             e.printStackTrace();
         throw new DAOException(e);

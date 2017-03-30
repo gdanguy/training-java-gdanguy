@@ -1,6 +1,6 @@
 package service.mappy;
 
-import model.Pages;
+import model.Page;
 import model.company.Company;
 import service.mappy.company.CompanyDTO;
 
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public interface CompanyMapper {
 
     /**
-     * Convert Pages<Company> to Pages<CompanyDTO>.
-     * @param pages Pages of Company
-     * @return the Pages<CompanyDTO> generated
+     * Convert Page<Company> to Page<CompanyDTO>.
+     * @param page Page of Company
+     * @return the Page<CompanyDTO> generated
      */
-    Pages<CompanyDTO> toDTO(Pages<Company> pages);
+    Page<CompanyDTO> toDTO(Page<Company> page);
 
     /**
      * Convert ArrayList<Company> to ArrayList<CompanyDTO>.

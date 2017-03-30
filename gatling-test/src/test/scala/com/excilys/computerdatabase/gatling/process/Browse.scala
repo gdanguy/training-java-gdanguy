@@ -6,7 +6,7 @@ import io.gatling.http.Predef._
 
 /**
   * Created by Cédric Cousseran on 29/03/16.
-  * Browse a random number of pages with random parameters.
+  * Browse a random number of page with random parameters.
   */
 object Browse {
   val config = ConfigFactory.load()

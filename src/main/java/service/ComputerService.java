@@ -1,6 +1,6 @@
 package service;
 
-import model.Pages;
+import model.Page;
 import model.computer.Computer;
 
 
@@ -18,7 +18,7 @@ public interface ComputerService {
      * @param page int
      * @return a page of Computer
      */
-    Pages<Computer> list(int page);
+    Page<Computer> list(int page);
 
     /**
      * Get a page of Computer with a size of sizePage.
@@ -26,14 +26,14 @@ public interface ComputerService {
      * @param sizePage int
      * @return a page of Computer
      */
-    Pages<Computer> list(int page, int sizePage);
+    Page<Computer> list(int page, int sizePage);
 
     /**
      * Get a page of Computer with a search.
      * @param search word research
      * @return a page of Computer
      */
-    Pages<Computer> list(String search);
+    Page<Computer> list(String search);
 
     /**
      * Get details of one Computer.

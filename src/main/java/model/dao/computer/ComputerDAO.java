@@ -1,6 +1,6 @@
 package model.dao.computer;
 
-import model.Pages;
+import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
 
@@ -16,27 +16,27 @@ public interface ComputerDAO {
     /**
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPage(int page) throws DAOException;
+    Page<Computer> getPage(int page) throws DAOException;
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
      * @param page corresponds to the page's number to be retrieved
      * @param sizePage size of a page
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPage(int page, int sizePage) throws DAOException;
+    Page<Computer> getPage(int page, int sizePage) throws DAOException;
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
      * @param search word researched
-     * @return Pages<Computer> corresponds to the page
+     * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Pages<Computer> getPage(String search) throws DAOException;
+    Page<Computer> getPage(String search) throws DAOException;
 
     /**
      * This method returns a computer identified by its id.
