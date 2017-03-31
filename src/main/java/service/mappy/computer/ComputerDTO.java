@@ -1,7 +1,8 @@
 package service.mappy.computer;
 
-import model.computer.Computer;
+import model.company.Company;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ComputerDTO {
@@ -14,25 +15,75 @@ public class ComputerDTO {
     protected String companyName;
 
     /**
-     * Constructor.
-     * @param c correspond to a Computer
+     * .
      */
-    public ComputerDTO(Computer c) {
-        this.id = c.getId();
-        this.name = c.getName();
-        if (c.getIntroduced() != null) {
-            this.introduced = c.getIntroduced().format(FORMAT_COURT).toString();
+    public ComputerDTO() {
+    }
+
+    /**
+     * .
+     * @param id .
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * .
+     * @param name .
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * .
+     * @param introduced .
+     */
+    public void setIntroduced(LocalDateTime introduced) {
+        if (introduced != null) {
+            this.introduced = introduced.format(FORMAT_COURT).toString();
         } else {
             this.introduced = null;
         }
-        if (c.getDiscontinued() != null) {
-            this.discontinued = c.getDiscontinued().format(FORMAT_COURT).toString();
+    }
+
+    /**
+     * .
+     * @param discontinued .
+     */
+    public void setDiscontinued(LocalDateTime discontinued) {
+        if (discontinued != null) {
+            this.discontinued = discontinued.format(FORMAT_COURT).toString();
         } else {
             this.discontinued = null;
         }
-        if (c.getCompany() != null) {
-            this.companyId = c.getCompany().getId();
-            this.companyName = c.getCompany().getName();
+    }
+
+    /**
+     * .
+     * @param companyId .
+     */
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
+    /**
+     * .
+     * @param companyName .
+     */
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    /**
+     * .
+     * @param company .
+     */
+    public void setCompany(Company company) {
+        if (company != null) {
+            this.companyId = company.getId();
+            this.companyName = company.getName();
         } else {
             this.companyId = null;
             this.companyName = null;

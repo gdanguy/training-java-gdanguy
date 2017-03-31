@@ -5,6 +5,7 @@ import model.computer.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public abstract class Validator {
@@ -125,5 +126,19 @@ public abstract class Validator {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Test if introduced <= discontinued.
+     * @param introduced of the Computer in DataBase
+     * @param discontinued of the Computer in DataBase
+     * @throws RuntimeException if introduced > discontinued
+     */
+    private void testDate(LocalDateTime introduced, LocalDateTime discontinued) throws RuntimeException {
+        if (!(introduced == null && discontinued == null)) {
+            if ((introduced == null && discontinued != null) || (introduced != null && discontinued != null && (Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))))) {
+                throw new RuntimeException("Introduced is after Discontinued but it must be before");
+            }
+        }
     }
 }

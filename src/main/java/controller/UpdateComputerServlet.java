@@ -3,6 +3,7 @@ package controller;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
 import service.CompanyService;
@@ -28,7 +29,13 @@ public abstract class UpdateComputerServlet extends HttpServlet {
         LocalDateTime introduced = Validator.parseString(request.getParameter("introduced"));
         LocalDateTime discontinued = Validator.parseString(request.getParameter("discontinued"));
         int companyId = Integer.parseInt(request.getParameter("companyId"));
-        return new Computer(id, name, introduced, discontinued, service.get(companyId));
+        return GenericBuilder.of(Computer::new)
+                .with(Computer::setId, id)
+                .with(Computer::setName, name)
+                .with(Computer::setIntroduced, introduced)
+                .with(Computer::setDiscontinued, discontinued)
+                .with(Computer::setCompany, service.get(companyId))
+                .build();
     }
 
     /**
@@ -59,9 +66,21 @@ public abstract class UpdateComputerServlet extends HttpServlet {
             notModified = false;
         }
         if (notModified) {
-            return new Computer(id, userInsert);
+            return GenericBuilder.of(Computer::new)
+                    .with(Computer::setId, id)
+                    .with(Computer::setName, userInsert.getName())
+                    .with(Computer::setIntroduced, userInsert.getIntroduced())
+                    .with(Computer::setDiscontinued, userInsert.getDiscontinued())
+                    .with(Computer::setCompany, userInsert.getCompany())
+                    .build();
         } else {
-            return new Computer(id, name, introduced, discontinued, company);
+            return GenericBuilder.of(Computer::new)
+                    .with(Computer::setId, id)
+                    .with(Computer::setName, name)
+                    .with(Computer::setIntroduced, introduced)
+                    .with(Computer::setDiscontinued, discontinued)
+                    .with(Computer::setCompany, company)
+                    .build();
         }
     }
 }

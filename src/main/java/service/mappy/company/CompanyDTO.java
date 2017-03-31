@@ -8,11 +8,16 @@ public class CompanyDTO {
 
     /**
      * Constructor.
-     * @param c Company
      */
-    public CompanyDTO(Company c) {
-        this.id = c.getId();
-        this.name = c.getName();
+    public CompanyDTO() {
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

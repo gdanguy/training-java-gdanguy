@@ -1,5 +1,6 @@
 package service.mappy;
 
+import model.GenericBuilder;
 import model.Page;
 import model.computer.Computer;
 import service.mappy.computer.ComputerDTO;
@@ -30,7 +31,14 @@ public enum ComputerMapperImpl implements ComputerMapper {
     public ArrayList<ComputerDTO> toDTO(ArrayList<Computer> list) {
         ArrayList<ComputerDTO> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            result.add(new ComputerDTO(list.get(i)));
+            Computer c = list.get(i);
+            result.add(GenericBuilder.of(ComputerDTO::new)
+                    .with(ComputerDTO::setId, c.getId())
+                    .with(ComputerDTO::setName, c.getName())
+                    .with(ComputerDTO::setIntroduced, c.getIntroduced())
+                    .with(ComputerDTO::setDiscontinued, c.getDiscontinued())
+                    .with(ComputerDTO::setCompany, c.getCompany())
+                    .build());
         }
         return result;
     }

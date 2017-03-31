@@ -1,5 +1,6 @@
 package model.dao.company;
 
+import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
@@ -58,7 +59,10 @@ public enum CompanyDAOImpl implements CompanyDAO {
             ResultSet r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
             while (r.next()) {
-                result.add(new Company(r.getInt(1), r.getString(2)));
+                result.add(GenericBuilder.of(Company::new)
+                        .with(Company::setId, r.getInt(1))
+                        .with(Company::setName, r.getString(2))
+                        .build());
             }
             r.close();
             s.close();
@@ -84,7 +88,10 @@ public enum CompanyDAOImpl implements CompanyDAO {
             ResultSet r = s.executeQuery();
             Company result = null;
             if (r.next()) {
-                result = new Company(r.getInt(1), r.getString(2));
+                result = GenericBuilder.of(Company::new)
+                        .with(Company::setId, r.getInt(1))
+                        .with(Company::setName, r.getString(2))
+                        .build();
             }
             r.close();
             s.close();
@@ -108,7 +115,10 @@ public enum CompanyDAOImpl implements CompanyDAO {
             ResultSet r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
             while (r.next()) {
-                result.add(new Company(r.getInt(1), r.getString(2)));
+                result.add(GenericBuilder.of(Company::new)
+                            .with(Company::setId, r.getInt(1))
+                            .with(Company::setName, r.getString(2))
+                            .build());
             }
             r.close();
             s.close();

@@ -5,21 +5,25 @@ public class Company {
     private String name;
 
     /**
-     * Constructor.
-     * @param id the id of the Company
-     * @param name the name of the Company
+     * .
      */
-    public Company(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public Company() {
+
     }
 
     /**
-     * Constructor.
-     * @param name the name of the Company
+     * setter.
+     * @param id .
      */
-    public Company(String name) {
-        this.id = -1;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * setter.
+     * @param name .
+     */
+    public void setName(String name) {
         this.name = name;
     }
 

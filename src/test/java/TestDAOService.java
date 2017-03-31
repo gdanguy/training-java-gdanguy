@@ -1,3 +1,4 @@
+import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
@@ -35,7 +36,11 @@ public class TestDAOService {
      */
     @Before
     public void before() throws DAOException{
-        id = serviceComputer.create(new Computer(NAME_COMPUTER_TEST,null,null,null));
+        id = serviceComputer.create(
+                GenericBuilder.of(Computer::new)
+                        .with(Computer::setId, -1)
+                        .with(Computer::setName, NAME_COMPUTER_TEST)
+                        .build());
     }
 
     /**
@@ -100,7 +105,11 @@ public class TestDAOService {
         Page<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST_2);
         int exist = result.getListPage().size();
 
-        int idComputer = serviceComputer.create(new Computer(NAME_COMPUTER_TEST_2,null,null,null));
+        int idComputer = serviceComputer.create(
+                GenericBuilder.of(Computer::new)
+                        .with(Computer::setId, -1)
+                        .with(Computer::setName, NAME_COMPUTER_TEST_2)
+                        .build());
 
         assertTrue("Test : The computer is create, id > 0 expected, but " + idComputer, idComputer != CompanyService.ECHEC_FLAG);
 
@@ -110,7 +119,11 @@ public class TestDAOService {
         result = serviceComputer.list(NAME_COMPUTER_TEST_3);
         exist = result.getListPage().size();
 
-        serviceComputer.update(new Computer(idComputer,NAME_COMPUTER_TEST_3,null,null,null));
+        serviceComputer.update(
+                GenericBuilder.of(Computer::new)
+                        .with(Computer::setId, idComputer)
+                        .with(Computer::setName, NAME_COMPUTER_TEST_3)
+                        .build());
 
         result = serviceComputer.list(NAME_COMPUTER_TEST_3);
         assertTrue("Test : The computer is update ", result.getListPage().size() == (exist + 1));
@@ -132,7 +145,11 @@ public class TestDAOService {
 
     @Test
     public void testCreateDeleteCompanies() throws DAOException {
-        int id = dbCompany.create(new Company(NAME_COMPANY));
+        int id = dbCompany.create(
+                GenericBuilder.of(Company::new)
+                        .with(Company::setId, -1)
+                        .with(Company::setName, NAME_COMPANY)
+                        .build());
         assertTrue("Test Create a company", id>=0);
         boolean succes = dbCompany.delete(id);
         assertTrue("Test Delete a company", succes);

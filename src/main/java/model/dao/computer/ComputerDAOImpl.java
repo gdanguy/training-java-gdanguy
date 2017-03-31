@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import model.GenericBuilder;
 import model.Page;
 import model.dao.DAOException;
 import java.sql.Statement;
@@ -129,6 +130,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
         logger.info("Get computer : " + id);
         try {
             conn = Utils.openConnection();
+
+            //TODO pourquoi erreur SQL
+
             PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c2.id = c1.company_id"
@@ -163,7 +167,18 @@ public enum ComputerDAOImpl implements ComputerDAO {
         try {
             LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
             LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
-            return new Computer(r.getInt(1), r.getString(2), intro, disco, new Company(r.getInt(5), r.getString(6)));
+            int idCompany = r.getInt(5);
+            Computer result = GenericBuilder.of(Computer::new)
+                    .with(Computer::setId, r.getInt(1))
+                    .with(Computer::setName, r.getString(2))
+                    .with(Computer::setIntroduced, intro)
+                    .with(Computer::setDiscontinued, disco)
+                    .with(Computer::setCompany, idCompany <= 0 ? null : GenericBuilder.of(Company::new)
+                                                                            .with(Company::setId, idCompany)
+                                                                            .with(Company::setName, r.getString(6))
+                                                                            .build())
+                    .build();
+            return result;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
@@ -204,7 +219,13 @@ public enum ComputerDAOImpl implements ComputerDAO {
             ResultSet generatedKeys = s.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int id = generatedKeys.getInt(1);
-                Computer result = new Computer(id, computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), computer.getCompany());
+                Computer result = GenericBuilder.of(Computer::new)
+                        .with(Computer::setId, id)
+                        .with(Computer::setName, computer.getName())
+                        .with(Computer::setIntroduced, computer.getIntroduced())
+                        .with(Computer::setDiscontinued, computer.getDiscontinued())
+                        .with(Computer::setCompany, computer.getCompany())
+                        .build();
                 generatedKeys.close();
                 s.close();
                 Utils.closeConnection(conn);

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import model.GenericBuilder;
 import model.company.Company;
 import model.dao.DAOException;
 import org.slf4j.LoggerFactory;
@@ -148,7 +149,12 @@ public class CLIControleur {
                 case ADD_COMPANY:
                     Company company = userInputCompany();
                     id = serviceCompany.create(company);
-                    return new Company(id, company.getName()).toString() + " was created";
+                    //return new Company(id, company.getName()).toString() + " was created";
+                    return (GenericBuilder.of(Company::new)
+                            .with(Company::setId, id)
+                            .with(Company::setName, company.getName())
+                            .build())
+                            .toString() + " was created";
                 case DELETE_COMPANY:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
                     if (serviceCompany.delete(id)) {
@@ -193,7 +199,13 @@ public class CLIControleur {
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
             CompanyDAOImpl db = CompanyDAO.getInstance();
-            return new Computer(name, intro, disco, db.get(companyId));
+            return GenericBuilder.of(Computer::new)
+                    .with(Computer::setId, -1)
+                    .with(Computer::setName, name)
+                    .with(Computer::setIntroduced, intro)
+                    .with(Computer::setDiscontinued, disco)
+                    .with(Computer::setCompany, db.get(companyId))
+                    .build();
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
             return null;
@@ -228,7 +240,13 @@ public class CLIControleur {
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : " + oldComputer.getCompany() + "): "));
             CompanyDAOImpl db = CompanyDAO.getInstance();
 
-            return new Computer(id, name, intro, disco, db.get(companyId));
+            return GenericBuilder.of(Computer::new)
+                    .with(Computer::setId, id)
+                    .with(Computer::setName, name)
+                    .with(Computer::setIntroduced, intro)
+                    .with(Computer::setDiscontinued, disco)
+                    .with(Computer::setCompany, db.get(companyId))
+                    .build();
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
             return null;
@@ -244,7 +262,10 @@ public class CLIControleur {
         logger.info("User input new Company");
         try {
             String name = lireSaisieUtilisateur("Enter Company Name : ");
-            return new Company(name);
+            return GenericBuilder.of(Company::new)
+                    .with(Company::setId, -1)
+                    .with(Company::setName, name)
+                    .build();
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
             return null;

@@ -1,5 +1,6 @@
 package service.mappy;
 
+import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import service.mappy.company.CompanyDTO;
@@ -29,7 +30,11 @@ public enum CompanyMapperImpl implements CompanyMapper {
     public ArrayList<CompanyDTO> toDTO(ArrayList<Company> list) {
         ArrayList<CompanyDTO> result = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            result.add(new CompanyDTO(list.get(i)));
+            Company c = list.get(i);
+            result.add(GenericBuilder.of(CompanyDTO::new)
+                    .with(CompanyDTO::setId, c.getId())
+                    .with(CompanyDTO::setName, c.getName())
+                    .build());
         }
         return result;
     }

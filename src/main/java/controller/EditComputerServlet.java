@@ -1,5 +1,7 @@
 package controller;
 
+import model.GenericBuilder;
+import model.computer.Computer;
 import service.mappy.CompanyMapper;
 import service.mappy.computer.ComputerDTO;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,14 @@ public class EditComputerServlet extends UpdateComputerServlet {
         ComputerService computerService = ComputerService.getInstance();
         CompanyService companyService = CompanyService.getInstance();
         CompanyMapper companyMap = CompanyMapper.getInstance();
-        request.setAttribute("computer", new ComputerDTO(computerService.get(id)));
+        Computer c = computerService.get(id);
+        request.setAttribute("computer", GenericBuilder.of(ComputerDTO::new)
+                .with(ComputerDTO::setId, id)
+                .with(ComputerDTO::setName, c.getName())
+                .with(ComputerDTO::setIntroduced, c.getIntroduced())
+                .with(ComputerDTO::setDiscontinued, c.getDiscontinued())
+                .with(ComputerDTO::setCompany, c.getCompany())
+                .build());
         request.setAttribute("listCompany", companyMap.toDTO(companyService.listAll()));
         request.getRequestDispatcher("/views/editComputer.jsp").forward(request, response);
     }

@@ -17,65 +17,31 @@ public class Computer {
 
     /**
      * Constructor.
-     * @param id of the Computer in DataBase
-     * @param name of the Computer in DataBase
-     * @param introduced of the Computer in DataBase
-     * @param discontinued of the Computer in DataBase
-     * @param company of the Computer in DataBase
-     * @throws RuntimeException if introduced < discontinued
      */
-    public Computer(int id, String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) throws RuntimeException  {
-        testDate(introduced, discontinued);
+    public Computer() {
+
+    }
+
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setIntroduced(LocalDateTime introduced) {
         this.introduced = introduced;
+    }
+
+    public void setDiscontinued(LocalDateTime discontinued) {
         this.discontinued = discontinued;
+    }
+
+    public void setCompany(Company company) {
         this.company = company;
     }
 
-    /**
-     * Constructor without id.
-     * @param name of the Computer in DataBase
-     * @param introduced of the Computer in DataBase
-     * @param discontinued of the Computer in DataBase
-     * @param company of the Computer in DataBase
-     * @throws RuntimeException if introduced < discontinued
-     */
-    public Computer(String name, LocalDateTime introduced, LocalDateTime discontinued, Company company) throws RuntimeException {
-        testDate(introduced, discontinued);
-        this.id = FLAG_NO_ID;
-        this.name = name;
-        this.introduced = introduced;
-        this.discontinued = discontinued;
-        this.company = company;
-    }
-
-    /**
-     * Constructor with id and a Computer without id.
-     * @param id of computer
-     * @param c old computer without id
-     */
-    public Computer(int id, Computer c) {
-        this.id = id;
-        this.name = c.name;
-        this.introduced = c.introduced;
-        this.discontinued = c.discontinued;
-        this.company = c.company;
-    }
-
-    /**
-     * Test if introduced <= discontinued.
-     * @param introduced of the Computer in DataBase
-     * @param discontinued of the Computer in DataBase
-     * @throws RuntimeException if introduced > discontinued
-     */
-    private void testDate(LocalDateTime introduced, LocalDateTime discontinued) throws RuntimeException {
-        if (!(introduced == null && discontinued == null)) {
-            if ((introduced == null && discontinued != null) || (introduced != null && discontinued != null && (Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))))) {
-                throw new RuntimeException("Introduced is after Discontinued but it must be before");
-            }
-        }
-    }
 
     /**
      * Get id.
