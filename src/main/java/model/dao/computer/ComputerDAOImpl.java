@@ -34,7 +34,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public int count() throws DAOException {
         logger.info("Count computers");
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement("SELECT COUNT(*) FROM computer");
             ResultSet r = s.executeQuery();
             int result = -1;
@@ -43,7 +43,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             }
             r.close();
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
             return result;
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -70,7 +70,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public Page<Computer> getPage(int page, int sizePage) throws DAOException {
         logger.info("Get page " + page + ", computers of " + sizePage);
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
@@ -82,7 +82,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             }
             r.close();
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
             return new Page<Computer>(result, page, sizePage);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public Page<Computer> getPage(String search) throws DAOException {
         logger.info("Get Search computers : " + search);
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
@@ -112,7 +112,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             }
             r.close();
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
             return new Page<Computer>(result, 0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,9 +129,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public Computer getDetails(int id) throws DAOException {
         logger.info("Get computer : " + id);
         try {
-            conn = Utils.openConnection();
-
-            //TODO pourquoi erreur SQL
+            conn = Utils.open();
 
             PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
@@ -143,12 +141,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
                 Computer result = makeComputerWithResultSet(r);
                 r.close();
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 return result;
             } else {
                 r.close();
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 return null;
             }
         } catch (SQLException e) {
@@ -195,7 +193,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public Computer create(Computer computer) throws DAOException {
         logger.info("Create computer : " + computer);
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement(
                     "Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
                     , Statement.RETURN_GENERATED_KEYS);
@@ -212,7 +210,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
             if (affectedRows == 0) {
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 throw new SQLException("Creating Computer failed, no rows affected.");
             }
 
@@ -228,12 +226,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
                         .build();
                 generatedKeys.close();
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 return result;
             } else {
                 generatedKeys.close();
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 throw new SQLException("Creating Computer failed, no ID obtained.");
             }
         } catch (SQLException e) {
@@ -251,7 +249,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public boolean update(Computer modifiedComputer) throws DAOException {
         logger.info("Update a computer : " + modifiedComputer);
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement(
                     "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                     , Statement.RETURN_GENERATED_KEYS);
@@ -269,11 +267,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
             if (affectedRows == 0) {
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 throw new SQLException("Updating Computer failed, no rows affected.");
             }
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,7 +288,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
     public String delete(int id) throws DAOException {
         logger.info("Delete a computer : " + id);
         try {
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
             s.setInt(1, id);
 
@@ -298,11 +296,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
 
             if (affectedRows == 0) {
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
             return "Computer " + id + " is deleted";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -318,18 +316,18 @@ public enum ComputerDAOImpl implements ComputerDAO {
         logger.info("Delete last computer");
         try {
             int id = getLastId();
-            conn = Utils.openConnection();
+            conn = Utils.open();
             PreparedStatement s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
             s.setInt(1, id);
 
             int affectedRows = s.executeUpdate();
             if (affectedRows == 0) {
                 s.close();
-                Utils.closeConnection(conn);
+                Utils.close(conn);
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
             s.close();
-            Utils.closeConnection(conn);
+            Utils.close(conn);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
@@ -383,7 +381,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         if (last) {
             ordre = " DESC ";
         }
-        conn = Utils.openConnection();
+        conn = Utils.open();
         PreparedStatement s = conn.prepareStatement(
                 "SELECT id FROM computer ORDER BY id" + ordre);
         ResultSet r = s.executeQuery();
@@ -393,7 +391,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
         int id = r.getInt(1);
         r.close();
         s.close();
-        Utils.closeConnection(conn);
+        Utils.close(conn);
         return id;
     }
 }

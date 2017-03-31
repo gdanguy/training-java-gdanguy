@@ -72,7 +72,7 @@ public class TestSelenium{
 
         //Add a computer
         WebElement name = driver.findElement(By.xpath("//*[@id=\"computerName\"]"));
-        name.sendKeys(TestDAOService.NAME_COMPUTER_TEST);
+        name.sendKeys(TestService.NAME_COMPUTER_TEST);
         click("//*[@id=\"main\"]/div/div/div/form/div/input");
 
         //Test if Computer was added
@@ -103,11 +103,11 @@ public class TestSelenium{
         //update name a computer
         WebElement name = driver.findElement(By.xpath("//*[@id=\"computerName\"]"));
         name.clear();
-        name.sendKeys(TestDAOService.NAME_COMPUTER_TEST_2);
+        name.sendKeys(TestService.NAME_COMPUTER_TEST_2);
         click("//*[@id=\"main\"]/div/div/div/form/div/input");
 
         WebElement nameList = driver.findElement(By.xpath("//*[@id=\"main\"]/div[2]/table/tbody/tr[1]/td/a"));
-        assertEquals("Test the name was changed", nameList.getText(), TestDAOService.NAME_COMPUTER_TEST_2);
+        assertEquals("Test the name was changed", nameList.getText(), TestService.NAME_COMPUTER_TEST_2);
 
         //return set name previous status
         nameList.click();

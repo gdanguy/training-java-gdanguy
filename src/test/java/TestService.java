@@ -17,8 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class TestDAOService {
-
+public class TestService {
     private ComputerService serviceComputer = ComputerService.getInstance();
     private CompanyService serviceCompany = CompanyService.getInstance();
     private ComputerDAOImpl dbComputer = ComputerDAO.getInstance();
@@ -145,16 +144,25 @@ public class TestDAOService {
 
     @Test
     public void testCreateDeleteCompanies() throws DAOException {
+        //Create a company
         int id = dbCompany.create(
                 GenericBuilder.of(Company::new)
                         .with(Company::setId, -1)
                         .with(Company::setName, NAME_COMPANY)
                         .build());
         assertTrue("Test Create a company", id>=0);
+
+        //insert 1 computer for this company
+        dbComputer.create(GenericBuilder.of(Computer::new)
+                .with(Computer::setId, -1)
+                .with(Computer::setName, NAME_COMPUTER_TEST)
+                .with(Computer::setCompany, dbCompany.get(id))
+                .build());
+
+        //delete this company
         boolean succes = dbCompany.delete(id);
         assertTrue("Test Delete a company", succes);
     }
-
 
 
 }

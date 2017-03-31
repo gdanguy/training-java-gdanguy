@@ -20,9 +20,11 @@ public abstract class Utils {
      * @return a Connection
      * @throws SQLException if SQL fail
      */
-    public static Connection openConnection() throws SQLException {
+    public static Connection open() throws SQLException {
         logger.info("Open Connection");
-        return DS.getConnection();
+        Connection conn = DS.getConnection();
+        conn.setAutoCommit(true);
+        return conn;
     }
 
     /**
@@ -30,8 +32,46 @@ public abstract class Utils {
      * @param c a Connection open
      * @throws SQLException if SQL fail
      */
-    public static void closeConnection(Connection c) throws SQLException {
+    public static void close(Connection c) throws SQLException {
         logger.info("Disconnection to the database");
-        c.close();
+        if (c != null) {
+            c.close();
+        }
+    }
+
+    /**
+     * RollbacK, SetAutoCommit(true) and Close Connection to the database.
+     * @param c a Connection open
+     */
+    public static void rollbackClose(Connection c) {
+        try {
+            logger.info("RollBack and Disconnection to the database");
+            if (c != null) {
+                c.rollback();
+                c.setAutoCommit(true);
+                c.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * Commit, SetAutoCommit(true) and Close Connection to the database.
+     * @param c a Connection open
+     */
+    public static void commitClose(Connection c) {
+        try {
+            logger.info("Commit and Disconnection to the database");
+            if (c != null) {
+                c.commit();
+                c.setAutoCommit(true);
+                c.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
     }
 }
