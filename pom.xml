@@ -23,7 +23,12 @@
         <guava.version>21.0</guava.version>
         <HikariCP.version>2.6.1</HikariCP.version>
         <mockito.version>2.7.17</mockito.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gatling.version>2.1.7</gatling.version>
+        <gatling-plugin.version>2.1.7</gatling-plugin.version>
+        <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
     </properties>
+
 
     <groupId>com.e-biz.gdanguy</groupId>
     <artifactId>training-java-gdanguy</artifactId>
@@ -136,8 +141,14 @@
             <version>${HikariCP.version}</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <version>${gatling.version}</version>
+            <scope>test</scope>
+        </dependency>
 
+    </dependencies>
     <build>
         <defaultGoal>clean install package</defaultGoal>
         <plugins>
