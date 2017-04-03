@@ -4,6 +4,8 @@ import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
 
+import java.util.List;
+
 public interface ComputerDAO {
 
     /**
@@ -23,12 +25,13 @@ public interface ComputerDAO {
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
-     * @param page corresponds to the page's number to be retrieved
+     * @param page     corresponds to the page's number to be retrieved
      * @param sizePage size of a page
+     * @param order order of a page
      * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    Page<Computer> getPage(int page, int sizePage) throws DAOException;
+    Page<Computer> getPage(int page, int sizePage, String order) throws DAOException;
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
@@ -71,6 +74,14 @@ public interface ComputerDAO {
     String delete(int id) throws DAOException;
 
     /**
+     * This method removes computers corresponding to the passed listID as a parameter and returns a message confirming whether or not this deletion occurs.
+     * @param listId list of the computer to delete
+     * @return if succes : "Computers are deleted", else : "Delete Computer failed, no rows affected."
+     * @throws DAOException if SQL fail
+     */
+    String delete(List<Integer> listId) throws DAOException;
+
+    /**
      * Delete the last computer added in the DAO.
      * @throws DAOException if delete failed
      */
@@ -78,10 +89,17 @@ public interface ComputerDAO {
 
     /**
      * Get the first computer of the DataBase.
-     * @throws DAOException if sql failed
      * @return Computer
+     * @throws DAOException if sql failed
      */
     Computer getFirst() throws DAOException;
+
+    /**
+     * Delete all computer of one company.
+     * @param id the id of the company
+     * @throws DAOException if sql failed
+     */
+    void deleteIdCompany(int id) throws DAOException;
 
     /**
      * Return the Instance of DAO.
@@ -90,4 +108,6 @@ public interface ComputerDAO {
     static ComputerDAOImpl getInstance() {
         return ComputerDAOImpl.INSTANCE;
     }
+
+
 }

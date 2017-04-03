@@ -4,7 +4,7 @@ function validateComputer() {
     var disco = $("#discontinued").val();
     var dateMin = new Date(0);
     var dateMax = new Date();
-    if(name == "") {
+    if (name == "") {
         alert("A name is required");
         return false;
     }
@@ -14,7 +14,7 @@ function validateComputer() {
     if (intro != "") {
         try {
             var dateIntro = new Date($("#introduced").val());
-            if(dateIntro < dateMin || dateIntro > dateMax) {
+            if (dateIntro < dateMin || dateIntro > dateMax) {
                 alert("Wrong intro date !");
                 return false;
             }
@@ -27,7 +27,7 @@ function validateComputer() {
     if (disco != "") {
         try {
             var dateDisco = new Date($("#discontinued").val());
-            if(dateDisco < dateMin || dateDisco > dateMax) {
+            if (dateDisco < dateMin || dateDisco > dateMax) {
                 alert("Wrong discontinued date !");
                 return false;
             }

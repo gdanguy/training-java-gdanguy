@@ -4,9 +4,9 @@ import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
+import model.dao.DAOFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +19,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
     INSTANCE;
 
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
-    private Connection conn = null;
+    private DAOFactory daoFactory = DAOFactory.getInstance();
 
     /**
      * Get the number of Companies.
@@ -28,20 +28,22 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public int count() throws DAOException {
         logger.info("Count computers");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT COUNT(*) FROM company");
-            ResultSet r = s.executeQuery();
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT COUNT(*) FROM company");
+            r = s.executeQuery();
             int result = -1;
             if (r.next()) {
                 result = (r.getInt(1));
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return result;
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -53,10 +55,13 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public Page<Company> getPage(int page) throws DAOException {
         logger.info("Get all companies");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE);
-            ResultSet r = s.executeQuery();
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE);
+            r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
             while (r.next()) {
                 result.add(GenericBuilder.of(Company::new)
@@ -64,12 +69,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
                         .with(Company::setName, r.getString(2))
                         .build());
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return new Page<Company>(result, page);
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -81,11 +85,13 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public Company get(int id) throws DAOException {
         logger.info("Get all companies");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
             s.setInt(1, id);
-            ResultSet r = s.executeQuery();
             Company result = null;
             if (r.next()) {
                 result = GenericBuilder.of(Company::new)
@@ -93,12 +99,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
                         .with(Company::setName, r.getString(2))
                         .build();
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return result;
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -109,23 +114,25 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public ArrayList<Company> getAll() throws DAOException {
         logger.info("Get all companies");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT id, name FROM company");
-            ResultSet r = s.executeQuery();
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT id, name FROM company");
+            r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
             while (r.next()) {
                 result.add(GenericBuilder.of(Company::new)
-                            .with(Company::setId, r.getInt(1))
-                            .with(Company::setName, r.getString(2))
-                            .build());
+                        .with(Company::setId, r.getInt(1))
+                        .with(Company::setName, r.getString(2))
+                        .build());
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return result;
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -137,9 +144,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public int create(Company c) throws DAOException {
         logger.info("Create computer : " + c);
+        Connection conn;
+        PreparedStatement s = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement(
+            conn = daoFactory.get();
+            s = conn.prepareStatement(
                     "Insert into company (name) values (?)"
                     , Statement.RETURN_GENERATED_KEYS);
             s.setString(1, c.getName());
@@ -147,25 +156,21 @@ public enum CompanyDAOImpl implements CompanyDAO {
             int affectedRows = s.executeUpdate();
 
             if (affectedRows == 0) {
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Creating Company failed, no rows affected.");
             }
 
             ResultSet generatedKeys = s.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int id = generatedKeys.getInt(1);
-                s.close();
-                Utils.close(conn);
                 return id;
             } else {
                 generatedKeys.close();
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Creating Company failed, no ID obtained.");
             }
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
         }
     }
 
@@ -177,14 +182,10 @@ public enum CompanyDAOImpl implements CompanyDAO {
      */
     public boolean delete(int id) throws DAOException {
         logger.info("Delete a company : " + id);
+        Connection conn;
+        PreparedStatement s = null;
         try {
-            conn = Utils.open();
-            conn.setAutoCommit(false);
-            //Delete all computer of this company
-            PreparedStatement s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
-            s.setInt(1, id);
-            s.executeUpdate();
-
+            conn = daoFactory.get();
             //delete the company
             s = conn.prepareStatement("DELETE FROM company where id = ?");
             s.setInt(1, id);
@@ -195,12 +196,11 @@ public enum CompanyDAOImpl implements CompanyDAO {
             if (affectedRows == 0) {
                 throw new SQLException("Delete company failed, no rows affected.");
             }
-            s.close();
-            Utils.commitClose(conn);
             return true;
         } catch (SQLException e) {
-            Utils.rollbackClose(conn);
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
         }
     }
 }

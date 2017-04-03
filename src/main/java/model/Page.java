@@ -27,8 +27,8 @@ public class Page<T> {
 
     /**
      * Constructor.
-     * @param list contains the ArrayList to copy
-     * @param page correspond to the currentPage
+     * @param list     contains the ArrayList to copy
+     * @param page     correspond to the currentPage
      * @param pageSize the page size
      */
     public Page(ArrayList<T> list, int page, int pageSize) {
@@ -93,7 +93,7 @@ public class Page<T> {
 
     /**
      * Returns a string representation of the object.
-     * @return  a string representation of the object.
+     * @return a string representation of the object.
      */
     @Override
     public String toString() {

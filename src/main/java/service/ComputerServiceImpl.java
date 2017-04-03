@@ -1,17 +1,22 @@
 package service;
 
+import controller.DashboardServlet;
 import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
+import model.dao.DAOFactory;
 import model.dao.computer.ComputerDAO;
-import model.dao.computer.ComputerDAOImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 
 public enum ComputerServiceImpl implements ComputerService {
     INSTANCE;
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
+    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private ComputerDAO computerDAO = ComputerDAO.getInstance();
 
     /**
      * Get the number of Computer.
@@ -19,11 +24,13 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public int count() {
         try {
-            ComputerDAOImpl db = ComputerDAO.getInstance();
-            return db.count();
+            daoFactory.open();
+            return computerDAO.count();
         } catch (DAOException e) {
             logger.error(e.toString());
             return ECHEC_FLAG;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -39,11 +46,22 @@ public enum ComputerServiceImpl implements ComputerService {
 
     /**
      * Get a page of Computer with a size of sizePage.
-     * @param page int
+     * @param page     int
      * @param sizePage int
      * @return a page of Computer
      */
     public Page<Computer> list(int page, int sizePage) {
+        return list(page, sizePage, DashboardServlet.ORDER_NULL);
+    }
+
+    /**
+     * Get a page of Computer with a size of sizePage and a order.
+     * @param page     int
+     * @param sizePage int
+     * @param order order
+     * @return a page of Computer
+     */
+    public Page<Computer> list(int page, int sizePage, String order) {
         logger.info("List all Computers");
         if (page < 0) {
             logger.error("Invalid Page Number");
@@ -51,15 +69,17 @@ public enum ComputerServiceImpl implements ComputerService {
         }
         int p = page;
         try {
-            ComputerDAOImpl db = ComputerDAO.getInstance();
-            Page<Computer> result = db.getPage(p, sizePage);
+            daoFactory.open();
+            Page<Computer> result = computerDAO.getPage(p, sizePage, order);
             while (result.getListPage().size() == 0) {
-                result = db.getPage(--p, sizePage);
+                result = computerDAO.getPage(--p, sizePage, order);
             }
             return result;
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -71,12 +91,13 @@ public enum ComputerServiceImpl implements ComputerService {
     public Page<Computer> list(String search) {
         logger.info("List all Computers");
         try {
-            ComputerDAOImpl db = ComputerDAO.getInstance();
-            Page<Computer> result = db.getPage(search);
-            return result;
+            daoFactory.open();
+            return computerDAO.getPage(search);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -102,11 +123,13 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public Computer get(int id) {
         try {
-            ComputerDAOImpl db = ComputerDAO.getInstance();
-            return db.getDetails(id);
+            daoFactory.open();
+            return computerDAO.getDetails(id);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -115,13 +138,13 @@ public enum ComputerServiceImpl implements ComputerService {
      * @param computer to insert
      * @return if computer was added
      * @throws NumberFormatException if bad parameter
-     * @throws DAOException if model bug
+     * @throws DAOException          if model bug
      */
     public int create(Computer computer) {
         logger.info("Create a computer, " + computer);
-        ComputerDAOImpl db = ComputerDAO.getInstance();
         try {
-            Computer result = db.create(computer);
+            daoFactory.open();
+            Computer result = computerDAO.create(computer);
             if (result != null) {
                 return result.getId();
             }
@@ -129,6 +152,8 @@ public enum ComputerServiceImpl implements ComputerService {
             logger.error(e.toString());
         } catch (NumberFormatException e) {
             logger.error(e.toString());
+        } finally {
+            daoFactory.close();
         }
         return ECHEC_FLAG;
     }
@@ -140,13 +165,15 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public boolean update(Computer computer) {
         logger.info("Update a Computer, new : " + computer);
-        ComputerDAOImpl db = ComputerDAO.getInstance();
         try {
-            return db.update(computer);
+            daoFactory.open();
+            return computerDAO.update(computer);
         } catch (DAOException e) {
             logger.error(e.toString());
         } catch (NumberFormatException e) {
             logger.error(e.toString());
+        } finally {
+            daoFactory.close();
         }
         return false;
     }
@@ -163,12 +190,42 @@ public enum ComputerServiceImpl implements ComputerService {
             return "Invalid ID";
         } else {
             try {
-                ComputerDAOImpl db = ComputerDAO.getInstance();
-                return db.delete(id);
+                daoFactory.open();
+                return computerDAO.delete(id);
             } catch (DAOException e) {
                 logger.error(e.toString());
                 return null;
+            } finally {
+                daoFactory.close();
             }
+        }
+    }
+
+    /**
+     * Delete Computers in DataBase.
+     * @param listId list of the Computer
+     * @return String if succes, null else
+     */
+    public String delete(List<Integer> listId) {
+        logger.info("Delete a computer, list : " + listId);
+        if (listId.size() == 0) {
+            logger.error("Invalid ID (no id)");
+            return "Invalid ID (no id)";
+        }
+        for (Integer i : listId) {
+            if (i == null) {
+                logger.error("Invalid ID (null)");
+                return "Invalid ID (null)";
+            }
+        }
+        try {
+            daoFactory.open();
+            return computerDAO.delete(listId);
+        } catch (DAOException e) {
+            logger.error(e.toString());
+            return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -178,11 +235,13 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public Computer getFirst() {
         try {
-            ComputerDAO db = ComputerDAO.getInstance();
-            return db.getFirst();
+            daoFactory.open();
+            return computerDAO.getFirst();
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -191,10 +250,12 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public void deleteLast() {
         try {
-            ComputerDAO dao = ComputerDAO.getInstance();
-            dao.deleteLast();
+            daoFactory.open();
+            computerDAO.deleteLast();
         } catch (DAOException e) {
             logger.error(e.toString());
+        } finally {
+            daoFactory.close();
         }
     }
 }

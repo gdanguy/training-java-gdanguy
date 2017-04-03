@@ -1,30 +1,30 @@
 package model.dao.computer;
 
+import controller.DashboardServlet;
+import model.GenericBuilder;
+import model.Page;
+import model.company.Company;
+import model.computer.Computer;
+import model.dao.DAOException;
+import model.dao.DAOFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import model.GenericBuilder;
-import model.Page;
-import model.dao.DAOException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-import model.company.Company;
-import model.computer.Computer;
-import utils.Utils;
+import java.util.List;
 
 public enum ComputerDAOImpl implements ComputerDAO {
     INSTANCE;
 
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    private Connection conn;
+    private DAOFactory daoFactory = DAOFactory.getInstance();
 
     /**
      * Get the number of Computer.
@@ -33,20 +33,22 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public int count() throws DAOException {
         logger.info("Count computers");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT COUNT(*) FROM computer");
-            ResultSet r = s.executeQuery();
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT COUNT(*) FROM computer");
+            r = s.executeQuery();
             int result = -1;
             if (r.next()) {
                 result = (r.getInt(1));
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return result;
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -57,36 +59,61 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @throws DAOException if SQL request fail
      */
     public Page<Computer> getPage(int page) throws DAOException {
-        return getPage(page, Page.PAGE_SIZE);
+        return getPage(page, Page.PAGE_SIZE, DashboardServlet.ORDER_NULL);
     }
 
     /**
      * This method returns the page of computers with a sizePage of sizePage.
-     * @param page corresponds to the page's number to be retrieved
+     * @param page     corresponds to the page's number to be retrieved
      * @param sizePage size of a page
+     * @param order order of a page
      * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
-    public Page<Computer> getPage(int page, int sizePage) throws DAOException {
+    public Page<Computer> getPage(int page, int sizePage, String order) throws DAOException {
         logger.info("Get page " + page + ", computers of " + sizePage);
+        String orderBy = getOrder(order);
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
+                    + orderBy
                     + " LIMIT " + sizePage + " OFFSET " + page * sizePage);
-            ResultSet r = s.executeQuery();
+            r = s.executeQuery();
             ArrayList<Computer> result = new ArrayList<>();
             while (r.next()) {
                 result.add(makeComputerWithResultSet(r));
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return new Page<Computer>(result, page, sizePage);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
+        }
+    }
+
+    /**
+     * Get the ORDER BY of the request.
+     * @param order of the page
+     * @return String
+     */
+    private String getOrder(String order) {
+        String result = " ORDER BY ";
+        switch (order) {
+            default: return "";
+            case DashboardServlet.ORDER_NAME_ASC     : return (result + " c1.name ASC");
+            case DashboardServlet.ORDER_NAME_DESC    : return (result + " c1.name DESC");
+            case DashboardServlet.ORDER_INTRO_ASC    : return (result + " introduced ASC");
+            case DashboardServlet.ORDER_INTRO_DESC   : return (result + " introduced DESC");
+            case DashboardServlet.ORDER_DISCO_ASC    : return (result + " discontinued ASC");
+            case DashboardServlet.ORDER_DISCO_DESC   : return (result + " discontinued DESC");
+            case DashboardServlet.ORDER_COMPANY_ASC  : return (result + " c2.name ASC");
+            case DashboardServlet.ORDER_COMPANY_DESC : return (result + " c2.name DESC");
         }
     }
 
@@ -98,26 +125,28 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public Page<Computer> getPage(String search) throws DAOException {
         logger.info("Get Search computers : " + search);
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+            conn = daoFactory.get();
+            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
                     + " WHERE c1.name LIKE '%" + search + "%'"
                     + " OR c2.name LIKE '%" + search + "%'");
-            ResultSet r = s.executeQuery();
+            r = s.executeQuery();
             ArrayList<Computer> result = new ArrayList<>();
             while (r.next()) {
                 result.add(makeComputerWithResultSet(r));
             }
-            r.close();
-            s.close();
-            Utils.close(conn);
             return new Page<Computer>(result, 0);
         } catch (SQLException e) {
             e.printStackTrace();
-        throw new DAOException(e);
-    }
+            throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
+        }
     }
 
     /**
@@ -128,30 +157,29 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public Computer getDetails(int id) throws DAOException {
         logger.info("Get computer : " + id);
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
         try {
-            conn = Utils.open();
+            conn = daoFactory.get();
 
-            PreparedStatement s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
+            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c2.id = c1.company_id"
                     + " WHERE c1.id = ?");
             s.setInt(1, id);
-            ResultSet r = s.executeQuery();
+            r = s.executeQuery();
             if (r.next()) {
                 Computer result = makeComputerWithResultSet(r);
-                r.close();
-                s.close();
-                Utils.close(conn);
                 return result;
             } else {
-                r.close();
-                s.close();
-                Utils.close(conn);
                 return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
     }
 
@@ -172,9 +200,9 @@ public enum ComputerDAOImpl implements ComputerDAO {
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
                     .with(Computer::setCompany, idCompany <= 0 ? null : GenericBuilder.of(Company::new)
-                                                                            .with(Company::setId, idCompany)
-                                                                            .with(Company::setName, r.getString(6))
-                                                                            .build())
+                            .with(Company::setId, idCompany)
+                            .with(Company::setName, r.getString(6))
+                            .build())
                     .build();
             return result;
         } catch (SQLException e) {
@@ -192,9 +220,12 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public Computer create(Computer computer) throws DAOException {
         logger.info("Create computer : " + computer);
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet generatedKeys = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement(
+            conn = daoFactory.get();
+            s = conn.prepareStatement(
                     "Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
                     , Statement.RETURN_GENERATED_KEYS);
             s.setString(1, computer.getName());
@@ -209,12 +240,10 @@ public enum ComputerDAOImpl implements ComputerDAO {
             int affectedRows = s.executeUpdate();
 
             if (affectedRows == 0) {
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Creating Computer failed, no rows affected.");
             }
 
-            ResultSet generatedKeys = s.getGeneratedKeys();
+            generatedKeys = s.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int id = generatedKeys.getInt(1);
                 Computer result = GenericBuilder.of(Computer::new)
@@ -224,19 +253,15 @@ public enum ComputerDAOImpl implements ComputerDAO {
                         .with(Computer::setDiscontinued, computer.getDiscontinued())
                         .with(Computer::setCompany, computer.getCompany())
                         .build();
-                generatedKeys.close();
-                s.close();
-                Utils.close(conn);
                 return result;
             } else {
-                generatedKeys.close();
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Creating Computer failed, no ID obtained.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, generatedKeys);
         }
     }
 
@@ -248,9 +273,11 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public boolean update(Computer modifiedComputer) throws DAOException {
         logger.info("Update a computer : " + modifiedComputer);
+        Connection conn;
+        PreparedStatement s = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement(
+            conn = daoFactory.get();
+            s = conn.prepareStatement(
                     "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                     , Statement.RETURN_GENERATED_KEYS);
             s.setString(1, modifiedComputer.getName());
@@ -266,16 +293,14 @@ public enum ComputerDAOImpl implements ComputerDAO {
             int affectedRows = s.executeUpdate();
 
             if (affectedRows == 0) {
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Updating Computer failed, no rows affected.");
             }
-            s.close();
-            Utils.close(conn);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
         }
     }
 
@@ -287,25 +312,70 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public String delete(int id) throws DAOException {
         logger.info("Delete a computer : " + id);
+        Connection conn;
+        PreparedStatement s = null;
         try {
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("DELETE FROM computer where id = ?");
+            conn = daoFactory.get();
+            s = conn.prepareStatement("DELETE FROM computer where id = ?");
             s.setInt(1, id);
 
             int affectedRows = s.executeUpdate();
 
             if (affectedRows == 0) {
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
-            s.close();
-            Utils.close(conn);
             return "Computer " + id + " is deleted";
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
         }
+    }
+
+    /**
+     * This method removes computers corresponding to the passed listID as a parameter and returns a message confirming whether or not this deletion occurs.
+     * @param listId list of the computer to delete
+     * @return if succes : "Computers are deleted", else : "Delete Computer failed, no rows affected."
+     * @throws DAOException if SQL fail
+     */
+    public String delete(List<Integer> listId) throws DAOException {
+        logger.info("Delete computers : " + listId);
+        Connection conn;
+        PreparedStatement s = null;
+        try {
+            conn = daoFactory.get();
+            String prepareDelete = prepareDelete(listId.size());
+            s = conn.prepareStatement("DELETE FROM computer where id in (" + prepareDelete + ")");
+            for (int i = 0; i < listId.size(); i++) {
+                s.setInt((i + 1), listId.get(i));
+            }
+
+            int affectedRows = s.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Delete Computer failed, no rows affected.");
+            }
+            return "Computers are deleted";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
+        }
+    }
+
+    /**
+     * Prepare list of ?.
+     * @param listIdSize list.
+     * @return .
+     */
+    private String prepareDelete(int listIdSize) {
+        String result = "";
+        for (int i = 0; i < listIdSize; i++) {
+            result += ",?";
+        }
+        return result.substring(1);
     }
 
     /**
@@ -314,30 +384,30 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     public void deleteLast() throws DAOException {
         logger.info("Delete last computer");
+        Connection conn;
+        PreparedStatement s = null;
         try {
             int id = getLastId();
-            conn = Utils.open();
-            PreparedStatement s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+            conn = daoFactory.get();
+            s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
             s.setInt(1, id);
 
             int affectedRows = s.executeUpdate();
             if (affectedRows == 0) {
-                s.close();
-                Utils.close(conn);
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
-            s.close();
-            Utils.close(conn);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
         }
     }
 
     /**
      * Get the first computer of the DataBase.
-     * @throws DAOException if sql failed
      * @return Computer
+     * @throws DAOException if sql failed
      */
     public Computer getFirst() throws DAOException {
         try {
@@ -365,7 +435,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @throws SQLException if sql failed
      * @throws DAOException if sql failed
      */
-    private int getFirstId() throws  SQLException, DAOException {
+    private int getFirstId() throws SQLException, DAOException {
         return getFirstORLastId(false);
     }
 
@@ -373,25 +443,53 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * getFirstORLastId.
      * @param last true if you want the last id, false if you want the first
      * @return int
-     * @throws SQLException if sql failed
      * @throws DAOException if sql failed
      */
-    private int getFirstORLastId(boolean last) throws  SQLException, DAOException {
+    private int getFirstORLastId(boolean last) throws DAOException {
         String ordre = "";
         if (last) {
             ordre = " DESC ";
         }
-        conn = Utils.open();
-        PreparedStatement s = conn.prepareStatement(
-                "SELECT id FROM computer ORDER BY id" + ordre);
-        ResultSet r = s.executeQuery();
-        if (!r.next()) {
-            throw new DAOException("No Computer in DataBase");
+        Connection conn;
+        PreparedStatement s = null;
+        ResultSet r = null;
+        try {
+            conn = daoFactory.get();
+            s = conn.prepareStatement(
+                    "SELECT id FROM computer ORDER BY id" + ordre);
+            r = s.executeQuery();
+            if (!r.next()) {
+                throw new DAOException("No Computer in DataBase");
+            }
+            int id = r.getInt(1);
+            return id;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException(e);
+        } finally {
+            daoFactory.close(s, r);
         }
-        int id = r.getInt(1);
-        r.close();
-        s.close();
-        Utils.close(conn);
-        return id;
+    }
+
+    /**
+     * Delete all computer of one company.
+     * @param id the id of the company
+     * @throws DAOException id SQL bug
+     */
+    public void deleteIdCompany(int id) throws DAOException {
+        logger.info("Delete computer of the company : " + id);
+        Connection conn;
+        PreparedStatement s = null;
+        try {
+            conn = daoFactory.get();
+            s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
+            s.setInt(1, id);
+            s.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException(e);
+        } finally {
+            daoFactory.close(s);
+        }
     }
 }

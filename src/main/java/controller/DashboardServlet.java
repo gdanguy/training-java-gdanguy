@@ -2,9 +2,9 @@ package controller;
 
 import model.Page;
 import model.computer.Computer;
-import org.slf4j.LoggerFactory;
 import service.ComputerService;
 import service.mappy.ComputerMapper;
+import service.mappy.computer.ComputerDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,25 +16,47 @@ import java.util.ArrayList;
 
 @WebServlet(name = "DashboardServlet", urlPatterns = "/dashboard")
 public class DashboardServlet extends HttpServlet {
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
-    private static final int NB_PAGINATION = 10;
+    public static final String DASHBOARD = "/dashboard";
+    public static final String DASHBOARD_JSP = "/views/dashboard.jsp";
+    public static final String ERROR_500_JSP = "/views/500.html";
+    public static final String ADD_COMPUTER_JSP = "/views/addComputer.jsp";
+    public static final String EDIT_COMPUTER_JSP = "/views/editComputer.jsp";
+    public static final int NB_PAGINATION = 10;
+
+    private static final String CURRENT_PAGE = "currentPage";
+    private static final String SIZE_PAGE = "sizePages";
+    private static final String START = "debut";
+    private static final String END = "fin";
+    private static final String COUNT = "countComputer";
+    private static final String LIST = "listComputers";
+    private static final String SEARCH = "search";
+    public static final String ORDER = "order";
+    public static final String ORDER_NULL = "null";
+    public static final String ORDER_NAME_ASC = "name_a";
+    public static final String ORDER_NAME_DESC = "name_d";
+    public static final String ORDER_INTRO_ASC = "intro_a";
+    public static final String ORDER_INTRO_DESC = "intro_b";
+    public static final String ORDER_DISCO_ASC = "disco_a";
+    public static final String ORDER_DISCO_DESC = "disco_b";
+    public static final String ORDER_COMPANY_ASC = "company_a";
+    public static final String ORDER_COMPANY_DESC = "company_b";
 
     /**
      * Set data for the Dashboard.
-     * @param request jsp request
+     * @param request  jsp request
      * @param response jsp response
      * @throws ServletException if bug
-     * @throws IOException if bug
+     * @throws IOException      if bug
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String cp = request.getParameter("currentPage");
+        String cp = request.getParameter(CURRENT_PAGE);
         int currentPage = 0;
         if (!(cp == null || cp.equals(""))) {
             currentPage = Integer.parseInt(cp);
         }
-        request.setAttribute("currentPage", currentPage);
-        String size = request.getParameter("sizePages");
+        request.setAttribute(CURRENT_PAGE, currentPage);
+        String size = request.getParameter(SIZE_PAGE);
         int sizePages = Page.PAGE_SIZE;
         if (!(size == null || size.equals(""))) {
             sizePages = Integer.parseInt(size);
@@ -51,38 +73,48 @@ public class DashboardServlet extends HttpServlet {
         } else if (currentPage > fin) {
             currentPage = fin;
         }
-        request.setAttribute("debut", debut);
-        request.setAttribute("fin", fin);
-        request.setAttribute("countComputer", nbComputer);
-        request.setAttribute("sizePages", sizePages);
+        String order = request.getParameter(ORDER);
+        if (order == null) {
+            order = ORDER_NULL;
+            request.setAttribute(ORDER, ORDER_NULL);
+        } else {
+            request.setAttribute(ORDER, order);
+        }
         ComputerMapper computerMap = ComputerMapper.getInstance();
-        request.setAttribute("listComputers", computerMap.toDTO(serviceComputer.list(currentPage, sizePages)).getListPage());
+        ArrayList<ComputerDTO> list = computerMap.toDTO(serviceComputer.list(currentPage, sizePages, order)).getListPage();
 
-        request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+        request.setAttribute(START, debut);
+        request.setAttribute(END, fin);
+        request.setAttribute(COUNT, nbComputer);
+        request.setAttribute(SIZE_PAGE, sizePages);
+        request.setAttribute(LIST, list);
+
+        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
     }
 
     /**
      * Search.
-     * @param request jsp request
+     * @param request  jsp request
      * @param response jsp response
      * @throws ServletException if bug
-     * @throws IOException if bug
+     * @throws IOException      if bug
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String search = request.getParameter("search");
+        String search = request.getParameter(SEARCH);
         if (search == null || search.equals("")) {
             doGet(request, response);
         }
-        request.setAttribute("currentPage", 0);
+        request.setAttribute(CURRENT_PAGE, 0);
         ComputerService serviceDAO = ComputerService.getInstance();
         ArrayList<Computer> listComputer = serviceDAO.list(search).getListPage();
-        request.setAttribute("debut", 0);
-        request.setAttribute("fin", 0);
-        request.setAttribute("countComputer", listComputer.size());
-        request.setAttribute("sizePages", listComputer.size());
+        request.setAttribute(START, 0);
+        request.setAttribute(END, 0);
+        request.setAttribute(COUNT, listComputer.size());
+        request.setAttribute(SIZE_PAGE, listComputer.size());
         ComputerMapper computerMap = ComputerMapper.getInstance();
-        request.setAttribute("listComputers", computerMap.toDTO(listComputer));
-        request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
+        request.setAttribute(LIST, computerMap.toDTO(listComputer));
+        request.setAttribute(ORDER, request.getParameter(ORDER));
+        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
     }
 }

@@ -3,6 +3,7 @@ import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 import model.computer.Computer;
+import model.dao.DAOFactory;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
 import model.dao.company.CompanyDAOImpl;
@@ -13,19 +14,20 @@ import org.junit.Test;
 import service.CompanyService;
 import service.ComputerService;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
 public class TestService {
+    private DAOFactory daoFactory = DAOFactory.getInstance();
     private ComputerService serviceComputer = ComputerService.getInstance();
     private CompanyService serviceCompany = CompanyService.getInstance();
     private ComputerDAOImpl dbComputer = ComputerDAO.getInstance();
     private CompanyDAOImpl dbCompany = CompanyDAO.getInstance();
-    private int id;
     public static final String NAME_COMPUTER_TEST = "TestComputer";
     public static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
-    public static final String NAME_COMPUTER_TEST_3 = "TestComputer3";
 
     public static final String NAME_COMPANY = "TestCompany";
 
@@ -35,11 +37,9 @@ public class TestService {
      */
     @Before
     public void before() throws DAOException{
-        id = serviceComputer.create(
-                GenericBuilder.of(Computer::new)
-                        .with(Computer::setId, -1)
-                        .with(Computer::setName, NAME_COMPUTER_TEST)
-                        .build());
+        //daoFactory.open();
+        //on ne commit jamais les tests
+        //daoFactory.startTransaction();
     }
 
     /**
@@ -48,7 +48,8 @@ public class TestService {
      */
     @After
     public void after() throws DAOException{
-        serviceComputer.delete(id);
+        //daoFactory.roolback();
+        //daoFactory.close();
     }
 
     //Computer
@@ -100,37 +101,46 @@ public class TestService {
     }
 
     @Test
-    public void testCreateDeleteUpdateComputer() throws DAOException, NumberFormatException {
-        Page<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST_2);
-        int exist = result.getListPage().size();
+    public void testCreateComputer() throws DAOException {
+        int before = serviceComputer.count();
 
         int idComputer = serviceComputer.create(
                 GenericBuilder.of(Computer::new)
                         .with(Computer::setId, -1)
-                        .with(Computer::setName, NAME_COMPUTER_TEST_2)
+                        .with(Computer::setName, NAME_COMPUTER_TEST)
                         .build());
+        int after = serviceComputer.count();
 
         assertTrue("Test : The computer is create, id > 0 expected, but " + idComputer, idComputer != CompanyService.ECHEC_FLAG);
+        assertTrue("Test : The computer is create, one more computer in base", before +1 == after);
+    }
 
-        result = serviceComputer.list(NAME_COMPUTER_TEST_2);
-        assertTrue("Test : The computer is add ", result.getListPage().size() == (exist + 1));
-
-        result = serviceComputer.list(NAME_COMPUTER_TEST_3);
-        exist = result.getListPage().size();
-
+    @Test
+    public void testUpdateComputer() throws DAOException {
+        ArrayList<Computer> c = serviceComputer.list(0,serviceComputer.count()).getListPage();
+        int cpt = 0;
+        //We search a computer who not have the name at NAME_COMPUTER_TEST_2
+        while (c.get(cpt).getName().equals(NAME_COMPUTER_TEST_2)) {
+            cpt++;
+        }
+        int idComputer = c.get(cpt).getId();
+        int before = serviceComputer.list(NAME_COMPUTER_TEST_2).getListPage().size();
         serviceComputer.update(
                 GenericBuilder.of(Computer::new)
                         .with(Computer::setId, idComputer)
-                        .with(Computer::setName, NAME_COMPUTER_TEST_3)
+                        .with(Computer::setName, NAME_COMPUTER_TEST_2)
                         .build());
 
-        result = serviceComputer.list(NAME_COMPUTER_TEST_3);
-        assertTrue("Test : The computer is update ", result.getListPage().size() == (exist + 1));
+        int after = serviceComputer.list(NAME_COMPUTER_TEST_2).getListPage().size();
+        assertTrue("Test : The computer is update, one more computer in the search field ", before +1 == after);
+    }
 
-        serviceComputer.delete(idComputer);
-
-        result = serviceComputer.list(NAME_COMPUTER_TEST_3);
-        assertTrue("Test : The computer is delete ", result.getListPage().size() == exist);
+    @Test
+    public void testDeleteComputer() throws DAOException {
+        int before = serviceComputer.count();
+        serviceComputer.deleteLast();
+        int after = serviceComputer.count();
+        assertTrue("Test : the computer is delete, one less computer in base", before -1 == after);
     }
 
     //Company
@@ -143,7 +153,7 @@ public class TestService {
     }
 
     @Test
-    public void testCreateDeleteCompanies() throws DAOException {
+    public void testCreateCompanies() throws DAOException {
         //Create a company
         int id = dbCompany.create(
                 GenericBuilder.of(Company::new)
@@ -151,16 +161,12 @@ public class TestService {
                         .with(Company::setName, NAME_COMPANY)
                         .build());
         assertTrue("Test Create a company", id>=0);
+    }
 
-        //insert 1 computer for this company
-        dbComputer.create(GenericBuilder.of(Computer::new)
-                .with(Computer::setId, -1)
-                .with(Computer::setName, NAME_COMPUTER_TEST)
-                .with(Computer::setCompany, dbCompany.get(id))
-                .build());
-
+    @Test
+    public void testDeleteCompanies() throws DAOException {
         //delete this company
-        boolean succes = dbCompany.delete(id);
+        boolean succes = serviceCompany.delete(serviceCompany.listAll().get(0).getId());
         assertTrue("Test Delete a company", succes);
     }
 

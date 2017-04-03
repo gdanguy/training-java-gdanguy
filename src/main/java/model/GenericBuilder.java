@@ -21,7 +21,7 @@ public class GenericBuilder<T> {
     /**
      * .
      * @param instantiator .
-     * @param <T> .
+     * @param <T>          .
      * @return .
      */
     public static <T> GenericBuilder<T> of(Supplier<T> instantiator) {
@@ -31,8 +31,8 @@ public class GenericBuilder<T> {
     /**
      * .
      * @param consumer .
-     * @param value .
-     * @param <U> .
+     * @param value    .
+     * @param <U>      .
      * @return .
      */
     public <U> GenericBuilder<T> with(BiConsumer<T, U> consumer, U value) {

@@ -1,10 +1,10 @@
 package model.computer;
 
+import model.company.Company;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import model.company.Company;
 
 public class Computer {
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -101,7 +101,7 @@ public class Computer {
 
     /**
      * Returns a string simple representation of the object.
-     * @return  a string simple representation of the object.
+     * @return a string simple representation of the object.
      */
     @Override
     public String toString() {
@@ -110,7 +110,7 @@ public class Computer {
 
     /**
      * Returns a string detailed representation of the object.
-     * @return  a string detailed representation of the object.
+     * @return a string detailed representation of the object.
      */
     public String toStringDetails() {
         return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued

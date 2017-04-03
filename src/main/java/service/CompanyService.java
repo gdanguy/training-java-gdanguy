@@ -1,9 +1,9 @@
 package service;
 
-import java.util.ArrayList;
-
 import model.Page;
 import model.company.Company;
+
+import java.util.ArrayList;
 
 public interface CompanyService {
     int ECHEC_FLAG = -1;
