@@ -38,7 +38,7 @@ public class CompanyDTO {
 
     /**
      * Returns a string representation of the object.
-     * @return  a string representation of the object.
+     * @return a string representation of the object.
      */
     @Override
     public String toString() {

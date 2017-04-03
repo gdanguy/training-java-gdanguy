@@ -1,19 +1,22 @@
 package service;
 
-import java.util.ArrayList;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import model.Page;
 import model.company.Company;
-import model.dao.company.CompanyDAO;
-import model.dao.company.CompanyDAOImpl;
 import model.dao.DAOException;
+import model.dao.DAOFactory;
+import model.dao.company.CompanyDAO;
+import model.dao.computer.ComputerDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 public enum CompanyServiceImpl implements CompanyService {
     INSTANCE;
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
+    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private CompanyDAO companyDAO = CompanyDAO.getInstance();
+    private ComputerDAO computerDAO = ComputerDAO.getInstance();
 
     /**
      * Get a page of Company.
@@ -23,12 +26,13 @@ public enum CompanyServiceImpl implements CompanyService {
     public Page<Company> list(int page) {
         logger.info("List all Companies");
         try {
-            CompanyDAOImpl db = CompanyDAO.getInstance();
-            Page<Company> result = db.getPage(page);
-            return result;
+            daoFactory.open();
+            return companyDAO.getPage(page);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -39,13 +43,15 @@ public enum CompanyServiceImpl implements CompanyService {
      */
     public Company get(int id) {
         if (id < 0) {
-           return null;
+            return null;
         }
         try {
-            CompanyDAOImpl db = CompanyDAO.getInstance();
-            return db.get(id);
+            daoFactory.open();
+            return companyDAO.get(id);
         } catch (DAOException e) {
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -55,11 +61,13 @@ public enum CompanyServiceImpl implements CompanyService {
      */
     public ArrayList<Company> listAll() {
         try {
-            CompanyDAO db = CompanyDAO.getInstance();
-            return db.getAll();
+            daoFactory.open();
+            return companyDAO.getAll();
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -70,12 +78,18 @@ public enum CompanyServiceImpl implements CompanyService {
      */
     public boolean delete(int id) {
         try {
-            CompanyDAO dao = CompanyDAO.getInstance();
-            dao.delete(id);
+            daoFactory.open();
+            daoFactory.startTransaction();
+            computerDAO.deleteIdCompany(id);
+            companyDAO.delete(id);
+            daoFactory.commit();
             return true;
         } catch (DAOException e) {
+            daoFactory.roolback();
             logger.error(e.toString());
             return false;
+        } finally {
+            daoFactory.close();
         }
     }
 
@@ -87,11 +101,13 @@ public enum CompanyServiceImpl implements CompanyService {
      */
     public int create(Company c) {
         try {
-            CompanyDAO dao = CompanyDAO.getInstance();
-            return dao.create(c);
+            daoFactory.open();
+            return companyDAO.create(c);
         } catch (DAOException e) {
             logger.error(e.toString());
             return ECHEC_FLAG;
+        } finally {
+            daoFactory.close();
         }
     }
 }

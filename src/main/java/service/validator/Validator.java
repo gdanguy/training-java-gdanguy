@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Validator {
     private static Logger logger = LoggerFactory.getLogger(Validator.class);
@@ -20,11 +22,11 @@ public abstract class Validator {
      * @param date the date to validate
      * @return true if valid, false else
      */
-    public static boolean dateValidate(String date) {
+    public static String dateValidate(String date) {
         if (date == null || date.equals("") || !(date.matches(REGEX_DATE))) {
-            return false;
+            return "Date Invalid";
         }
-        return true;
+        return null;
     }
 
     /**
@@ -32,13 +34,13 @@ public abstract class Validator {
      * @param name the name to validate
      * @return true if valid, false else
      */
-    public static boolean nameValidator(String name) {
+    public static String nameValidator(String name) {
         if (name != null) {
             if (!(name.matches(REGEX_NAME))) {
-                return false;
+                return "Name Invalid";
             }
         }
-        return true;
+        return null;
     }
 
     /**
@@ -46,11 +48,11 @@ public abstract class Validator {
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
-    public static boolean intValidator(String intToValidate) {
+    public static String intValidator(String intToValidate) {
         if (intToValidate != null && !(intToValidate.matches(REGEX_INT))) {
-            return false;
+            return "Number invalid";
         }
-        return true;
+        return null;
     }
 
     /**
@@ -58,14 +60,15 @@ public abstract class Validator {
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
-    public static boolean intValidatorStrict(String intToValidate) {
+    public static List<String> intValidatorStrict(String intToValidate) {
+        ArrayList<String> result = new ArrayList<>();
         if (intToValidate == null || intToValidate.equals("")) {
-            return false;
+            result.add("Number empty");
         }
         if (!(intToValidate.matches(REGEX_INT))) {
-            return false;
+            result.add("Invalid Number");
         }
-        return true;
+        return result;
     }
 
     /**
@@ -73,11 +76,11 @@ public abstract class Validator {
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
-    public static boolean intValidatorStrict(Integer intToValidate) {
+    public static String intValidatorStrict(Integer intToValidate) {
         if (intToValidate == null || intToValidate < 0) {
-            return false;
+            return "Invalid Number";
         }
-        return true;
+        return null;
     }
 
     /**
@@ -86,7 +89,7 @@ public abstract class Validator {
      * @return 'no name' or name
      */
     public static String getValidName(String name) {
-        if (nameValidator(name)) {
+        if (nameValidator(name) == null) {
             return name;
         }
         return NAME_DEFAULT;
@@ -95,10 +98,10 @@ public abstract class Validator {
     /**
      * Convert user's input into LocalDateTime.
      * @param date user's input
-     * @return LocalDateTime
+     * @return LocalDateTime .
      */
     public static LocalDateTime parseString(String date) {
-        if (dateValidate(date)) {
+        if (dateValidate(date) == null) {
             return Computer.toLocalDateTime(date);
         }
         return null;
@@ -107,38 +110,54 @@ public abstract class Validator {
     /**
      * Validator for Company syntax.
      * @param c the Computer to validate
-     * @return true if valid, false else
+     * @return null if valid, String[2] else
      */
-    public static boolean validCompany(Company c) {
-        if (!(nameValidator(c.getName()) && intValidatorStrict(c.getId()))) {
-            return false;
+    public static String[] validCompany(Company c) {
+        String[] messageError = new String[2];
+        messageError[0] = nameValidator(c.getName());
+        messageError[1] = intValidatorStrict(c.getId());
+        if (messageError[0] == null && messageError[1] == null) {
+            return null;
         }
-        return true;
+        return messageError;
     }
 
     /**
      * Validator for Computer syntax.
      * @param c the Computer to validate
-     * @return true if valid, false else
+     * @return null if valid, String[] else
      */
-    public static boolean validComputer(Computer c) {
-        if (!(nameValidator(c.getName()) && intValidatorStrict(c.getId()) && validCompany(c.getCompany()))) {
-            return false;
+    public static String[] validComputer(Computer c) {
+        String[] messageErrorCompany = validCompany(c.getCompany());
+        String[] messageError = new String[2];
+        messageError[0] = nameValidator(c.getName());
+        messageError[1] = intValidatorStrict(c.getId());
+        if (messageError[0] == null && messageError[1] == null && messageErrorCompany == null) {
+            return null;
         }
-        return true;
+        if (messageErrorCompany != null) {
+            String[] messageError2 = new String[4];
+            messageError2[0] = messageError[0];
+            messageError2[1] = messageError[1];
+            messageError2[2] = messageErrorCompany[0];
+            messageError2[3] = messageErrorCompany[1];
+            return messageError2;
+        }
+        return messageError;
     }
 
     /**
      * Test if introduced <= discontinued.
-     * @param introduced of the Computer in DataBase
+     * @param introduced   of the Computer in DataBase
      * @param discontinued of the Computer in DataBase
-     * @throws RuntimeException if introduced > discontinued
+     * @return null if valid, String else
      */
-    private void testDate(LocalDateTime introduced, LocalDateTime discontinued) throws RuntimeException {
+    public static String testDate(LocalDateTime introduced, LocalDateTime discontinued) {
         if (!(introduced == null && discontinued == null)) {
             if ((introduced == null && discontinued != null) || (introduced != null && discontinued != null && (Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))))) {
-                throw new RuntimeException("Introduced is after Discontinued but it must be before");
+                return "Introduced is after Discontinued but it must be before";
             }
         }
+        return null;
     }
 }

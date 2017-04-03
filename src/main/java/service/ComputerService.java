@@ -3,6 +3,8 @@ package service;
 import model.Page;
 import model.computer.Computer;
 
+import java.util.List;
+
 
 public interface ComputerService {
     int ECHEC_FLAG = -1;
@@ -22,11 +24,20 @@ public interface ComputerService {
 
     /**
      * Get a page of Computer with a size of sizePage.
-     * @param page int
+     * @param page     int
      * @param sizePage int
      * @return a page of Computer
      */
     Page<Computer> list(int page, int sizePage);
+
+    /**
+     * Get a page of Computer with a size of sizePage and a order.
+     * @param page     int
+     * @param sizePage int
+     * @param order order of a page
+     * @return a page of Computer
+     */
+    Page<Computer> list(int page, int sizePage, String order);
 
     /**
      * Get a page of Computer with a search.
@@ -70,6 +81,13 @@ public interface ComputerService {
      */
     String delete(int id);
 
+    /**
+     * Delete Computers in DataBase.
+     * @param listId list of the Computer
+     * @return String if succes, null else
+     */
+    String delete(List<Integer> listId);
+
 
     /**
      * Delete the last computer added in the DAO.
@@ -89,4 +107,5 @@ public interface ComputerService {
     static ComputerServiceImpl getInstance() {
         return ComputerServiceImpl.INSTANCE;
     }
+
 }

@@ -1,4 +1,4 @@
-<%@ attribute name="currentPage" required="true"%>
+<%@ attribute name="currentPage" required="true" %>
 <%@ attribute name="debut" required="true" %>
 <%@ attribute name="fin" required="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

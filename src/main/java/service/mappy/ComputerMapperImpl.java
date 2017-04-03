@@ -19,7 +19,7 @@ public enum ComputerMapperImpl implements ComputerMapper {
      * @param page Page of Computer
      * @return the Page<ComputerDTO> generated
      */
-    public Page<ComputerDTO> toDTO(Page<Computer> page)  {
+    public Page<ComputerDTO> toDTO(Page<Computer> page) {
         return new Page<ComputerDTO>(toDTO(page.getListPage()), page.getPageSize());
     }
 

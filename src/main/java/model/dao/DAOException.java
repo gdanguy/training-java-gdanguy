@@ -25,6 +25,6 @@ public class DAOException extends Exception {
      */
     @Override
     public String toString() {
-        return "DAOExeption " + this.getMessage() + " : " + this.getMessage();
+        return "DAOExeption " + this.getCause() + " : " + this.getMessage();
     }
 }

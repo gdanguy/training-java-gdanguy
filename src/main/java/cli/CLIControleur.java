@@ -1,23 +1,22 @@
 package cli;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
-
 import model.GenericBuilder;
-import model.company.Company;
-import model.dao.DAOException;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import model.Page;
+import model.company.Company;
 import model.computer.Computer;
+import model.dao.DAOException;
 import model.dao.company.CompanyDAO;
 import model.dao.company.CompanyDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.CompanyService;
 import service.CompanyServiceImpl;
 import service.ComputerService;
 import service.ComputerServiceImpl;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class CLIControleur {
     private Logger logger = LoggerFactory.getLogger(CLIControleur.class);
@@ -215,7 +214,7 @@ public class CLIControleur {
     /**
      * Instructs the user to enter information to update a computer.
      * @param oldComputer old information
-     * @param id id of the computer
+     * @param id          id of the computer
      * @return Computer
      * @throws DAOException is SQL fail
      */

@@ -1,10 +1,10 @@
 package model.dao.company;
 
-import java.util.ArrayList;
-
 import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
+
+import java.util.ArrayList;
 
 public interface CompanyDAO {
 
