@@ -8,6 +8,7 @@ import model.dao.DAOFactory;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+//import service.validator.Validator;
 
 import java.util.List;
 
@@ -144,10 +145,13 @@ public enum ComputerServiceImpl implements ComputerService {
         logger.info("Create a computer, " + computer);
         try {
             daoFactory.open();
-            Computer result = computerDAO.create(computer);
-            if (result != null) {
+            Computer result = null;
+            //if (Validator.validComputer(computer) == null) {
+                result = computerDAO.create(computer);
+           // }
+           // if (result != null) {
                 return result.getId();
-            }
+            //}
         } catch (DAOException e) {
             logger.error(e.toString());
         } catch (NumberFormatException e) {

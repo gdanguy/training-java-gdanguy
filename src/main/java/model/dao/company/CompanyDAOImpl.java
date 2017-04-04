@@ -93,6 +93,7 @@ public enum CompanyDAOImpl implements CompanyDAO {
             s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
             s.setInt(1, id);
             Company result = null;
+            r = s.executeQuery();
             if (r.next()) {
                 result = GenericBuilder.of(Company::new)
                         .with(Company::setId, r.getInt(1))

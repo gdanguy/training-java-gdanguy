@@ -39,15 +39,15 @@ public class AddComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ComputerService service = ComputerService.getInstance();
-        Computer input = getComputer(request);
-        if (input != null) {
+        Computer input = getComputerNoStrict(request);
+        if (input == null) {
             doGet(request, response);
         }
+        ComputerService service = ComputerService.getInstance();
         int updateSucces = service.create(input);
         if (updateSucces < 0) {
             request.getRequestDispatcher(DashboardServlet.ERROR_500_JSP).forward(request, response);
         }
-        request.getRequestDispatcher(DashboardServlet.DASHBOARD).forward(request, response);
+        response.sendRedirect(DashboardServlet.DASHBOARD);
     }
 }

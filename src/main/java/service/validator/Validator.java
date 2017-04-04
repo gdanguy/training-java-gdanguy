@@ -113,6 +113,9 @@ public abstract class Validator {
      * @return null if valid, String[2] else
      */
     public static String[] validCompany(Company c) {
+        if (c == null) {
+            return null;
+        }
         String[] messageError = new String[2];
         messageError[0] = nameValidator(c.getName());
         messageError[1] = intValidatorStrict(c.getId());
@@ -128,10 +131,15 @@ public abstract class Validator {
      * @return null if valid, String[] else
      */
     public static String[] validComputer(Computer c) {
+        if (c == null) {
+            return null;
+        }
         String[] messageErrorCompany = validCompany(c.getCompany());
         String[] messageError = new String[2];
         messageError[0] = nameValidator(c.getName());
-        messageError[1] = intValidatorStrict(c.getId());
+        if (c.getId() != -1) {
+            messageError[1] = intValidatorStrict(c.getId());
+        }
         if (messageError[0] == null && messageError[1] == null && messageErrorCompany == null) {
             return null;
         }

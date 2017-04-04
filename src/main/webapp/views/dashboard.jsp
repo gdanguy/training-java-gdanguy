@@ -122,8 +122,9 @@
             </tr>
 
             </thead>
-            <!-- Browse attribute computers -->
-            <page:listeComputer listComputers="${listComputers}"></page:listeComputer>
+            <tbody id="results">
+                <!-- Browse attribute computers -->
+                <page:listeComputer listComputers="${listComputers}"></page:listeComputer>
             </tbody>
         </table>
     </div>

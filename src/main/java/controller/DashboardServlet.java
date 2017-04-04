@@ -52,13 +52,13 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cp = request.getParameter(CURRENT_PAGE);
         int currentPage = 0;
-        if (!(cp == null || cp.equals(""))) {
+        if (cp != null && !cp.equals("")) {
             currentPage = Integer.parseInt(cp);
         }
         request.setAttribute(CURRENT_PAGE, currentPage);
         String size = request.getParameter(SIZE_PAGE);
         int sizePages = Page.PAGE_SIZE;
-        if (!(size == null || size.equals(""))) {
+        if (size != null && !size.equals("")) {
             sizePages = Integer.parseInt(size);
         }
         int debut = 0;
@@ -102,9 +102,9 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String search = request.getParameter(SEARCH);
-        if (search == null || search.equals("")) {
-            doGet(request, response);
-        }
+        //if (search == null || search.equals("")) {
+        //    doGet(request, response);
+        //}
         request.setAttribute(CURRENT_PAGE, 0);
         ComputerService serviceDAO = ComputerService.getInstance();
         ArrayList<Computer> listComputer = serviceDAO.list(search).getListPage();

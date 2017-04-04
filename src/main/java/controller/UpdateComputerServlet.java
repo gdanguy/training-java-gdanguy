@@ -28,45 +28,67 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      * @param request of the jsp
      * @return the computer wanted
      */
+    protected Computer getComputerNoStrict(HttpServletRequest request) {
+        return getComputer(request, false);
+    }
+
+    /**
+     * Get the computer set by the user without null.
+     * @param request of the jsp
+     * @return the computer wanted
+     */
     protected Computer getComputer(HttpServletRequest request) {
+        return getComputer(request, true);
+    }
+
+    /**
+     * Get the computer set by the user.
+     * @param request of the jsp
+     * @param strict if strict of not
+     * @return the computer wanted
+     */
+    private Computer getComputer(HttpServletRequest request, boolean strict) {
         CompanyService service = CompanyService.getInstance();
         int id = CompanyService.ECHEC_FLAG;
         ArrayList<String> messageError = new ArrayList<>();
         //Test of the name
         String name = request.getParameter(NAME);
-        String resultError;
-        resultError = Validator.nameValidator(name);
-        if (resultError != null) {
-            messageError.add(resultError);
-        }
-        //Test of introduced
         String intro = request.getParameter(INTRO);
-        resultError = Validator.dateValidate(intro);
-        if (resultError != null) {
-            messageError.add(resultError);
-        }
-        //Test of discontinued
         String disco = request.getParameter(DISCO);
-        resultError = Validator.dateValidate(disco);
-        if (resultError != null) {
-            messageError.add(resultError);
-        }
-        //Test of Company id
         String compId = request.getParameter(COMPANY_ID);
-        resultError = Validator.intValidator(compId);
-        if (resultError != null) {
-            messageError.add(resultError);
-        }
         LocalDateTime introduced = Validator.parseString(intro);
         LocalDateTime discontinued = Validator.parseString(disco);
-        resultError = Validator.testDate(introduced, discontinued);
-        if (resultError != null) {
-            messageError.add(resultError);
-        }
-        //set message error
-        if (messageError.size() != 0) {
-            request.setAttribute(MESSAGE_ERROR, messageError);
-            return null;
+        if (strict) {
+            String resultError;
+            resultError = Validator.nameValidator(name);
+            if (resultError != null) {
+                messageError.add(resultError);
+            }
+            //Test of introduced
+            resultError = Validator.dateValidate(intro);
+            if (resultError != null) {
+                messageError.add(resultError);
+            }
+            //Test of discontinued
+            resultError = Validator.dateValidate(disco);
+            if (resultError != null) {
+                messageError.add(resultError);
+            }
+            //Test of Company id
+            resultError = Validator.intValidator(compId);
+            if (resultError != null) {
+                messageError.add(resultError);
+            }
+            //test date
+            resultError = Validator.testDate(introduced, discontinued);
+            if (resultError != null) {
+                messageError.add(resultError);
+            }
+            //set message error
+            if (messageError.size() != 0) {
+                request.setAttribute(MESSAGE_ERROR, messageError);
+                return null;
+            }
         }
         int companyId = Integer.parseInt(compId);
         return GenericBuilder.of(Computer::new)
@@ -84,7 +106,7 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      * @return the computer wanted
      */
     protected Computer getComputerModified(HttpServletRequest request) {
-        Computer userInsert = getComputer(request);
+        Computer userInsert = getComputerNoStrict(request);
         ComputerService service = ComputerService.getInstance();
         int id = Integer.parseInt(request.getParameter(ID));
         Computer old = service.get(id);
