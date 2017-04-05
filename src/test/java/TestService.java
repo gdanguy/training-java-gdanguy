@@ -166,7 +166,7 @@ public class TestService {
     @Test
     public void testDeleteCompanies() throws DAOException {
         //delete this company
-        boolean succes = serviceCompany.delete(serviceCompany.listAll().get(0).getId());
+        boolean succes = serviceCompany.deleteLast();
         assertTrue("Test Delete a company", succes);
     }
 

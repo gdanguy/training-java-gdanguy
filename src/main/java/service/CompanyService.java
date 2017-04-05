@@ -52,4 +52,9 @@ public interface CompanyService {
         return CompanyServiceImpl.INSTANCE;
     }
 
+    /**
+     * Delete the last company.
+     * @return true if succes, false else.
+     */
+    boolean deleteLast();
 }

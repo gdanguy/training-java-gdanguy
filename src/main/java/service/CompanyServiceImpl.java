@@ -110,4 +110,16 @@ public enum CompanyServiceImpl implements CompanyService {
             daoFactory.close();
         }
     }
+
+    /**
+     * Delete the last company.
+     * @return true if succes, false else.
+     */
+    public boolean deleteLast() {
+        ArrayList<Company> list = listAll();
+        int id = list.get(list.size() - 1).getId();
+        return delete(id);
+    }
+
+
 }
