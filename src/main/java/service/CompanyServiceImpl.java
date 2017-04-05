@@ -8,6 +8,7 @@ import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.validator.Validator;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,9 @@ public enum CompanyServiceImpl implements CompanyService {
      */
     public Page<Company> list(int page) {
         logger.info("List all Companies");
+        if (page < 0) {
+            return null;
+        }
         try {
             daoFactory.open();
             return companyDAO.getPage(page);
@@ -65,10 +69,10 @@ public enum CompanyServiceImpl implements CompanyService {
             return companyDAO.getAll();
         } catch (DAOException e) {
             logger.error(e.toString());
-            return null;
         } finally {
             daoFactory.close();
         }
+        return null;
     }
 
     /**
@@ -77,20 +81,22 @@ public enum CompanyServiceImpl implements CompanyService {
      * @return true if succes, false else
      */
     public boolean delete(int id) {
-        try {
-            daoFactory.open();
-            daoFactory.startTransaction();
-            computerDAO.deleteIdCompany(id);
-            companyDAO.delete(id);
-            daoFactory.commit();
-            return true;
-        } catch (DAOException e) {
-            daoFactory.roolback();
-            logger.error(e.toString());
-            return false;
-        } finally {
-            daoFactory.close();
+        if (id > 0) {
+            try {
+                daoFactory.open();
+                daoFactory.startTransaction();
+                computerDAO.deleteIdCompany(id);
+                companyDAO.delete(id);
+                daoFactory.commit();
+                return true;
+            } catch (DAOException e) {
+                daoFactory.roolback();
+                logger.error(e.toString());
+            } finally {
+                daoFactory.close();
+            }
         }
+        return false;
     }
 
 
@@ -100,15 +106,17 @@ public enum CompanyServiceImpl implements CompanyService {
      * @return the id of the company
      */
     public int create(Company c) {
-        try {
-            daoFactory.open();
-            return companyDAO.create(c);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return ECHEC_FLAG;
-        } finally {
-            daoFactory.close();
+        if (c != null && Validator.validCompanyStrict(c) == null) {
+            try {
+                daoFactory.open();
+                return companyDAO.create(c);
+            } catch (DAOException e) {
+                logger.error(e.toString());
+            } finally {
+                daoFactory.close();
+            }
         }
+        return ECHEC_FLAG;
     }
 
     /**

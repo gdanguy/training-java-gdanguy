@@ -8,8 +8,9 @@ import model.dao.DAOFactory;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import service.validator.Validator;
+import service.validator.Validator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,6 +19,8 @@ public enum ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
     private DAOFactory daoFactory = DAOFactory.getInstance();
     private ComputerDAO computerDAO = ComputerDAO.getInstance();
+
+    public static final String INVALID_ID = "Invalid ID";
 
     /**
      * Get the number of Computer.
@@ -145,16 +148,14 @@ public enum ComputerServiceImpl implements ComputerService {
         logger.info("Create a computer, " + computer);
         try {
             daoFactory.open();
-            Computer result = null;
-            //if (Validator.validComputer(computer) == null) {
+            Computer result;
+            if (computer != null && Validator.validComputer(computer) == null) {
                 result = computerDAO.create(computer);
-           // }
-           // if (result != null) {
-                return result.getId();
-            //}
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        } catch (NumberFormatException e) {
+                if (result != null) {
+                    return result.getId();
+                }
+            }
+        } catch (DAOException | NumberFormatException e) {
             logger.error(e.toString());
         } finally {
             daoFactory.close();
@@ -169,15 +170,15 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public boolean update(Computer computer) {
         logger.info("Update a Computer, new : " + computer);
-        try {
-            daoFactory.open();
-            return computerDAO.update(computer);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        } catch (NumberFormatException e) {
-            logger.error(e.toString());
-        } finally {
-            daoFactory.close();
+        if (computer != null && Validator.validComputer(computer) == null) {
+            try {
+                daoFactory.open();
+                return computerDAO.update(computer);
+            } catch (DAOException | NumberFormatException e) {
+                logger.error(e.toString());
+            } finally {
+                daoFactory.close();
+            }
         }
         return false;
     }
@@ -189,16 +190,16 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public String delete(int id) {
         logger.info("Delete a computer, id = " + id);
-        if (id < 0) {
-            logger.error("Invalid ID");
-            return "Invalid ID";
+        if (id <= 0) {
+            logger.error(INVALID_ID);
+            return INVALID_ID;
         } else {
             try {
                 daoFactory.open();
                 return computerDAO.delete(id);
             } catch (DAOException e) {
                 logger.error(e.toString());
-                return null;
+                return INVALID_ID;
             } finally {
                 daoFactory.close();
             }
@@ -212,9 +213,9 @@ public enum ComputerServiceImpl implements ComputerService {
      */
     public String delete(List<Integer> listId) {
         logger.info("Delete a computer, list : " + listId);
-        if (listId.size() == 0) {
-            logger.error("Invalid ID (no id)");
-            return "Invalid ID (no id)";
+        if (listId == null || listId.size() == 0) {
+            logger.error("Invalid ID (no list id)");
+            return "Invalid ID (no list id)";
         }
         for (Integer i : listId) {
             if (i == null) {
@@ -227,7 +228,7 @@ public enum ComputerServiceImpl implements ComputerService {
             return computerDAO.delete(listId);
         } catch (DAOException e) {
             logger.error(e.toString());
-            return null;
+            return "Delete Fail";
         } finally {
             daoFactory.close();
         }
@@ -262,4 +263,18 @@ public enum ComputerServiceImpl implements ComputerService {
             daoFactory.close();
         }
     }
+
+    /**
+     * Delete the last computer in the DAO.
+     */
+    public void deleteMultiLast() {
+        ArrayList<Integer> list = new ArrayList<>();
+        ArrayList<Computer> listC = list("").getListPage();
+        int i = listC.size();
+        list.add(listC.get(i - 1).getId());
+        list.add(listC.get(i - 2).getId());
+        delete(list);
+    }
+
+
 }

@@ -39,7 +39,7 @@ public enum DAOFactory {
      * Connection to the DataBase.
      */
     public void open() {
-        logger.info("Open Connection");
+        //logger.info("Open Connection");
         try {
             Connection c = cHolder.get();
             if (c == null) {
@@ -55,7 +55,7 @@ public enum DAOFactory {
      * Close Connection to the database.
      */
     public void close() {
-        logger.info("Disconnection to the database");
+        //logger.info("Disconnection to the database");
         Connection c = cHolder.get();
         cHolder.remove();
         try {
@@ -69,6 +69,7 @@ public enum DAOFactory {
      * Start Transaction.
      */
     public void startTransaction() {
+        logger.info("Start Transaction");
         try {
             cHolder.get().setAutoCommit(false);
         } catch (SQLException e) {

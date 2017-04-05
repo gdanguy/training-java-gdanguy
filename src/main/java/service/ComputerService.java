@@ -90,9 +90,14 @@ public interface ComputerService {
 
 
     /**
-     * Delete the last computer added in the DAO.
+     * Delete the last computer in the DAO.
      */
     void deleteLast();
+
+    /**
+     * Delete the two last computers in the DAO.
+     */
+    void deleteMultiLast();
 
     /**
      * Get the first computer of the DataBase.

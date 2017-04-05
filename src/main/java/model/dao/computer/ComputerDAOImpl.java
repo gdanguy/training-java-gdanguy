@@ -26,6 +26,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     private DAOFactory daoFactory = DAOFactory.getInstance();
 
+    public static final String DELETE_SUCCES = "Computers are deleted";
+
     /**
      * Get the number of Computer.
      * @return the number of computer in DataBase
@@ -356,7 +358,7 @@ public enum ComputerDAOImpl implements ComputerDAO {
             if (affectedRows == 0) {
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
-            return "Computers are deleted";
+            return DELETE_SUCCES;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
@@ -371,11 +373,14 @@ public enum ComputerDAOImpl implements ComputerDAO {
      * @return .
      */
     private String prepareDelete(int listIdSize) {
-        String result = "";
-        for (int i = 0; i < listIdSize; i++) {
+        if (listIdSize < 1) {
+            return null;
+        }
+        String result = "?";
+        for (int i = 1; i < listIdSize; i++) {
             result += ",?";
         }
-        return result.substring(1);
+        return result;
     }
 
     /**

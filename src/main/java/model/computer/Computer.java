@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Computer {
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter FORMAT2 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     public static final int FLAG_NO_ID = -1;
     protected int id;
     protected String name;
@@ -148,5 +149,14 @@ public class Computer {
      */
     public static LocalDateTime toLocalDateTime(String date) {
         return LocalDateTime.parse((date + " 00:00:00"), FORMAT);
+    }
+
+    /**
+     * Convert String to LocalDateTime.
+     * @param date in String format2
+     * @return date in LocalDateTime format2
+     */
+    public static LocalDateTime toLocalDateTime2(String date) {
+        return LocalDateTime.parse((date + " 00:00:00"), FORMAT2);
     }
 }

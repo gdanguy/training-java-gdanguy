@@ -27,7 +27,7 @@ public class DeleteComputerServlet extends HttpServlet {
         String[] computerToDelete = request.getParameter(SELECT).split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {
-            if (Validator.intValidatorStrict(computerToDelete[i]) == null) {
+            if (Validator.intValidatorStrict(computerToDelete[i]).size() > 0) {
                 request.setAttribute(UpdateComputerServlet.MESSAGE_ERROR, "Invalid selection");
                 request.getRequestDispatcher(DashboardServlet.DASHBOARD).forward(request, response);
             }

@@ -3,6 +3,8 @@ package controller;
 import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.CompanyService;
 import service.ComputerService;
 import service.validator.Validator;
@@ -11,11 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by ebiz on 23/03/17.
- */
 public abstract class UpdateComputerServlet extends HttpServlet {
+    private static Logger logger = LoggerFactory.getLogger(UpdateComputerServlet.class);
     public static final String MESSAGE_ERROR = "messageError";
     private static final String ID = "id";
     private static final String NAME = "computerName";
@@ -60,30 +61,26 @@ public abstract class UpdateComputerServlet extends HttpServlet {
         LocalDateTime discontinued = Validator.parseString(disco);
         if (strict) {
             String resultError;
-            resultError = Validator.nameValidator(name);
-            if (resultError != null) {
-                messageError.add(resultError);
-            }
+            //Test of name
+            //resultError = Validator.nameValidator(name);
+            //setError(messageError, resultError);
+
             //Test of introduced
             resultError = Validator.dateValidate(intro);
-            if (resultError != null) {
-                messageError.add(resultError);
-            }
+            setError(messageError, resultError);
+
             //Test of discontinued
             resultError = Validator.dateValidate(disco);
-            if (resultError != null) {
-                messageError.add(resultError);
-            }
+            setError(messageError, resultError);
+
             //Test of Company id
-            resultError = Validator.intValidator(compId);
-            if (resultError != null) {
-                messageError.add(resultError);
-            }
+            resultError = Validator.companyidValidate(compId);
+            setError(messageError, resultError);
+
             //test date
             resultError = Validator.testDate(introduced, discontinued);
-            if (resultError != null) {
-                messageError.add(resultError);
-            }
+            setError(messageError, resultError);
+
             //set message error
             if (messageError.size() != 0) {
                 request.setAttribute(MESSAGE_ERROR, messageError);
@@ -101,12 +98,24 @@ public abstract class UpdateComputerServlet extends HttpServlet {
     }
 
     /**
+     * If error != null, add it to massageError.
+     * @param messageError list of error
+     * @param error string
+     */
+    private void setError(List messageError, String error) {
+        if (error != null) {
+            logger.warn(error);
+            messageError.add(error);
+        }
+    }
+
+    /**
      * Get the computer set by the user, if user don't set value, keep older.
      * @param request of the jsp
      * @return the computer wanted
      */
     protected Computer getComputerModified(HttpServletRequest request) {
-        Computer userInsert = getComputerNoStrict(request);
+        Computer userInsert = getComputer(request);
         ComputerService service = ComputerService.getInstance();
         int id = Integer.parseInt(request.getParameter(ID));
         Computer old = service.get(id);
