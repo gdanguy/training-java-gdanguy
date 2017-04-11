@@ -193,8 +193,8 @@ public enum ComputerDAOImpl implements ComputerDAO {
      */
     private Computer makeComputerWithResultSet(ResultSet r) throws DAOException {
         try {
-            LocalDateTime intro = r.getTimestamp(3) == null ? null : r.getTimestamp(3).toLocalDateTime();
-            LocalDateTime disco = r.getTimestamp(4) == null ? null : r.getTimestamp(4).toLocalDateTime();
+            LocalDateTime intro = getLocalDateTime(r, 3);
+            LocalDateTime disco = getLocalDateTime(r, 4);
             int idCompany = r.getInt(5);
             Computer result = GenericBuilder.of(Computer::new)
                     .with(Computer::setId, r.getInt(1))
@@ -210,6 +210,20 @@ public enum ComputerDAOImpl implements ComputerDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Get LocalDateTime with a Timestamp of a ResultSet.
+     * @param r the resultSet
+     * @param index the index of the Timestamp
+     * @return LocalDateTime or null
+     */
+    private LocalDateTime getLocalDateTime(ResultSet r, int index) {
+        try {
+            return r.getTimestamp(index) == null ? null : r.getTimestamp(index).toLocalDateTime();
+        } catch (SQLException error) {
+            return null;
         }
     }
 
