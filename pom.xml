@@ -29,10 +29,32 @@
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
     </properties>
 
-
     <groupId>com.e-biz.gdanguy</groupId>
     <artifactId>training-java-gdanguy</artifactId>
     <version>${my.version}</version>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <db.url>jdbc:mysql://172.17.0.1:3306/computer-database-db</db.url>
+                <db.username>root</db.username>
+                <db.password>root</db.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <db.url>jdbc:mysql://172.17.0.1:3306/computer-database-db</db.url>
+                <db.username>root</db.username>
+                <db.password>root</db.password>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
@@ -153,6 +175,12 @@
 
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <defaultGoal>clean install package</defaultGoal>
         <plugins>
             <plugin>
