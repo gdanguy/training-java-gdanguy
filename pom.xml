@@ -32,6 +32,7 @@
     <groupId>com.e-biz.gdanguy</groupId>
     <artifactId>training-java-gdanguy</artifactId>
     <version>${my.version}</version>
+    <packaging>war</packaging>
 
     <profiles>
         <profile>
@@ -222,6 +223,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>war-exploded</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
