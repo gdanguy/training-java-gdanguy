@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <my.version>0.1.0 SNAPSHOT</my.version>
+        <my.version>0.1.0SNAPSHOT</my.version>
         <java.version>1.8</java.version>
         <javax.version>7.0</javax.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -48,7 +48,7 @@
         <profile>
             <id>dev</id>
             <properties>
-                <db.url>jdbc:mysql://172.17.0.1:3306/computer-database-db</db.url>
+                <db.url>jdbc:mysql://localhost/computer-database-db</db.url>
                 <db.username>root</db.username>
                 <db.password>root</db.password>
             </properties>
@@ -222,19 +222,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>war-exploded</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exploded</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
