@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <my.version>0.1.0</my.version>
+        <my.version>0.6.0-snapshot</my.version>
         <java.version>1.8</java.version>
         <javax.version>7.0</javax.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -37,9 +37,6 @@
     <profiles>
         <profile>
             <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <db.url>jdbc:mysql://172.17.0.1:3307/computer-database-db</db.url>
                 <db.username>root</db.username>
@@ -48,6 +45,9 @@
         </profile>
         <profile>
             <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <db.url>jdbc:mysql://172.17.0.1:3306/computer-database-db</db.url>
                 <db.username>root</db.username>
