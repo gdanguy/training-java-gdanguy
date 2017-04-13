@@ -99,7 +99,7 @@ public abstract class Validator {
      * @return LocalDateTime .
      */
     public static LocalDateTime parseString(String date) {
-        if (date == null) {
+        if (date == null || date.isEmpty()) {
             return null;
         }
         if (dateValidate(date) == null) {
