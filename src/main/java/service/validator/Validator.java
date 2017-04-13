@@ -99,6 +99,9 @@ public abstract class Validator {
      * @return LocalDateTime .
      */
     public static LocalDateTime parseString(String date) {
+        if (date == null) {
+            return null;
+        }
         if (dateValidate(date) == null) {
             if (date.matches(REGEX_DATE)) {
                 return Computer.toLocalDateTime(date);
