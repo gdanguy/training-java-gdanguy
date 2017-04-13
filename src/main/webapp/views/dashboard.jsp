@@ -33,7 +33,7 @@
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
                 <form id="searchForm" action=
-                <page:link link="/dashboard"></page:link> method="POST" class="form-inline">
+                <page:link link="/dashboard" path="${pageContext.request.contextPath}"></page:link> method="POST" class="form-inline">
                     <input type="hidden" id="order" name="order" value="${order}">
                     <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name"/>
                     <input type="submit" id="searchsubmit" value="Filter by name"
