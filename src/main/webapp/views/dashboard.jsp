@@ -124,7 +124,7 @@
             </thead>
             <tbody id="results">
                 <!-- Browse attribute computers -->
-                <page:listeComputer listComputers="${listComputers}"></page:listeComputer>
+                <page:listeComputer listComputers="${listComputers}" path="${pageContext.request.contextPath}"></page:listeComputer>
             </tbody>
         </table>
     </div>
