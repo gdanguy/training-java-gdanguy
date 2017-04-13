@@ -34,7 +34,7 @@ public class DeleteComputerServlet extends HttpServlet {
             listId.add(Integer.parseInt(computerToDelete[i]));
         }
         service.delete(listId);
-        response.sendRedirect(request.getContextPath()+DashboardServlet.DASHBOARD);
+        response.sendRedirect(request.getContextPath() + DashboardServlet.DASHBOARD);
     }
 
 }

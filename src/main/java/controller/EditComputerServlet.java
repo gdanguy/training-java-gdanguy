@@ -59,6 +59,6 @@ public class EditComputerServlet extends UpdateComputerServlet {
         if (!updateSucces) {
             request.getRequestDispatcher(DashboardServlet.ERROR_500_JSP).forward(request, response);
         }
-        response.sendRedirect(request.getContextPath()+DashboardServlet.DASHBOARD);
+        response.sendRedirect(request.getContextPath() + DashboardServlet.DASHBOARD);
     }
 }
