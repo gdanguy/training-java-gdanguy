@@ -48,6 +48,6 @@ public class AddComputerServlet extends UpdateComputerServlet {
         if (updateSucces < 0) {
             request.getRequestDispatcher(DashboardServlet.ERROR_500_JSP).forward(request, response);
         }
-        response.sendRedirect(DashboardServlet.DASHBOARD);
+        response.sendRedirect(request.getContextPath()+DashboardServlet.DASHBOARD);
     }
 }
