@@ -25,7 +25,7 @@
             <div class="col-xs-8 col-xs-offset-2 box">
                 <h1>Add Computer</h1>
                 <form action=
-                      <page:link link="/addComputer"></page:link> method="POST" onsubmit="return validateComputer();">
+                      <page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" onsubmit="return validateComputer();">
                     <fieldset>
                         <div class="form-group">
                             <label for="computerName">Computer name</label>
@@ -58,7 +58,7 @@
                         <input type="submit" value="Add" class="btn btn-primary">
                         or
                         <a href=
-                           <page:link link="/dashboard"></page:link> class="btn btn-default">Cancel</a>
+                           <page:link link="/dashboard" path="${pageContext.request.contextPath}"></page:link> class="btn btn-default">Cancel</a>
                     </div>
                 </form>
             </div>

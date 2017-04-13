@@ -58,7 +58,7 @@
                         <input type="submit" value="Edit" class="btn btn-primary">
                         or
                         <a href=
-                           <page:link link="/dashboard"></page:link> class="btn btn-default">Cancel</a>
+                           <page:link link="/dashboard" path="${pageContext.request.contextPath}"></page:link> class="btn btn-default">Cancel</a>
                     </div>
                 </form>
             </div>

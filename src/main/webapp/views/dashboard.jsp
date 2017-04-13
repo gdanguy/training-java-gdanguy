@@ -41,7 +41,7 @@
                 </form>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" id="addComputer" href=<page:link link="/addComputer"></page:link>>Add
+                <a class="btn btn-success" id="addComputer" href=<page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link>>Add
                     Computer</a>
                 <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
             </div>
@@ -49,7 +49,7 @@
     </div>
 
     <form id="deleteForm" action=
-    <page:link link="/deleteComputer"></page:link> method="POST">
+    <page:link link="/deleteComputer" path="${pageContext.request.contextPath}"></page:link> method="POST">
         <input type="hidden" name="selection" value="">
     </form>
 
@@ -72,10 +72,10 @@
                     <a href="
                         <c:choose>
                             <c:when test="${!empty order && order == 'name_a'}">
-                                <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="name_b"></page:link>">
+                                <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="name_b"></page:link>">
                             </c:when>
                             <c:otherwise>
-                                <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="name_a"></page:link>">
+                                <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="name_a"></page:link>">
                             </c:otherwise>
                         </c:choose>
                         Computer name</a>
@@ -84,10 +84,10 @@
                     <a href="
                     <c:choose>
                         <c:when test="${!empty order && order == 'intro_a'}">
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="intro_b"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="intro_b"></page:link>">
                         </c:when>
                         <c:otherwise>
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="intro_a"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="intro_a"></page:link>">
                         </c:otherwise>
                         </c:choose>
                         Introduced date</a>
@@ -97,10 +97,10 @@
                     <a href="
                     <c:choose>
                         <c:when test="${!empty order && order == 'disco_a'}">
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="disco_b"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="disco_b"></page:link>">
                         </c:when>
                         <c:otherwise>
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="disco_a"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="disco_a"></page:link>">
                         </c:otherwise>
                         </c:choose>
                         Discontinued date</a>
@@ -110,10 +110,10 @@
                     <a href="
                     <c:choose>
                         <c:when test="${!empty order && order == 'company_a'}">
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="company_b"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="company_b"></page:link>">
                         </c:when>
                         <c:otherwise>
-                            <page:link link="/dashboard" page="${currentPage}" sizePages="${sizePages}" order="company_a"></page:link>">
+                            <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="company_a"></page:link>">
                         </c:otherwise>
                         </c:choose>
                         Company</a>
@@ -136,11 +136,11 @@
     </div>
     <div id="pagination" class="btn-group btn-group-sm pull-right" role="group">
         <a href=
-           <page:link link="/dashboard" page="0" sizePages="10" order="${order}"></page:link> class="btn btn-default">10</a>
+           <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="0" sizePages="10" order="${order}"></page:link> class="btn btn-default">10</a>
         <a href=
-           <page:link link="/dashboard" page="0" sizePages="50" order="${order}"></page:link> class="btn btn-default">50</a>
+           <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="0" sizePages="50" order="${order}"></page:link> class="btn btn-default">50</a>
         <a href=
-           <page:link link="/dashboard" page="0" sizePages="100" order="${order}"></page:link> class="btn btn-default">100</a>
+           <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="0" sizePages="100" order="${order}"></page:link> class="btn btn-default">100</a>
     </div>
 
 </footer>
