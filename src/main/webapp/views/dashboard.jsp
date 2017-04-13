@@ -132,7 +132,7 @@
 
 <footer class="navbar-fixed-bottom">
     <div class="container text-center">
-        <page:pagination currentPage="${currentPage}" debut="${debut}" fin="${fin}"></page:pagination>
+        <page:pagination path="${pageContext.request.contextPath}" currentPage="${currentPage}" debut="${debut}" fin="${fin}"></page:pagination>
     </div>
     <div id="pagination" class="btn-group btn-group-sm pull-right" role="group">
         <a href=
