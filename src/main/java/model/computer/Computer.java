@@ -17,28 +17,48 @@ public class Computer {
     protected Company company;
 
     /**
-     * Constructor.
+     * Empty constructor.
      */
     public Computer() {
 
     }
 
+    /**
+     * Set id.
+     * @param id new id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Set name.
+     * @param name new name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Set Introduced.
+     * @param introduced new introduced
+     */
     public void setIntroduced(LocalDateTime introduced) {
         this.introduced = introduced;
     }
 
+    /**
+     * Set Discontinued.
+     * @param discontinued new discontinued
+     */
     public void setDiscontinued(LocalDateTime discontinued) {
         this.discontinued = discontinued;
     }
 
+    /**
+     * Set Company.
+     * @param company new Company
+     */
     public void setCompany(Company company) {
         this.company = company;
     }

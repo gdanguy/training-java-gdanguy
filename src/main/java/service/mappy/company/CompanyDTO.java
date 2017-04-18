@@ -7,15 +7,23 @@ public class CompanyDTO {
     private String name;
 
     /**
-     * Constructor.
+     * Empty Constructor.
      */
     public CompanyDTO() {
     }
 
+    /**
+     * Set id.
+     * @param id new id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Set Name.
+     * @param name new name
+     */
     public void setName(String name) {
         this.name = name;
     }

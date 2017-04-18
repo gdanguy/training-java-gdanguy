@@ -93,7 +93,7 @@ public class DashboardServlet extends HttpServlet {
     }
 
     /**
-     * Search.
+     * Dashboard Search.
      * @param request  jsp request
      * @param response jsp response
      * @throws ServletException if bug

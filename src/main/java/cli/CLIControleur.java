@@ -45,7 +45,7 @@ public class CLIControleur {
     private ComputerServiceImpl serviceComputer;
 
     /**
-     * Constructor.
+     * Constructor of CLIControler.
      */
     public CLIControleur() {
         serviceCompany = CompanyService.getInstance();

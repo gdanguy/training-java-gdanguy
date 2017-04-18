@@ -5,7 +5,7 @@ public class Company {
     private String name;
 
     /**
-     * .
+     * Empty constructor.
      */
     public Company() {
 

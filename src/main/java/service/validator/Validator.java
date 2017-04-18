@@ -191,9 +191,9 @@ public abstract class Validator {
     }
 
     /**
-     * r.
-     * @param compId .
-     * @return .
+     * Return null if companyId if valid or null or equals(""), else return error message.
+     * @param compId Id to validate
+     * @return Return null if companyId if valid or null or equals(""), else return error message
      */
     public static String companyidValidate(String compId) {
         if (compId != null && !compId.equals("") && !compId.equals("" + CompanyService.ECHEC_FLAG)) {

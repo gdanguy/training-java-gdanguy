@@ -15,30 +15,30 @@ public class ComputerDTO {
     protected String companyName;
 
     /**
-     * .
+     * Empty Constructor.
      */
     public ComputerDTO() {
     }
 
     /**
-     * .
-     * @param id .
+     * Set id.
+     * @param id new id
      */
     public void setId(int id) {
         this.id = id;
     }
 
     /**
-     * .
-     * @param name .
+     * Set Name.
+     * @param name new name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * .
-     * @param introduced .
+     * Set Introduced.
+     * @param introduced new introduced
      */
     public void setIntroduced(LocalDateTime introduced) {
         if (introduced != null) {
@@ -49,8 +49,8 @@ public class ComputerDTO {
     }
 
     /**
-     * .
-     * @param discontinued .
+     * Set Discontinued.
+     * @param discontinued new discontinued
      */
     public void setDiscontinued(LocalDateTime discontinued) {
         if (discontinued != null) {
@@ -61,24 +61,24 @@ public class ComputerDTO {
     }
 
     /**
-     * .
-     * @param companyId .
+     * Set CompanyId.
+     * @param companyId new CompanyId
      */
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
 
     /**
-     * .
-     * @param companyName .
+     * Set CompanyName.
+     * @param companyName new CompanyName
      */
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
 
     /**
-     * .
-     * @param company .
+     * Set CompanyId and CompanyName with a Company.
+     * @param company to copy
      */
     public void setCompany(Company company) {
         if (company != null) {
