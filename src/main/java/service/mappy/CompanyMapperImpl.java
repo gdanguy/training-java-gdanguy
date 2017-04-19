@@ -10,8 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by ebiz on 23/03/17.
  */
-public enum CompanyMapperImpl implements CompanyMapper {
-    INSTANCE;
+public class CompanyMapperImpl implements CompanyMapper {
 
     /**
      * Convert Page<Company> to Page<CompanyDTO>.

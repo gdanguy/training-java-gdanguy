@@ -2,11 +2,14 @@ package controller;
 
 import model.GenericBuilder;
 import model.computer.Computer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 import service.CompanyService;
 import service.ComputerService;
 import service.mappy.CompanyMapper;
 import service.mappy.computer.ComputerDTO;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,38 @@ public class EditComputerServlet extends UpdateComputerServlet {
     private static final String COMPUTER = "computer";
     private static final String LIST = "listCompany";
 
+    private ComputerService computerService;
+    private CompanyService companyService;
+    private CompanyMapper companyMap;
+
+    public void setComputerService(ComputerService computerService) {
+        this.computerService = computerService;
+    }
+
+    public void setCompanyService(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    public void setCompanyMap(CompanyMapper companyMap) {
+        this.companyMap = companyMap;
+    }
+
+    /**
+     * Init beans.
+     * @param config the servlet config for spring
+     * @throws ServletException if bug
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+
+        this.companyMap = (CompanyMapper) ac.getBean("companyMapper");
+        this.computerService = (ComputerService) ac.getBean("computerService");
+        this.companyService = (CompanyService) ac.getBean("companyService");
+    }
+
     /**
      * Get the id of the computer wanted et set the computer to the jsp.
      * @param request  contains the id
@@ -30,9 +65,6 @@ public class EditComputerServlet extends UpdateComputerServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter(ID));
         request.setAttribute(ID, id);
-        ComputerService computerService = ComputerService.getInstance();
-        CompanyService companyService = CompanyService.getInstance();
-        CompanyMapper companyMap = CompanyMapper.getInstance();
         Computer c = computerService.get(id);
         request.setAttribute(COMPUTER, GenericBuilder.of(ComputerDTO::new)
                 .with(ComputerDTO::setId, id)
@@ -54,8 +86,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ComputerService service = ComputerService.getInstance();
-        boolean updateSucces = service.update(getComputerModified(request));
+        boolean updateSucces = computerService.update(getComputerModified(request));
         if (!updateSucces) {
             request.getRequestDispatcher(DashboardServlet.ERROR_500_JSP).forward(request, response);
         }

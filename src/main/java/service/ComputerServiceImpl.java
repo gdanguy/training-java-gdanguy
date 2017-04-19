@@ -14,13 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public enum ComputerServiceImpl implements ComputerService {
-    INSTANCE;
+public class ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
-    private DAOFactory daoFactory = DAOFactory.getInstance();
-    private ComputerDAO computerDAO = ComputerDAO.getInstance();
+    private DAOFactory daoFactory;
+    private ComputerDAO computerDAO;
 
     public static final String INVALID_ID = "Invalid ID";
+
+    public void setDaoFactory(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
+
+    public void setComputerDAO(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
+    }
 
     /**
      * Get the number of Computer.

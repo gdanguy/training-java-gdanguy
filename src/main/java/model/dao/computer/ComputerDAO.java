@@ -101,13 +101,6 @@ public interface ComputerDAO {
      */
     void deleteIdCompany(int id) throws DAOException;
 
-    /**
-     * Return the Instance of DAO.
-     * @return the Instance of DAO
-     */
-    static ComputerDAOImpl getInstance() {
-        return ComputerDAOImpl.INSTANCE;
-    }
 
 
 }

@@ -5,7 +5,11 @@ import model.computer.Computer;
 import service.ComputerService;
 import service.mappy.ComputerMapper;
 import service.mappy.computer.ComputerDTO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
+
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,6 +45,33 @@ public class DashboardServlet extends HttpServlet {
     public static final String ORDER_COMPANY_ASC = "company_a";
     public static final String ORDER_COMPANY_DESC = "company_b";
 
+    private ComputerMapper computerMap;
+    private ComputerService serviceComputer;
+
+    public void setComputerMap(ComputerMapper computerMap) {
+        this.computerMap = computerMap;
+    }
+
+    public void setServiceComputer(ComputerService serviceComputer) {
+        this.serviceComputer = serviceComputer;
+    }
+
+    /**
+     * Init beans.
+     * @param config the servlet config for spring
+     * @throws ServletException if bug
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+
+        this.computerMap = (ComputerMapper) ac.getBean("computerMapper");
+        this.serviceComputer = (ComputerService) ac.getBean("computerService");
+    }
+
+
     /**
      * Set data for the Dashboard.
      * @param request  jsp request
@@ -65,7 +96,6 @@ public class DashboardServlet extends HttpServlet {
         if (currentPage > NB_PAGINATION) {
             debut = currentPage - NB_PAGINATION;
         }
-        ComputerService serviceComputer = ComputerService.getInstance();
         int nbComputer = serviceComputer.count();
         int fin = nbComputer / sizePages;
         if (currentPage + NB_PAGINATION < fin) {
@@ -80,7 +110,6 @@ public class DashboardServlet extends HttpServlet {
         } else {
             request.setAttribute(ORDER, order);
         }
-        ComputerMapper computerMap = ComputerMapper.getInstance();
         ArrayList<ComputerDTO> list = computerMap.toDTO(serviceComputer.list(currentPage, sizePages, order)).getListPage();
 
         request.setAttribute(START, debut);
@@ -102,17 +131,12 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String search = request.getParameter(SEARCH);
-        //if (search == null || search.equals("")) {
-        //    doGet(request, response);
-        //}
         request.setAttribute(CURRENT_PAGE, 0);
-        ComputerService serviceDAO = ComputerService.getInstance();
-        ArrayList<Computer> listComputer = serviceDAO.list(search).getListPage();
+        ArrayList<Computer> listComputer = serviceComputer.list(search).getListPage();
         request.setAttribute(START, 0);
         request.setAttribute(END, 0);
         request.setAttribute(COUNT, listComputer.size());
         request.setAttribute(SIZE_PAGE, listComputer.size());
-        ComputerMapper computerMap = ComputerMapper.getInstance();
         request.setAttribute(LIST, computerMap.toDTO(listComputer));
         request.setAttribute(ORDER, request.getParameter(ORDER));
         request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);

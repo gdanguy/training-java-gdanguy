@@ -1,8 +1,11 @@
 package controller;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 import service.ComputerService;
 import service.validator.Validator;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +17,25 @@ import java.util.ArrayList;
 @WebServlet(name = "DeleteComputerServlet", urlPatterns = "/deleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
     private static final String SELECT = "selection";
+    private ComputerService service;
+
+    public void setService(ComputerService service) {
+        this.service = service;
+    }
+
+    /**
+     * Init beans.
+     * @param config the servlet config for spring
+     * @throws ServletException if bug
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+
+        this.service = (ComputerService) ac.getBean("computerService");
+    }
 
     /**
      * Delete selected computer.
@@ -23,7 +45,6 @@ public class DeleteComputerServlet extends HttpServlet {
      * @throws IOException      if bug
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ComputerService service = ComputerService.getInstance();
         String[] computerToDelete = request.getParameter(SELECT).split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {

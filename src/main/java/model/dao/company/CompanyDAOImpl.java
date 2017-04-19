@@ -15,11 +15,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public enum CompanyDAOImpl implements CompanyDAO {
-    INSTANCE;
+public class CompanyDAOImpl implements CompanyDAO {
 
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
-    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private DAOFactory daoFactory;
+
+    public void setDaoFactory(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
 
     /**
      * Get the number of Companies.

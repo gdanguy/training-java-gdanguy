@@ -9,7 +9,9 @@ import model.dao.computer.ComputerDAO;
 import model.dao.company.CompanyDAOImpl;
 import model.dao.computer.ComputerDAOImpl;
 import org.junit.*;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import service.CompanyService;
+import service.CompanyServiceImpl;
 import service.ComputerService;
 import service.ComputerServiceImpl;
 
@@ -18,11 +20,11 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class TestService {
-    private DAOFactory daoFactory = DAOFactory.getInstance();
-    private ComputerService serviceComputer = ComputerService.getInstance();
-    private CompanyService serviceCompany = CompanyService.getInstance();
-    private ComputerDAOImpl dbComputer = ComputerDAO.getInstance();
-    private CompanyDAOImpl dbCompany = CompanyDAO.getInstance();
+    private DAOFactory daoFactory = new DAOFactory();
+    private ComputerService serviceComputer = new ComputerServiceImpl();
+    private CompanyService serviceCompany = new CompanyServiceImpl();
+    private ComputerDAO dbComputer = new ComputerDAOImpl();
+    private CompanyDAO dbCompany = new CompanyDAOImpl();
     public static final String NAME_COMPUTER_TEST = "TestComputer";
     public static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
 
@@ -30,15 +32,10 @@ public class TestService {
 
     @Before
     public void before() {
-        //daoFactory.open();
-        //on ne commit jamais les tests
-        //daoFactory.startTransaction();
     }
 
     @After
     public void after() {
-        //daoFactory.roolback();
-        //daoFactory.close();
     }
 
     //Computer

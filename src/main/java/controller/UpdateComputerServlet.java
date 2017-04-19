@@ -5,10 +5,14 @@ import model.company.Company;
 import model.computer.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 import service.CompanyService;
 import service.ComputerService;
 import service.validator.Validator;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -23,6 +27,36 @@ public abstract class UpdateComputerServlet extends HttpServlet {
     private static final String INTRO = "introduced";
     private static final String DISCO = "discontinued";
     private static final String COMPANY_ID = "companyId";
+
+    private ComputerService serviceComputer;
+    private CompanyService serviceCompany;
+
+    public static void setLogger(Logger logger) {
+        UpdateComputerServlet.logger = logger;
+    }
+
+    public void setServiceComputer(ComputerService serviceComputer) {
+        this.serviceComputer = serviceComputer;
+    }
+
+    public void setServiceCompany(CompanyService serviceCompany) {
+        this.serviceCompany = serviceCompany;
+    }
+
+    /**
+     * Init beans.
+     * @param config the servlet config for spring
+     * @throws ServletException if bug
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+
+        ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+
+        this.serviceComputer = (ComputerService) ac.getBean("computerService");
+        this.serviceCompany = (CompanyService) ac.getBean("companyService");
+    }
 
     /**
      * Get the computer set by the user.
@@ -49,7 +83,6 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      * @return the computer wanted
      */
     private Computer getComputer(HttpServletRequest request, boolean strict) {
-        CompanyService service = CompanyService.getInstance();
         int id = CompanyService.ECHEC_FLAG;
         ArrayList<String> messageError = new ArrayList<>();
         //Test of the name
@@ -93,7 +126,7 @@ public abstract class UpdateComputerServlet extends HttpServlet {
                 .with(Computer::setName, name)
                 .with(Computer::setIntroduced, introduced)
                 .with(Computer::setDiscontinued, discontinued)
-                .with(Computer::setCompany, service.get(companyId))
+                .with(Computer::setCompany, serviceCompany.get(companyId))
                 .build();
     }
 
@@ -116,9 +149,8 @@ public abstract class UpdateComputerServlet extends HttpServlet {
      */
     protected Computer getComputerModified(HttpServletRequest request) {
         Computer userInsert = getComputer(request);
-        ComputerService service = ComputerService.getInstance();
         int id = Integer.parseInt(request.getParameter(ID));
-        Computer old = service.get(id);
+        Computer old = serviceComputer.get(id);
         boolean notModified = true;
         String name = userInsert.getName();
         LocalDateTime introduced = userInsert.getIntroduced();

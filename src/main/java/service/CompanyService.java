@@ -44,13 +44,6 @@ public interface CompanyService {
      */
     int create(Company c);
 
-    /**
-     * Return the Instance of CompanyServiceImpl.
-     * @return the Instance of CompanyServiceImpl
-     */
-    static CompanyServiceImpl getInstance() {
-        return CompanyServiceImpl.INSTANCE;
-    }
 
     /**
      * Delete the last company.

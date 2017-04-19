@@ -54,11 +54,4 @@ public interface CompanyDAO {
      */
     boolean delete(int id) throws DAOException;
 
-    /**
-     * Return Instance of DAO.
-     * @return a DAO Instance
-     */
-    static CompanyDAOImpl getInstance() {
-        return CompanyDAOImpl.INSTANCE;
-    }
 }

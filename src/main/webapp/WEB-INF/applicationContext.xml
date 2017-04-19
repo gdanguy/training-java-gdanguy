@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <!-- ANNOTATIONS POUR L'INJECTION DE DEPENDANCES -->
+    <context:annotation-config />
+
+    <!-- ANNOTATIONS POUR LA CREATION DE BEANS VIA ANNOTATIONS -->
+    <context:component-scan base-package="controller" />
+
+    <bean id="daoFactory" class="model.dao.DAOFactory"/>
+    <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl">
+        <property name="daoFactory" ref="daoFactory"/>
+    </bean>
+    <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl">
+        <property name="daoFactory" ref="daoFactory"/>
+    </bean>
+    <bean id="companyService" class="service.CompanyServiceImpl">
+        <property name="daoFactory" ref="daoFactory"/>
+        <property name="companyDAO" ref="companyDAO"/>
+        <property name="computerDAO" ref="computerDAO"/>
+    </bean>
+    <bean id="computerService" class="service.ComputerServiceImpl">
+        <property name="daoFactory" ref="daoFactory"/>
+        <property name="computerDAO" ref="computerDAO"/>
+    </bean>
+    <bean id="companyMapper" class="service.mappy.CompanyMapperImpl"/>
+    <bean id="computerMapper" class="service.mappy.ComputerMapperImpl"/>
+    <bean id="addComputerServlet" class="controller.AddComputerServlet" scope="prototype">
+        <property name="serviceCompany" ref="companyService"/>
+        <property name="companyMap" ref="companyMapper"/>
+        <property name="serviceComputer" ref="computerService"/>
+    </bean>
+    <bean id="dashboardServlet" class="controller.DashboardServlet" scope="prototype">
+        <property name="computerMap" ref="computerMapper"/>
+        <property name="serviceComputer" ref="computerService"/>
+    </bean>
+    <bean id="deleteComputerServlet" class="controller.DeleteComputerServlet" scope="prototype">
+        <property name="service" ref="computerService"/>
+    </bean>
+    <bean id="editComputerServlet" class="controller.EditComputerServlet" scope="prototype">
+        <property name="serviceCompany" ref="companyService"/>
+        <property name="companyMap" ref="companyMapper"/>
+        <property name="serviceComputer" ref="computerService"/>
+    </bean>
+    <bean id="updateComputerServlet" class="controller.UpdateComputerServlet" abstract="true" scope="prototype">
+        <property name="serviceCompany" ref="companyService"/>
+        <property name="serviceComputer" ref="computerService"/>
+    </bean>
+    <bean id="cliControleur" class="cli.CLIControleur" scope="prototype">
+        <property name="serviceCompany" ref="companyService"/>
+        <property name="db" ref="companyDAO"/>
+        <property name="serviceComputer" ref="computerService"/>
+    </bean>
+    <bean id="mainCli" class="cli.MainCLI" scope="prototype">
+        <property name="cli" ref="cliControleur"/>
+    </bean>
+</beans>

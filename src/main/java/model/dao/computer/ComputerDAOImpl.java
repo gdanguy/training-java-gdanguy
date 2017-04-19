@@ -20,13 +20,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum ComputerDAOImpl implements ComputerDAO {
-    INSTANCE;
+public class ComputerDAOImpl implements ComputerDAO {
 
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private DAOFactory daoFactory;
 
     public static final String DELETE_SUCCES = "Computers are deleted";
+
+    public void setDaoFactory(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
 
     /**
      * Get the number of Computer.

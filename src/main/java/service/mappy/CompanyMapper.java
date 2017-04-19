@@ -22,11 +22,4 @@ public interface CompanyMapper {
      */
     ArrayList<CompanyDTO> toDTO(ArrayList<Company> list);
 
-    /**
-     * Return the Instance of ComputerServiceImpl.
-     * @return the Instance of ComputerServiceImpl
-     */
-    static CompanyMapperImpl getInstance() {
-        return CompanyMapperImpl.INSTANCE;
-    }
 }

@@ -7,6 +7,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import model.computer.Computer;
 import service.ComputerService;
+import service.ComputerServiceImpl;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +17,7 @@ public class TestSelenium{
     private WebDriver driver;
     private String baseUrl = "http://localhost:8080/dashboard";
     private StringBuffer verificationErrors = new StringBuffer();
+    private ComputerService service = new ComputerServiceImpl();
 
     @Before
     public void getStrated() {
@@ -52,7 +54,7 @@ public class TestSelenium{
         //pagination
         //boucle cherche un ordinateur
         //tant que trouve pas clique sur '>>' dans la pagination
-        ComputerService service = ComputerService.getInstance();
+        //ComputerService service = ComputerService.getInstance();
         Computer computer = service.list(2).getListPage().get(0);
         search(computer.getId());
 

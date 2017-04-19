@@ -10,9 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by ebiz on 23/03/17.
  */
-public enum ComputerMapperImpl implements ComputerMapper {
-
-    INSTANCE;
+public class ComputerMapperImpl implements ComputerMapper {
 
     /**
      * Convert Page<Computer> to Page<ComputerDTO>.

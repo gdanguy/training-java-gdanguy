@@ -6,12 +6,9 @@ import model.company.Company;
 import model.computer.Computer;
 import model.dao.DAOException;
 import model.dao.company.CompanyDAO;
-import model.dao.company.CompanyDAOImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.CompanyService;
 import service.CompanyServiceImpl;
-import service.ComputerService;
 import service.ComputerServiceImpl;
 
 import java.time.LocalDateTime;
@@ -43,13 +40,18 @@ public class CLIControleur {
 
     private CompanyServiceImpl serviceCompany;
     private ComputerServiceImpl serviceComputer;
+    private CompanyDAO db;
 
-    /**
-     * Constructor of CLIControler.
-     */
-    public CLIControleur() {
-        serviceCompany = CompanyService.getInstance();
-        serviceComputer = ComputerService.getInstance();
+    public void setServiceCompany(CompanyServiceImpl serviceCompany) {
+        this.serviceCompany = serviceCompany;
+    }
+
+    public void setServiceComputer(ComputerServiceImpl serviceComputer) {
+        this.serviceComputer = serviceComputer;
+    }
+
+    public void setDb(CompanyDAO db) {
+        this.db = db;
     }
 
     /**
@@ -197,7 +199,7 @@ public class CLIControleur {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id : "));
-            CompanyDAOImpl db = CompanyDAO.getInstance();
+            //CompanyDAOImpl db = CompanyDAO.getInstance();
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, -1)
                     .with(Computer::setName, name)
@@ -237,7 +239,7 @@ public class CLIControleur {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer Company id (before : " + oldComputer.getCompany() + "): "));
-            CompanyDAOImpl db = CompanyDAO.getInstance();
+            //CompanyDAOImpl db = CompanyDAO.getInstance();
 
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, id)

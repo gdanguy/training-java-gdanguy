@@ -105,12 +105,5 @@ public interface ComputerService {
      */
     Computer getFirst();
 
-    /**
-     * Return the Instance of ComputerServiceImpl.
-     * @return the Instance of ComputerServiceImpl
-     */
-    static ComputerServiceImpl getInstance() {
-        return ComputerServiceImpl.INSTANCE;
-    }
 
 }

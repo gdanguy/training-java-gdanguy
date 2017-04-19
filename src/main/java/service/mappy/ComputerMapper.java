@@ -22,13 +22,6 @@ public interface ComputerMapper {
      */
     ArrayList<ComputerDTO> toDTO(ArrayList<Computer> list);
 
-    /**
-     * Return the Instance of ComputerServiceImpl.
-     * @return the Instance of ComputerServiceImpl
-     */
-    static ComputerMapperImpl getInstance() {
-        return ComputerMapperImpl.INSTANCE;
-    }
 
 
 }

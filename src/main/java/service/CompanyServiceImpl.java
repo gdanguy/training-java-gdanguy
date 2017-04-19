@@ -12,12 +12,23 @@ import service.validator.Validator;
 
 import java.util.ArrayList;
 
-public enum CompanyServiceImpl implements CompanyService {
-    INSTANCE;
+public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
-    private DAOFactory daoFactory = DAOFactory.getInstance();
-    private CompanyDAO companyDAO = CompanyDAO.getInstance();
-    private ComputerDAO computerDAO = ComputerDAO.getInstance();
+    private DAOFactory daoFactory;
+    private CompanyDAO companyDAO;
+    private ComputerDAO computerDAO;
+
+    public void setDaoFactory(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
+
+    public void setCompanyDAO(CompanyDAO companyDAO) {
+        this.companyDAO = companyDAO;
+    }
+
+    public void setComputerDAO(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
+    }
 
     /**
      * Get a page of Company.

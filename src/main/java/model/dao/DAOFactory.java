@@ -10,8 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public enum DAOFactory {
-    INSTANCE;
+public class DAOFactory {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     private static final String CONFIG_FILE = "/db.properties";
     private static final HikariConfig CFP = new HikariConfig(CONFIG_FILE);
@@ -19,27 +18,19 @@ public enum DAOFactory {
     private ThreadLocal<Connection> cHolder = new ThreadLocal<>();
 
     /**
-     * .
+     * Create the ThreadLocal.
      */
-    DAOFactory() {
+    public DAOFactory() {
         if (cHolder == null) {
             cHolder = new ThreadLocal<>();
         }
     }
 
-    /**
-     * Get Instance.
-     * @return Instance
-     */
-    public static DAOFactory getInstance() {
-        return DAOFactory.INSTANCE;
-    }
 
     /**
      * Connection to the DataBase.
      */
     public void open() {
-        //logger.info("Open Connection");
         try {
             Connection c = cHolder.get();
             if (c == null) {
@@ -55,13 +46,14 @@ public enum DAOFactory {
      * Close Connection to the database.
      */
     public void close() {
-        //logger.info("Disconnection to the database");
         Connection c = cHolder.get();
-        cHolder.remove();
-        try {
-            c.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (c != null) {
+            cHolder.remove();
+            try {
+                c.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
