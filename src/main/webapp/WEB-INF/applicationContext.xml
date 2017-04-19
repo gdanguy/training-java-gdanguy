@@ -12,6 +12,38 @@
     <!-- ANNOTATIONS POUR LA CREATION DE BEANS VIA ANNOTATIONS -->
     <context:component-scan base-package="controller" />
 
+    <!-- Data Source -->
+
+    <bean name="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>classpath:db.properties</value>
+        </property>
+    </bean>
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSourceProperties" >
+            <props>
+                <prop key="url">${dataSource.url}</prop>
+                <prop key="user">${dataSource.user}</prop>
+                <prop key="password">${dataSource.password}</prop>
+            </props>
+        </property>
+        <property name="dataSourceClassName" value="${dataSourceClassName}" />
+        <property name="maximumPoolSize" value="${maximumPoolSize}" />
+    </bean>
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="model.dao.DAOFactory.setDs"/>
+        <property name="arguments">
+            <list>
+                <ref bean="dataSource"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Project class -->
+
     <bean id="daoFactory" class="model.dao.DAOFactory"/>
     <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl">
         <property name="daoFactory" ref="daoFactory"/>
@@ -59,4 +91,6 @@
     <bean id="mainCli" class="cli.MainCLI" scope="prototype">
         <property name="cli" ref="cliControleur"/>
     </bean>
+
+
 </beans>

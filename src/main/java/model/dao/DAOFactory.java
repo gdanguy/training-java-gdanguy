@@ -1,10 +1,9 @@
 package model.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import model.dao.computer.ComputerDAOImpl;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,10 +11,12 @@ import java.sql.Statement;
 
 public class DAOFactory {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    private static final String CONFIG_FILE = "/db.properties";
-    private static final HikariConfig CFP = new HikariConfig(CONFIG_FILE);
-    private static final HikariDataSource DS = new HikariDataSource(CFP);
+    private static DataSource ds;
     private ThreadLocal<Connection> cHolder = new ThreadLocal<>();
+
+    public static void setDs(DataSource ds) {
+        DAOFactory.ds = ds;
+    }
 
     /**
      * Create the ThreadLocal.
@@ -34,7 +35,7 @@ public class DAOFactory {
         try {
             Connection c = cHolder.get();
             if (c == null) {
-                c = DS.getConnection();
+                c = ds.getConnection();
                 cHolder.set(c);
             }
         } catch (SQLException e) {
