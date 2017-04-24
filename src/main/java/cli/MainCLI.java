@@ -12,7 +12,7 @@ public class MainCLI {
      */
     public static void main(String[] args) throws DAOException {
         ApplicationContext context = new ClassPathXmlApplicationContext("file:src/main/webapp/WEB-INF/applicationContext.xml");
-        CLIControler cli = (CLIControler)context.getBean("cliControler");
+        CLIControler cli = (CLIControler) context.getBean("cliControler");
         cli.displayUserInterface();
     }
 }
