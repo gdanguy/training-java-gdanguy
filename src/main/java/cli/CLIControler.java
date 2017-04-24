@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class CLIControleur {
-    private Logger logger = LoggerFactory.getLogger(CLIControleur.class);
+public class CLIControler {
+    private Logger logger = LoggerFactory.getLogger(CLIControler.class);
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static final String NEXT_PAGE = "+";

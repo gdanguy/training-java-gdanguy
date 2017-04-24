@@ -82,12 +82,9 @@
         <property name="serviceCompany" ref="companyService"/>
         <property name="serviceComputer" ref="computerService"/>
     </bean>
-    <bean id="cliControleur" class="cli.CLIControleur" scope="singleton">
+    <bean id="cliControler" class="cli.CLIControler" scope="singleton">
         <property name="serviceCompany" ref="companyService"/>
         <property name="db" ref="companyDAO"/>
         <property name="serviceComputer" ref="computerService"/>
-    </bean>
-    <bean id="mainCli" class="cli.MainCLI" scope="prototype">
-        <property name="cli" ref="cliControleur"/>
     </bean>
 </beans>
