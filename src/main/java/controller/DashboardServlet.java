@@ -81,6 +81,36 @@ public class DashboardServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        setDashboard(request);
+        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
+    }
+
+    /**
+     * Dashboard Search.
+     * @param request  jsp request
+     * @param response jsp response
+     * @throws ServletException if bug
+     * @throws IOException      if bug
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String search = request.getParameter(SEARCH);
+        request.setAttribute(CURRENT_PAGE, 0);
+        ArrayList<Computer> listComputer = serviceComputer.list(search).getListPage();
+        request.setAttribute(START, 0);
+        request.setAttribute(END, 0);
+        request.setAttribute(COUNT, listComputer.size());
+        request.setAttribute(SIZE_PAGE, listComputer.size());
+        request.setAttribute(LIST, computerMap.toDTO(listComputer));
+        request.setAttribute(ORDER, request.getParameter(ORDER));
+        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
+    }
+
+    /**
+     * Set all variable whose dashboard need.
+     * @param request http request
+     */
+    private void setDashboard(HttpServletRequest request) {
         String cp = request.getParameter(CURRENT_PAGE);
         int currentPage = 0;
         if (cp != null && !cp.equals("")) {
@@ -117,28 +147,5 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(COUNT, nbComputer);
         request.setAttribute(SIZE_PAGE, sizePages);
         request.setAttribute(LIST, list);
-
-        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
-    }
-
-    /**
-     * Dashboard Search.
-     * @param request  jsp request
-     * @param response jsp response
-     * @throws ServletException if bug
-     * @throws IOException      if bug
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String search = request.getParameter(SEARCH);
-        request.setAttribute(CURRENT_PAGE, 0);
-        ArrayList<Computer> listComputer = serviceComputer.list(search).getListPage();
-        request.setAttribute(START, 0);
-        request.setAttribute(END, 0);
-        request.setAttribute(COUNT, listComputer.size());
-        request.setAttribute(SIZE_PAGE, listComputer.size());
-        request.setAttribute(LIST, computerMap.toDTO(listComputer));
-        request.setAttribute(ORDER, request.getParameter(ORDER));
-        request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
     }
 }
