@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import model.computer.Computer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import service.ComputerService;
@@ -17,11 +18,12 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml"})
 public class TestSelenium{
     private WebDriver driver;
-    private String baseUrl = "http://localhost:8080/dashboard";
+    private String baseUrl = "http://localhost:8085/dashboard";
     private StringBuffer verificationErrors = new StringBuffer();
+    @Autowired
     private ComputerService service = new ComputerServiceImpl();
 
     @Before
