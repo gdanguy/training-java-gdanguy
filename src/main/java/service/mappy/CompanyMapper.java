@@ -1,25 +1,36 @@
 package service.mappy;
 
-import model.Page;
+import model.GenericBuilder;
 import model.company.Company;
 import service.mappy.company.CompanyDTO;
 
-import java.util.ArrayList;
-
-public interface CompanyMapper {
+/**
+ * Created by ebiz on 24/04/17.
+ */
+public class CompanyMapper implements Mapper<Company, CompanyDTO> {
+    /**
+     * Company from CompanyDTO.
+     * @param companyDTO in
+     * @return Company
+     */
+    @Override
+    public Company from(CompanyDTO companyDTO) {
+        return GenericBuilder.of(Company::new)
+                .with(Company::setId, companyDTO.getId())
+                .with(Company::setName, companyDTO.getName())
+                .build();
+    }
 
     /**
-     * Convert Page<Company> to Page<CompanyDTO>.
-     * @param page Page of Company
-     * @return the Page<CompanyDTO> generated
+     * Company to CompanyDTO.
+     * @param company in
+     * @return CompanyDTO
      */
-    Page<CompanyDTO> toDTO(Page<Company> page);
-
-    /**
-     * Convert ArrayList<Company> to ArrayList<CompanyDTO>.
-     * @param list ArrayList of Company
-     * @return the ArrayList<CompanyDTO> generated
-     */
-    ArrayList<CompanyDTO> toDTO(ArrayList<Company> list);
-
+    @Override
+    public CompanyDTO to(Company company) {
+        return GenericBuilder.of(CompanyDTO::new)
+                .with(CompanyDTO::setId, company.getId())
+                .with(CompanyDTO::setName, company.getName())
+                .build();
+    }
 }

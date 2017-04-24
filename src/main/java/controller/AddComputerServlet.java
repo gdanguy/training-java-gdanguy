@@ -1,6 +1,7 @@
 package controller;
 
 import model.computer.Computer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import service.CompanyService;
@@ -17,21 +18,11 @@ import java.io.IOException;
 @WebServlet(name = "AddComputerServlet", urlPatterns = "/addComputer")
 public class AddComputerServlet extends UpdateComputerServlet {
     public static final String LIST_COMPANIES_ATTRIBUTE = "listCompany";
+    @Autowired
     private CompanyService serviceCompany;
-    private CompanyMapper companyMap;
+    private CompanyMapper companyMap = new CompanyMapper();
+    @Autowired
     private ComputerService serviceComputer;
-
-    public void setServiceCompany(CompanyService serviceCompany) {
-        this.serviceCompany = serviceCompany;
-    }
-
-    public void setCompanyMap(CompanyMapper companyMap) {
-        this.companyMap = companyMap;
-    }
-
-    public void setServiceComputer(ComputerService serviceComputer) {
-        this.serviceComputer = serviceComputer;
-    }
 
     /**
      * Init beans.
@@ -44,7 +35,6 @@ public class AddComputerServlet extends UpdateComputerServlet {
 
         ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
 
-        this.companyMap = (CompanyMapper) ac.getBean("companyMapper");
         this.serviceComputer = (ComputerService) ac.getBean("computerService");
         this.serviceCompany = (CompanyService) ac.getBean("companyService");
     }
@@ -58,7 +48,7 @@ public class AddComputerServlet extends UpdateComputerServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toDTO(serviceCompany.listAll()));
+        request.setAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toList(serviceCompany.listAll()));
         request.getRequestDispatcher(DashboardServlet.ADD_COMPUTER_JSP).forward(request, response);
     }
 

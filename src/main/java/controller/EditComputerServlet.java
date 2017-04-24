@@ -2,6 +2,7 @@ package controller;
 
 import model.GenericBuilder;
 import model.computer.Computer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import service.CompanyService;
@@ -21,22 +22,11 @@ public class EditComputerServlet extends UpdateComputerServlet {
     private static final String ID = "id";
     private static final String COMPUTER = "computer";
     private static final String LIST = "listCompany";
-
+    @Autowired
     private ComputerService computerService;
+    @Autowired
     private CompanyService companyService;
-    private CompanyMapper companyMap;
-
-    public void setComputerService(ComputerService computerService) {
-        this.computerService = computerService;
-    }
-
-    public void setCompanyService(CompanyService companyService) {
-        this.companyService = companyService;
-    }
-
-    public void setCompanyMap(CompanyMapper companyMap) {
-        this.companyMap = companyMap;
-    }
+    private CompanyMapper companyMap = new CompanyMapper();
 
     /**
      * Init beans.
@@ -49,7 +39,6 @@ public class EditComputerServlet extends UpdateComputerServlet {
 
         ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
 
-        this.companyMap = (CompanyMapper) ac.getBean("companyMapper");
         this.computerService = (ComputerService) ac.getBean("computerService");
         this.companyService = (CompanyService) ac.getBean("companyService");
     }
@@ -73,7 +62,7 @@ public class EditComputerServlet extends UpdateComputerServlet {
                 .with(ComputerDTO::setDiscontinued, c.getDiscontinued())
                 .with(ComputerDTO::setCompany, c.getCompany())
                 .build());
-        request.setAttribute(LIST, companyMap.toDTO(companyService.listAll()));
+        request.setAttribute(LIST, companyMap.toList(companyService.listAll()));
         request.getRequestDispatcher(DashboardServlet.EDIT_COMPUTER_JSP).forward(request, response);
     }
 

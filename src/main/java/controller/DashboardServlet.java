@@ -2,6 +2,7 @@ package controller;
 
 import model.Page;
 import model.computer.Computer;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.ComputerService;
 import service.mappy.ComputerMapper;
 import service.mappy.computer.ComputerDTO;
@@ -45,16 +46,9 @@ public class DashboardServlet extends HttpServlet {
     public static final String ORDER_COMPANY_ASC = "company_a";
     public static final String ORDER_COMPANY_DESC = "company_b";
 
-    private ComputerMapper computerMap;
+    private ComputerMapper computerMap = new ComputerMapper();
+    @Autowired
     private ComputerService serviceComputer;
-
-    public void setComputerMap(ComputerMapper computerMap) {
-        this.computerMap = computerMap;
-    }
-
-    public void setServiceComputer(ComputerService serviceComputer) {
-        this.serviceComputer = serviceComputer;
-    }
 
     /**
      * Init beans.
@@ -66,8 +60,6 @@ public class DashboardServlet extends HttpServlet {
         super.init(config);
 
         ApplicationContext ac = (ApplicationContext) config.getServletContext().getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-
-        this.computerMap = (ComputerMapper) ac.getBean("computerMapper");
         this.serviceComputer = (ComputerService) ac.getBean("computerService");
     }
 
@@ -101,7 +93,7 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(END, 0);
         request.setAttribute(COUNT, listComputer.size());
         request.setAttribute(SIZE_PAGE, listComputer.size());
-        request.setAttribute(LIST, computerMap.toDTO(listComputer));
+        request.setAttribute(LIST, computerMap.toList(listComputer));
         request.setAttribute(ORDER, request.getParameter(ORDER));
         request.getRequestDispatcher(DASHBOARD_JSP).forward(request, response);
     }
@@ -140,7 +132,7 @@ public class DashboardServlet extends HttpServlet {
         } else {
             request.setAttribute(ORDER, order);
         }
-        ArrayList<ComputerDTO> list = computerMap.toDTO(serviceComputer.list(currentPage, sizePages, order)).getListPage();
+        ArrayList<ComputerDTO> list = new ArrayList<>(computerMap.toList(serviceComputer.list(currentPage, sizePages, order).getListPage()));
 
         request.setAttribute(START, debut);
         request.setAttribute(END, fin);

@@ -1,5 +1,6 @@
 package controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import service.ComputerService;
@@ -17,11 +18,9 @@ import java.util.ArrayList;
 @WebServlet(name = "DeleteComputerServlet", urlPatterns = "/deleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
     private static final String SELECT = "selection";
+    @Autowired
     private ComputerService service;
 
-    public void setService(ComputerService service) {
-        this.service = service;
-    }
 
     /**
      * Init beans.

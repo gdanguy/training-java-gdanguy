@@ -5,6 +5,7 @@ import model.company.Company;
 import model.computer.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import service.CompanyService;
@@ -27,21 +28,11 @@ public abstract class UpdateComputerServlet extends HttpServlet {
     private static final String INTRO = "introduced";
     private static final String DISCO = "discontinued";
     private static final String COMPANY_ID = "companyId";
-
+    @Autowired
     private ComputerService serviceComputer;
+    @Autowired
     private CompanyService serviceCompany;
 
-    public static void setLogger(Logger logger) {
-        UpdateComputerServlet.logger = logger;
-    }
-
-    public void setServiceComputer(ComputerService serviceComputer) {
-        this.serviceComputer = serviceComputer;
-    }
-
-    public void setServiceCompany(CompanyService serviceCompany) {
-        this.serviceCompany = serviceCompany;
-    }
 
     /**
      * Init beans.

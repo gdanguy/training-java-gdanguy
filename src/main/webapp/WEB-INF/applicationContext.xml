@@ -43,31 +43,27 @@
     </bean>
 
     <!-- Project class -->
-    <bean id="daoFactory" class="model.dao.DAOFactory" scope="singleton"/>
-    <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl" scope="singleton">
+    <bean id="daoFactory" class="model.dao.DAOFactory"/>
+    <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl">
         <property name="daoFactory" ref="daoFactory"/>
     </bean>
-    <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl" scope="singleton">
+    <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl">
         <property name="daoFactory" ref="daoFactory"/>
     </bean>
-    <bean id="companyService" class="service.CompanyServiceImpl" scope="singleton">
+    <bean id="companyService" class="service.CompanyServiceImpl">
         <property name="daoFactory" ref="daoFactory"/>
         <property name="companyDAO" ref="companyDAO"/>
         <property name="computerDAO" ref="computerDAO"/>
     </bean>
-    <bean id="computerService" class="service.ComputerServiceImpl" scope="singleton">
+    <bean id="computerService" class="service.ComputerServiceImpl">
         <property name="daoFactory" ref="daoFactory"/>
         <property name="computerDAO" ref="computerDAO"/>
     </bean>
-    <bean id="companyMapper" class="service.mappy.CompanyMapperImpl" scope="singleton"/>
-    <bean id="computerMapper" class="service.mappy.ComputerMapperImpl" scope="singleton"/>
     <bean id="addComputerServlet" class="controller.AddComputerServlet" scope="prototype">
         <property name="serviceCompany" ref="companyService"/>
-        <property name="companyMap" ref="companyMapper"/>
         <property name="serviceComputer" ref="computerService"/>
     </bean>
     <bean id="dashboardServlet" class="controller.DashboardServlet" scope="prototype">
-        <property name="computerMap" ref="computerMapper"/>
         <property name="serviceComputer" ref="computerService"/>
     </bean>
     <bean id="deleteComputerServlet" class="controller.DeleteComputerServlet" scope="prototype">
@@ -75,7 +71,6 @@
     </bean>
     <bean id="editComputerServlet" class="controller.EditComputerServlet" scope="prototype">
         <property name="serviceCompany" ref="companyService"/>
-        <property name="companyMap" ref="companyMapper"/>
         <property name="serviceComputer" ref="computerService"/>
     </bean>
     <bean id="updateComputerServlet" class="controller.UpdateComputerServlet" abstract="true" scope="prototype">
