@@ -3,15 +3,15 @@ import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 import model.computer.Computer;
-import model.dao.DAOFactory;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
-import model.dao.company.CompanyDAOImpl;
 import model.dao.computer.ComputerDAOImpl;
 import org.junit.*;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import service.CompanyService;
-import service.CompanyServiceImpl;
 import service.ComputerService;
 import service.ComputerServiceImpl;
 
@@ -19,16 +19,21 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml"})
 public class TestService {
-    private DAOFactory daoFactory = new DAOFactory();
-    private ComputerService serviceComputer = new ComputerServiceImpl();
-    private CompanyService serviceCompany = new CompanyServiceImpl();
-    private ComputerDAO dbComputer = new ComputerDAOImpl();
-    private CompanyDAO dbCompany = new CompanyDAOImpl();
-    public static final String NAME_COMPUTER_TEST = "TestComputer";
-    public static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
+    @Autowired
+    private ComputerService serviceComputer;
+    @Autowired
+    private CompanyService serviceCompany;
+    @Autowired
+    private ComputerDAO dbComputer;
+    @Autowired
+    private CompanyDAO dbCompany;
 
-    public static final String NAME_COMPANY = "TestCompany";
+    static final String NAME_COMPUTER_TEST = "TestComputer";
+    static final String NAME_COMPUTER_TEST_2 = "TestComputer2";
+    static final String NAME_COMPANY = "TestCompany";
 
     @Before
     public void before() {
@@ -219,6 +224,4 @@ public class TestService {
     public void testDeleteCompaniesInvalid() {
         assertTrue("Test : DeleteCompany(null) return false", !serviceCompany.delete(-1));
     }
-
-
 }

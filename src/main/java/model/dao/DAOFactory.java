@@ -12,19 +12,10 @@ import java.sql.Statement;
 public class DAOFactory {
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     private static DataSource ds;
-    private ThreadLocal<Connection> cHolder = new ThreadLocal<>();
+    private static ThreadLocal<Connection> cHolder = new ThreadLocal<>();
 
     public static void setDs(DataSource ds) {
         DAOFactory.ds = ds;
-    }
-
-    /**
-     * Create the ThreadLocal.
-     */
-    public DAOFactory() {
-        if (cHolder == null) {
-            cHolder = new ThreadLocal<>();
-        }
     }
 
 
