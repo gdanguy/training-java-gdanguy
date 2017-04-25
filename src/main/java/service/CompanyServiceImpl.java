@@ -3,32 +3,26 @@ package service;
 import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
-import model.dao.DAOFactory;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.validator.Validator;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
-    private DAOFactory daoFactory;
+    @Autowired
+    private com.zaxxer.hikari.HikariDataSource dataSource;
+    @Autowired
     private CompanyDAO companyDAO;
+    @Autowired
     private ComputerDAO computerDAO;
 
-    public void setDaoFactory(DAOFactory daoFactory) {
-        this.daoFactory = daoFactory;
-    }
-
-    public void setCompanyDAO(CompanyDAO companyDAO) {
-        this.companyDAO = companyDAO;
-    }
-
-    public void setComputerDAO(ComputerDAO computerDAO) {
-        this.computerDAO = computerDAO;
-    }
 
     /**
      * Get a page of Company.
@@ -41,13 +35,10 @@ public class CompanyServiceImpl implements CompanyService {
             return null;
         }
         try {
-            daoFactory.open();
             return companyDAO.getPage(page);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -61,12 +52,9 @@ public class CompanyServiceImpl implements CompanyService {
             return null;
         }
         try {
-            daoFactory.open();
             return companyDAO.get(id);
         } catch (DAOException e) {
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -76,12 +64,9 @@ public class CompanyServiceImpl implements CompanyService {
      */
     public ArrayList<Company> listAll() {
         try {
-            daoFactory.open();
             return companyDAO.getAll();
         } catch (DAOException e) {
             logger.error(e.toString());
-        } finally {
-            daoFactory.close();
         }
         return null;
     }
@@ -93,18 +78,24 @@ public class CompanyServiceImpl implements CompanyService {
      */
     public boolean delete(int id) {
         if (id > 0) {
+            Connection c = null;
             try {
-                daoFactory.open();
-                daoFactory.startTransaction();
-                computerDAO.deleteIdCompany(id);
-                companyDAO.delete(id);
-                daoFactory.commit();
-                return true;
-            } catch (DAOException e) {
-                daoFactory.roolback();
+                try {
+                    //Transaction
+                    c = dataSource.getConnection();
+                    c.setAutoCommit(false);
+                    computerDAO.deleteIdCompany(c, id);
+                    companyDAO.delete(c, id);
+                    c.commit();
+                    return true;
+                } catch (DAOException e) {
+                    c.rollback();
+                    logger.error(e.toString());
+                } finally {
+                    c.close();
+                }
+            } catch (SQLException e) {
                 logger.error(e.toString());
-            } finally {
-                daoFactory.close();
             }
         }
         return false;
@@ -119,12 +110,9 @@ public class CompanyServiceImpl implements CompanyService {
     public int create(Company c) {
         if (c != null && Validator.validCompanyStrict(c) == null) {
             try {
-                daoFactory.open();
                 return companyDAO.create(c);
             } catch (DAOException e) {
                 logger.error(e.toString());
-            } finally {
-                daoFactory.close();
             }
         }
         return ECHEC_FLAG;

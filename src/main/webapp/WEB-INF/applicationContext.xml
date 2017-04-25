@@ -32,35 +32,11 @@
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
         <constructor-arg ref="hikariConfig" />
     </bean>
-    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="staticMethod" value="model.dao.DAOFactory.setDs"/>
-        <property name="arguments">
-            <list>
-                <ref bean="dataSource"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- Project class -->
-    <bean id="daoFactory" class="model.dao.DAOFactory"/>
-    <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl">
-        <property name="daoFactory" ref="daoFactory"/>
-    </bean>
-    <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl">
-        <property name="daoFactory" ref="daoFactory"/>
-    </bean>
-    <bean id="companyService" class="service.CompanyServiceImpl">
-        <property name="daoFactory" ref="daoFactory"/>
-        <property name="companyDAO" ref="companyDAO"/>
-        <property name="computerDAO" ref="computerDAO"/>
-    </bean>
-    <bean id="computerService" class="service.ComputerServiceImpl">
-        <property name="daoFactory" ref="daoFactory"/>
-        <property name="computerDAO" ref="computerDAO"/>
-    </bean>
-    <bean id="cliControler" class="cli.CLIControler">
-        <property name="serviceCompany" ref="companyService"/>
-        <property name="db" ref="companyDAO"/>
-        <property name="serviceComputer" ref="computerService"/>
-    </bean>
+    <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl"/>
+    <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl"/>
+    <bean id="companyService" class="service.CompanyServiceImpl"/>
+    <bean id="computerService" class="service.ComputerServiceImpl"/>
+    <bean id="cliControler" class="cli.CLIControler"/>
 </beans>

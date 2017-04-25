@@ -4,6 +4,7 @@ import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface ComputerDAO {
@@ -95,12 +96,11 @@ public interface ComputerDAO {
     Computer getFirst() throws DAOException;
 
     /**
-     * Delete all computer of one company.
+     * Delete all computer of one company without commit.
      * @param id the id of the company
+     * @param c the connection with transaction
      * @throws DAOException if sql failed
      */
-    void deleteIdCompany(int id) throws DAOException;
-
-
+    void deleteIdCompany(Connection c, int id) throws DAOException;
 
 }

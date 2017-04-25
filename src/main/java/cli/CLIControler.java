@@ -8,6 +8,7 @@ import model.dao.DAOException;
 import model.dao.company.CompanyDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.CompanyServiceImpl;
 import service.ComputerServiceImpl;
 
@@ -38,21 +39,13 @@ public class CLIControler {
     public static final String TYPE_COMPUTER = "computer";
     public static final String TYPE_COMPANY = "company";
 
+    @Autowired
     private CompanyServiceImpl serviceCompany;
+    @Autowired
     private ComputerServiceImpl serviceComputer;
+    @Autowired
     private CompanyDAO db;
 
-    public void setServiceCompany(CompanyServiceImpl serviceCompany) {
-        this.serviceCompany = serviceCompany;
-    }
-
-    public void setServiceComputer(ComputerServiceImpl serviceComputer) {
-        this.serviceComputer = serviceComputer;
-    }
-
-    public void setDb(CompanyDAO db) {
-        this.db = db;
-    }
 
     /**
      * cli.MainCLI of the CLI.

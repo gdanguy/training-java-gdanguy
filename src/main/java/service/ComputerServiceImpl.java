@@ -4,10 +4,10 @@ import controller.DashboardServlet;
 import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
-import model.dao.DAOFactory;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import service.validator.Validator;
 
 import java.util.ArrayList;
@@ -16,18 +16,10 @@ import java.util.List;
 
 public class ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
-    private DAOFactory daoFactory;
+    @Autowired
     private ComputerDAO computerDAO;
 
     public static final String INVALID_ID = "Invalid ID";
-
-    public void setDaoFactory(DAOFactory daoFactory) {
-        this.daoFactory = daoFactory;
-    }
-
-    public void setComputerDAO(ComputerDAO computerDAO) {
-        this.computerDAO = computerDAO;
-    }
 
     /**
      * Get the number of Computer.
@@ -35,13 +27,10 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public int count() {
         try {
-            daoFactory.open();
             return computerDAO.count();
         } catch (DAOException e) {
             logger.error(e.toString());
             return ECHEC_FLAG;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -80,7 +69,6 @@ public class ComputerServiceImpl implements ComputerService {
         }
         int p = page;
         try {
-            daoFactory.open();
             Page<Computer> result = computerDAO.getPage(p, sizePage, order);
             while (result.getListPage().size() == 0) {
                 result = computerDAO.getPage(--p, sizePage, order);
@@ -89,8 +77,6 @@ public class ComputerServiceImpl implements ComputerService {
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -102,13 +88,10 @@ public class ComputerServiceImpl implements ComputerService {
     public Page<Computer> list(String search) {
         logger.info("List all Computers");
         try {
-            daoFactory.open();
             return computerDAO.getPage(search);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -134,13 +117,10 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public Computer get(int id) {
         try {
-            daoFactory.open();
             return computerDAO.getDetails(id);
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -154,7 +134,6 @@ public class ComputerServiceImpl implements ComputerService {
     public int create(Computer computer) {
         logger.info("Create a computer, " + computer);
         try {
-            daoFactory.open();
             Computer result;
             if (computer != null && Validator.validComputer(computer) == null) {
                 result = computerDAO.create(computer);
@@ -164,8 +143,6 @@ public class ComputerServiceImpl implements ComputerService {
             }
         } catch (DAOException | NumberFormatException e) {
             logger.error(e.toString());
-        } finally {
-            daoFactory.close();
         }
         return ECHEC_FLAG;
     }
@@ -179,12 +156,9 @@ public class ComputerServiceImpl implements ComputerService {
         logger.info("Update a Computer, new : " + computer);
         if (computer != null && Validator.validComputer(computer) == null) {
             try {
-                daoFactory.open();
                 return computerDAO.update(computer);
             } catch (DAOException | NumberFormatException e) {
                 logger.error(e.toString());
-            } finally {
-                daoFactory.close();
             }
         }
         return false;
@@ -202,13 +176,10 @@ public class ComputerServiceImpl implements ComputerService {
             return INVALID_ID;
         } else {
             try {
-                daoFactory.open();
                 return computerDAO.delete(id);
             } catch (DAOException e) {
                 logger.error(e.toString());
                 return INVALID_ID;
-            } finally {
-                daoFactory.close();
             }
         }
     }
@@ -231,13 +202,10 @@ public class ComputerServiceImpl implements ComputerService {
             }
         }
         try {
-            daoFactory.open();
             return computerDAO.delete(listId);
         } catch (DAOException e) {
             logger.error(e.toString());
             return "Delete Fail";
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -247,13 +215,10 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public Computer getFirst() {
         try {
-            daoFactory.open();
             return computerDAO.getFirst();
         } catch (DAOException e) {
             logger.error(e.toString());
             return null;
-        } finally {
-            daoFactory.close();
         }
     }
 
@@ -262,12 +227,9 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public void deleteLast() {
         try {
-            daoFactory.open();
             computerDAO.deleteLast();
         } catch (DAOException e) {
             logger.error(e.toString());
-        } finally {
-            daoFactory.close();
         }
     }
 
