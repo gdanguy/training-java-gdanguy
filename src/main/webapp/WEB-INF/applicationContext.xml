@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
@@ -59,25 +58,7 @@
         <property name="daoFactory" ref="daoFactory"/>
         <property name="computerDAO" ref="computerDAO"/>
     </bean>
-    <bean id="addComputerServlet" class="controller.AddComputerServlet" scope="prototype">
-        <property name="serviceCompany" ref="companyService"/>
-        <property name="serviceComputer" ref="computerService"/>
-    </bean>
-    <bean id="dashboardServlet" class="controller.DashboardServlet" scope="prototype">
-        <property name="serviceComputer" ref="computerService"/>
-    </bean>
-    <bean id="deleteComputerServlet" class="controller.DeleteComputerServlet" scope="prototype">
-        <property name="service" ref="computerService"/>
-    </bean>
-    <bean id="editComputerServlet" class="controller.EditComputerServlet" scope="prototype">
-        <property name="serviceCompany" ref="companyService"/>
-        <property name="serviceComputer" ref="computerService"/>
-    </bean>
-    <bean id="updateComputerServlet" class="controller.UpdateComputerServlet" abstract="true" scope="prototype">
-        <property name="serviceCompany" ref="companyService"/>
-        <property name="serviceComputer" ref="computerService"/>
-    </bean>
-    <bean id="cliControler" class="cli.CLIControler" scope="singleton">
+    <bean id="cliControler" class="cli.CLIControler">
         <property name="serviceCompany" ref="companyService"/>
         <property name="db" ref="companyDAO"/>
         <property name="serviceComputer" ref="computerService"/>
