@@ -8,16 +8,13 @@ import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import service.validator.Validator;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
-    @Autowired
-    private com.zaxxer.hikari.HikariDataSource dataSource;
     @Autowired
     private CompanyDAO companyDAO;
     @Autowired
@@ -76,25 +73,15 @@ public class CompanyServiceImpl implements CompanyService {
      * @param id the id of the company
      * @return true if succes, false else
      */
+    @Transactional(rollbackFor = Throwable.class)
     public boolean delete(int id) {
         if (id > 0) {
-            Connection c = null;
             try {
-                try {
-                    //Transaction
-                    c = dataSource.getConnection();
-                    c.setAutoCommit(false);
-                    computerDAO.deleteIdCompany(c, id);
-                    companyDAO.delete(c, id);
-                    c.commit();
-                    return true;
-                } catch (DAOException e) {
-                    c.rollback();
-                    logger.error(e.toString());
-                } finally {
-                    c.close();
-                }
-            } catch (SQLException e) {
+                //Transaction
+                computerDAO.deleteIdCompany(id);
+                companyDAO.delete(id);
+                return true;
+            } catch (DAOException e) {
                 logger.error(e.toString());
             }
         }

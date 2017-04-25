@@ -1,7 +1,9 @@
 package utils;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,6 +15,28 @@ import java.sql.Statement;
  */
 public class Utils {
     private static Logger logger = LoggerFactory.getLogger(Utils.class);
+    private static com.zaxxer.hikari.HikariDataSource dataSource;
+
+    public static void setDataSource(HikariDataSource dataSource) {
+        Utils.dataSource = dataSource;
+    }
+
+    /**
+     * Open a Connection who take care if transaction or not.
+     * @return a connection
+     */
+    public static Connection getConnection() {
+        try {
+            logger.debug("Getting connection");
+            return DataSourceUtils.getConnection(dataSource); //use utils for transactionManager
+        } catch (Exception e) {
+            logger.error("Error getting connection" + e.getMessage() +  e.getStackTrace());
+        }
+        return null;
+    }
+
+
+
     /**
      * Close ResultSet, Statement and Connection.
      * @param c connection to close

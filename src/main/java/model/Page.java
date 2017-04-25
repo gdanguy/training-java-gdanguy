@@ -1,13 +1,9 @@
 package model;
 
-import model.dao.computer.ComputerDAOImpl;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 
 public class Page<T> {
     public static final int PAGE_SIZE = 10;
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     protected ArrayList<T> listObjects = new ArrayList<>();
     protected int currentPage;

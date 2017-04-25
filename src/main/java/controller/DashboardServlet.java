@@ -3,12 +3,11 @@ package controller;
 import model.Page;
 import model.computer.Computer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 import service.ComputerService;
 import service.mappy.ComputerMapper;
 import service.mappy.computer.ComputerDTO;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
-
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -45,7 +44,6 @@ public class DashboardServlet extends HttpServlet {
     public static final String ORDER_DISCO_DESC = "disco_b";
     public static final String ORDER_COMPANY_ASC = "company_a";
     public static final String ORDER_COMPANY_DESC = "company_b";
-
     private ComputerMapper computerMap = new ComputerMapper();
     @Autowired
     private ComputerService serviceComputer;

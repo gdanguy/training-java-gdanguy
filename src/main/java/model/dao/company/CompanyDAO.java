@@ -4,7 +4,6 @@ import model.Page;
 import model.company.Company;
 import model.dao.DAOException;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 public interface CompanyDAO {
@@ -50,10 +49,9 @@ public interface CompanyDAO {
     /**
      * Delete a company and all its computers.
      * @param id the id of the company
-     * @param c the connection with transaction
      * @return true if succes, false else
      * @throws DAOException if fail
      */
-    boolean delete(Connection c, int id) throws DAOException;
+    boolean delete(int id) throws DAOException;
 
 }

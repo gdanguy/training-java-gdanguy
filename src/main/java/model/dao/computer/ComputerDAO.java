@@ -4,7 +4,6 @@ import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
 
-import java.sql.Connection;
 import java.util.List;
 
 public interface ComputerDAO {
@@ -28,7 +27,7 @@ public interface ComputerDAO {
      * This method returns the page of computers with a sizePage of sizePage.
      * @param page     corresponds to the page's number to be retrieved
      * @param sizePage size of a page
-     * @param order order of a page
+     * @param order    order of a page
      * @return Page<Computer> corresponds to the page
      * @throws DAOException if SQL request fail
      */
@@ -96,11 +95,10 @@ public interface ComputerDAO {
     Computer getFirst() throws DAOException;
 
     /**
-     * Delete all computer of one company without commit.
+     * Delete all computer of one company.
      * @param id the id of the company
-     * @param c the connection with transaction
      * @throws DAOException if sql failed
      */
-    void deleteIdCompany(Connection c, int id) throws DAOException;
+    void deleteIdCompany(int id) throws DAOException;
 
 }

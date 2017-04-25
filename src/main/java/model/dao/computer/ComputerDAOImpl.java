@@ -8,7 +8,6 @@ import model.computer.Computer;
 import model.dao.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import utils.Utils;
 
 import java.sql.Connection;
@@ -24,8 +23,6 @@ import java.util.List;
 public class ComputerDAOImpl implements ComputerDAO {
 
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    @Autowired
-    private com.zaxxer.hikari.HikariDataSource dataSource;
 
     public static final String DELETE_SUCCES = "Computers are deleted";
 
@@ -41,7 +38,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT COUNT(*) FROM computer");
             r = s.executeQuery();
             int result = -1;
@@ -81,7 +78,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
@@ -133,7 +130,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
                     + " LEFT JOIN company c2 ON c1.company_id = c2.id"
@@ -165,7 +162,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
 
             s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
                     + " FROM computer c1"
@@ -242,7 +239,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet generatedKeys = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement(
                     "Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
                     , Statement.RETURN_GENERATED_KEYS);
@@ -294,7 +291,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Connection conn = null;
         PreparedStatement s = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement(
                     "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
                     , Statement.RETURN_GENERATED_KEYS);
@@ -333,7 +330,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Connection conn = null;
         PreparedStatement s = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("DELETE FROM computer where id = ?");
             s.setInt(1, id);
 
@@ -362,7 +359,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Connection conn = null;
         PreparedStatement s = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             String prepareDelete = prepareDelete(listId.size());
             s = conn.prepareStatement("DELETE FROM computer where id in (" + prepareDelete + ")");
             for (int i = 0; i < listId.size(); i++) {
@@ -409,7 +406,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         try {
             int id = getLastId();
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
             s.setInt(1, id);
 
@@ -475,7 +472,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement(
                     "SELECT id FROM computer ORDER BY id" + ordre);
             r = s.executeQuery();
@@ -505,7 +502,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Connection conn = null;
         PreparedStatement s = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
             s.setInt(1, id);
             s.executeUpdate();
@@ -517,28 +514,4 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
     }
 
-    /**
-     * Delete all computer of one company.
-     * @param id the id of the company
-     * @param conn the connection with transaction
-     * @throws DAOException id SQL bug
-     */
-    public void deleteIdCompany(Connection conn, int id) throws DAOException {
-        logger.info("Delete computer of the company : " + id);
-        if (conn == null) {
-            throw new DAOException("connection.null");
-        }
-        if (id <= 0) {
-            throw new DAOException("id.invalid");
-        }
-        PreparedStatement s;
-        try {
-            s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
-            s.setInt(1, id);
-            s.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        }
-    }
 }

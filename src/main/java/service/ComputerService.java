@@ -5,7 +5,6 @@ import model.computer.Computer;
 
 import java.util.List;
 
-
 public interface ComputerService {
     int ECHEC_FLAG = -1;
 

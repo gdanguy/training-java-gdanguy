@@ -7,7 +7,6 @@ import model.company.Company;
 import model.dao.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 public class CompanyDAOImpl implements CompanyDAO {
 
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
-    @Autowired
-    private com.zaxxer.hikari.HikariDataSource dataSource;
 
 
     /**
@@ -34,7 +31,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT COUNT(*) FROM company");
             r = s.executeQuery();
             int result = -1;
@@ -61,7 +58,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE);
             r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
@@ -91,7 +88,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
             s.setInt(1, id);
             Company result = null;
@@ -121,7 +118,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         PreparedStatement s = null;
         ResultSet r = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement("SELECT id, name FROM company");
             r = s.executeQuery();
             ArrayList<Company> result = new ArrayList<>();
@@ -150,7 +147,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Connection conn = null;
         PreparedStatement s = null;
         try {
-            conn = dataSource.getConnection();
+            conn = Utils.getConnection();
             s = conn.prepareStatement(
                     "Insert into company (name) values (?)"
                     , Statement.RETURN_GENERATED_KEYS);
@@ -180,20 +177,15 @@ public class CompanyDAOImpl implements CompanyDAO {
     /**
      * Delete a company and all its computers.
      * @param id the id of the company
-     * @param conn the connection with transaction
      * @return true if succes, false else
      * @throws DAOException if fail
      */
-    public boolean delete(Connection conn, int id) throws DAOException {
+    public boolean delete(int id) throws DAOException {
         logger.info("Delete a company : " + id);
-        if (conn == null) {
-            throw new DAOException("connection.null");
-        }
-        if (id <= 0) {
-            throw new DAOException("id.invalid");
-        }
+        Connection conn = null;
         PreparedStatement s = null;
         try {
+            conn = Utils.getConnection();
             //delete the company
             s = conn.prepareStatement("DELETE FROM company where id = ?");
             s.setInt(1, id);
@@ -207,6 +199,8 @@ public class CompanyDAOImpl implements CompanyDAO {
             return true;
         } catch (SQLException e) {
             throw new DAOException(e);
+        } finally {
+            Utils.close(conn, s);
         }
     }
 }
