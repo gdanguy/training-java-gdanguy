@@ -51,6 +51,11 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
+    <!-- JDBC TEMPLATE -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
     <!-- Project class -->
     <bean id="companyDAO" class="model.dao.company.CompanyDAOImpl"/>
     <bean id="computerDAO" class="model.dao.computer.ComputerDAOImpl"/>

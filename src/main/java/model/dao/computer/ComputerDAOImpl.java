@@ -8,21 +8,26 @@ import model.computer.Computer;
 import model.dao.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import utils.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComputerDAOImpl implements ComputerDAO {
-
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public static final String DELETE_SUCCES = "Computers are deleted";
 
@@ -34,32 +39,19 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public int count() throws DAOException {
         logger.info("Count computers");
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT COUNT(*) FROM computer");
-            r = s.executeQuery();
-            int result = -1;
-            if (r.next()) {
-                result = (r.getInt(1));
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
+        Integer cpt = this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM computer", Integer.class);
+        if (cpt == null) {
+            throw new DAOException("No computer find in db");
         }
+        return cpt;
     }
 
     /**
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
      * @return Page<Computer> corresponds to the page
-     * @throws DAOException if SQL request fail
      */
-    public Page<Computer> getPage(int page) throws DAOException {
+    public Page<Computer> getPage(int page) {
         return getPage(page, Page.PAGE_SIZE, DashboardServlet.ORDER_NULL);
     }
 
@@ -69,33 +61,24 @@ public class ComputerDAOImpl implements ComputerDAO {
      * @param sizePage size of a page
      * @param order order of a page
      * @return Page<Computer> corresponds to the page
-     * @throws DAOException if SQL request fail
      */
-    public Page<Computer> getPage(int page, int sizePage, String order) throws DAOException {
+    public Page<Computer> getPage(int page, int sizePage, String order) {
         logger.info("Get page " + page + ", computers of " + sizePage);
         String orderBy = getOrder(order);
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
-                    + " FROM computer c1"
-                    + " LEFT JOIN company c2 ON c1.company_id = c2.id"
-                    + orderBy
-                    + " LIMIT " + sizePage + " OFFSET " + page * sizePage);
-            r = s.executeQuery();
-            ArrayList<Computer> result = new ArrayList<>();
-            while (r.next()) {
-                result.add(makeComputerWithResultSet(r));
-            }
-            return new Page<Computer>(result, page, sizePage);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
-        }
+        ArrayList<Computer> computers = new ArrayList<>();
+        computers = (ArrayList<Computer>) this.jdbcTemplate.query(
+                "SELECT c1.id as id, c1.name as name, introduced, discontinued , c2.id as company_id, c2.name as company_name"
+                        + " FROM computer c1"
+                        + " LEFT JOIN company c2 ON c1.company_id = c2.id"
+                        + orderBy
+                        + " LIMIT " + sizePage + " OFFSET " + page * sizePage,
+                new Object[] {},
+                new RowMapper<Computer>() {
+                    public Computer mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return makeComputerWithResultSet(rs);
+                    }
+                });
+        return new Page<Computer>(computers, page, sizePage);
     }
 
     /**
@@ -106,15 +89,15 @@ public class ComputerDAOImpl implements ComputerDAO {
     private String getOrder(String order) {
         String result = " ORDER BY ";
         switch (order) {
-            default: return "";
-            case DashboardServlet.ORDER_NAME_ASC     : return (result + " c1.name ASC");
-            case DashboardServlet.ORDER_NAME_DESC    : return (result + " c1.name DESC");
+            case DashboardServlet.ORDER_NAME_ASC     : return (result + " name ASC");
+            case DashboardServlet.ORDER_NAME_DESC    : return (result + " name DESC");
             case DashboardServlet.ORDER_INTRO_ASC    : return (result + " introduced ASC");
             case DashboardServlet.ORDER_INTRO_DESC   : return (result + " introduced DESC");
             case DashboardServlet.ORDER_DISCO_ASC    : return (result + " discontinued ASC");
             case DashboardServlet.ORDER_DISCO_DESC   : return (result + " discontinued DESC");
-            case DashboardServlet.ORDER_COMPANY_ASC  : return (result + " c2.name ASC");
-            case DashboardServlet.ORDER_COMPANY_DESC : return (result + " c2.name DESC");
+            case DashboardServlet.ORDER_COMPANY_ASC  : return (result + " company_name ASC");
+            case DashboardServlet.ORDER_COMPANY_DESC : return (result + " company_name DESC");
+            default: return "";
         }
     }
 
@@ -122,105 +105,80 @@ public class ComputerDAOImpl implements ComputerDAO {
      * This method returns the page of computers with a sizePage of sizePage.
      * @param search word researched
      * @return Page<Computer> corresponds to the page
-     * @throws DAOException if SQL request fail
      */
-    public Page<Computer> getPage(String search) throws DAOException {
-        logger.info("Get Search computers : " + search);
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
-                    + " FROM computer c1"
-                    + " LEFT JOIN company c2 ON c1.company_id = c2.id"
-                    + " WHERE c1.name LIKE '%" + search + "%'"
-                    + " OR c2.name LIKE '%" + search + "%'");
-            r = s.executeQuery();
-            ArrayList<Computer> result = new ArrayList<>();
-            while (r.next()) {
-                result.add(makeComputerWithResultSet(r));
-            }
-            return new Page<Computer>(result, 0);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
-        }
+    public Page<Computer> getPage(String search) {
+        ArrayList<Computer> computers = new ArrayList<>();
+        String sql = "SELECT c1.id as id, c1.name as name, introduced, discontinued , c2.id as company_id, c2.name as company_name"
+                + " FROM computer c1"
+                + " LEFT JOIN company c2 ON c1.company_id = c2.id"
+                + " WHERE c1.name LIKE '%" + search + "%'"
+                + " OR c2.name LIKE '%" + search + "%'";
+        computers = (ArrayList<Computer>) this.jdbcTemplate.query(
+                sql, new Object[] {},
+                new RowMapper<Computer>() {
+                    public Computer mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return makeComputerWithResultSet(rs);
+                    }
+                });
+        return new Page<Computer>(computers, 0);
     }
 
     /**
      * This method returns a computer identified by its id.
      * @param id of the computer
      * @return ths Computer wanted
-     * @throws DAOException if SQL request fail
      */
-    public Computer getDetails(int id) throws DAOException {
+    public Computer getDetails(int id) {
         logger.info("Get computer : " + id);
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-
-            s = conn.prepareStatement("SELECT c1.id, c1.name, introduced, discontinued , c2.id, c2.name"
-                    + " FROM computer c1"
-                    + " LEFT JOIN company c2 ON c2.id = c1.company_id"
-                    + " WHERE c1.id = ?");
-            s.setInt(1, id);
-            r = s.executeQuery();
-            if (r.next()) {
-                Computer result = makeComputerWithResultSet(r);
-                return result;
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
-        }
+        return this.jdbcTemplate.queryForObject(
+                "SELECT c1.id as id, c1.name as name, introduced, discontinued , c2.id as company_id, c2.name as company_name"
+                        + " FROM computer c1"
+                        + " LEFT JOIN company c2 ON c2.id = c1.company_id"
+                        + " WHERE c1.id = ?",
+                new Object[] {id},
+                new RowMapper<Computer>() {
+                    public Computer mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return makeComputerWithResultSet(rs);
+                    }
+                });
     }
 
     /**
      * Get a Computer with LocalDateTime to Timestamps, column 3 and 4.
-     * @param r is the ResultSet of the query
+     * @param rs is the ResultSet of the query
      * @return a Computer
-     * @throws DAOException if SQL fail
      */
-    private Computer makeComputerWithResultSet(ResultSet r) throws DAOException {
+    private Computer makeComputerWithResultSet(ResultSet rs) {
         try {
-            LocalDateTime intro = getLocalDateTime(r, 3);
-            LocalDateTime disco = getLocalDateTime(r, 4);
-            int idCompany = r.getInt(5);
+            LocalDateTime intro = getLocalDateTime(rs, "introduced");
+            LocalDateTime disco = getLocalDateTime(rs, "discontinued");
+            int idCompany = rs.getInt("company_id");
             Computer result = GenericBuilder.of(Computer::new)
-                    .with(Computer::setId, r.getInt(1))
-                    .with(Computer::setName, r.getString(2))
+                    .with(Computer::setId, rs.getInt("id"))
+                    .with(Computer::setName, rs.getString("name"))
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
                     .with(Computer::setCompany, idCompany <= 0 ? null : GenericBuilder.of(Company::new)
                             .with(Company::setId, idCompany)
-                            .with(Company::setName, r.getString(6))
+                            .with(Company::setName, rs.getString("company_name"))
                             .build())
                     .build();
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException(e);
+            return null;
         }
     }
 
     /**
      * Get LocalDateTime with a Timestamp of a ResultSet.
      * @param r the resultSet
-     * @param index the index of the Timestamp
+     * @param label the label of the Timestamp
      * @return LocalDateTime or null
      */
-    private LocalDateTime getLocalDateTime(ResultSet r, int index) {
+    private LocalDateTime getLocalDateTime(ResultSet r, String label) {
         try {
-            return r.getTimestamp(index) == null ? null : r.getTimestamp(index).toLocalDateTime();
+            return r.getTimestamp(label) == null ? null : r.getTimestamp(label).toLocalDateTime();
         } catch (SQLException error) {
             return null;
         }
@@ -235,49 +193,33 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public Computer create(Computer computer) throws DAOException {
         logger.info("Create computer : " + computer);
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet generatedKeys = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement(
-                    "Insert into computer (name,company_id,introduced,discontinued) values (?,?,?,?)"
-                    , Statement.RETURN_GENERATED_KEYS);
-            s.setString(1, computer.getName());
-            if (computer.getCompany() != null) {
-                s.setInt(2, computer.getCompany().getId());
-            } else {
-                s.setNull(2, Types.INTEGER);
-            }
-            s.setTimestamp(3, computer.getIntroducedTimeStamp());
-            s.setTimestamp(4, computer.getDiscontinuedTimeStamp());
-
-            int affectedRows = s.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating Computer failed, no rows affected.");
-            }
-
-            generatedKeys = s.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int id = generatedKeys.getInt(1);
-                Computer result = GenericBuilder.of(Computer::new)
-                        .with(Computer::setId, id)
-                        .with(Computer::setName, computer.getName())
-                        .with(Computer::setIntroduced, computer.getIntroduced())
-                        .with(Computer::setDiscontinued, computer.getDiscontinued())
-                        .with(Computer::setCompany, computer.getCompany())
-                        .build();
-                return result;
-            } else {
-                throw new SQLException("Creating Computer failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, generatedKeys);
+        if (computer == null) {
+            logger.error("Error creating Computer, computer == null");
+            throw new DAOException("Error creating Computer, computer == null");
         }
+        SimpleJdbcInsert insert =
+                new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                .withTableName("computer")
+                .usingGeneratedKeyColumns("id");
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("name", computer.getName())
+                .addValue("introduced", computer.getIntroducedTimeStamp())
+                .addValue("discontinued", computer.getDiscontinuedTimeStamp())
+                .addValue("company_id", computer.getCompany() == null ? null : computer.getCompany().getId());
+        Number id = insert.executeAndReturnKey(parameterSource);
+        if (id == null) {
+            logger.error("Error creating Computer, bad parameters, " + computer.toStringDetails());
+            throw new DAOException("Error creating Computer, bad parameters");
+        }
+        int idComputer = id.intValue();
+        Computer result = GenericBuilder.of(Computer::new)
+                .with(Computer::setId, idComputer)
+                .with(Computer::setName, computer.getName())
+                .with(Computer::setIntroduced, computer.getIntroduced())
+                .with(Computer::setDiscontinued, computer.getDiscontinued())
+                .with(Computer::setCompany, computer.getCompany())
+                .build();
+        return result;
     }
 
     /**
@@ -288,35 +230,15 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public boolean update(Computer modifiedComputer) throws DAOException {
         logger.info("Update a computer : " + modifiedComputer);
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement(
-                    "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE ID = ?"
-                    , Statement.RETURN_GENERATED_KEYS);
-            s.setString(1, modifiedComputer.getName());
-            if (modifiedComputer.getCompany() != null) {
-                s.setInt(2, modifiedComputer.getCompany().getId());
-            } else {
-                s.setNull(2, Types.INTEGER);
-            }
-            s.setTimestamp(3, modifiedComputer.getIntroducedTimeStamp());
-            s.setTimestamp(4, modifiedComputer.getDiscontinuedTimeStamp());
-            s.setInt(5, modifiedComputer.getId());
-
-            int affectedRows = s.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Updating Computer failed, no rows affected.");
-            }
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
+        Integer companyId = modifiedComputer.getCompany() != null ? modifiedComputer.getCompany().getId() : null;
+        String sql = "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE id = ?";
+        Object[] params = {modifiedComputer.getName(), companyId, modifiedComputer.getIntroducedTimeStamp(), modifiedComputer.getDiscontinuedTimeStamp(), modifiedComputer.getId()};
+        log(params);
+        int affectedRows = jdbcTemplate.update(sql, params);
+        if (affectedRows == 0) {
+            throw new DAOException("Updating Computer failed, no rows affected.");
         }
+        return true;
     }
 
     /**
@@ -327,25 +249,14 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public String delete(int id) throws DAOException {
         logger.info("Delete a computer : " + id);
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("DELETE FROM computer where id = ?");
-            s.setInt(1, id);
-
-            int affectedRows = s.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Delete Computer failed, no rows affected.");
-            }
-            return "Computer " + id + " is deleted";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
+        String sql = "DELETE FROM computer where id = ?";
+        Object[] params = {id};
+        log(params);
+        int affectedRows = jdbcTemplate.update(sql, params);
+        if (affectedRows == 0) {
+            throw new DAOException("Delete Computer failed, no rows affected.");
         }
+        return "Computer " + id + " is deleted";
     }
 
     /**
@@ -356,28 +267,15 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public String delete(List<Integer> listId) throws DAOException {
         logger.info("Delete computers : " + listId);
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            String prepareDelete = prepareDelete(listId.size());
-            s = conn.prepareStatement("DELETE FROM computer where id in (" + prepareDelete + ")");
-            for (int i = 0; i < listId.size(); i++) {
-                s.setInt((i + 1), listId.get(i));
-            }
-
-            int affectedRows = s.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Delete Computer failed, no rows affected.");
-            }
-            return DELETE_SUCCES;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
+        String prepareDelete = prepareDelete(listId.size());
+        String sql = "DELETE FROM computer where id in (" + prepareDelete + ")";
+        Object[] params = prepareDelete(listId);
+        log(params);
+        int affectedRows = jdbcTemplate.update(sql, params);
+        if (affectedRows == 0) {
+            throw new DAOException("Delete Computer failed, no rows affected.");
         }
+        return DELETE_SUCCES;
     }
 
     /**
@@ -392,6 +290,23 @@ public class ComputerDAOImpl implements ComputerDAO {
         String result = "?";
         for (int i = 1; i < listIdSize; i++) {
             result += ",?";
+        }
+        return result;
+    }
+
+    /**
+     * Prepare list of params.
+     * @param list list.
+     * @return .
+     */
+    private Object[] prepareDelete(List<Integer> list) {
+        int size = list.size();
+        if (size < 1) {
+            return null;
+        }
+        Object[] result = new Object[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = list.get(i);
         }
         return result;
     }
@@ -514,4 +429,16 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
     }
 
+    /**
+     * Display params of a SQL request.
+     * @param params Obejct[]
+     */
+    private void log(Object[] params) {
+        String s = "params = {" + params[0];
+        for (int i = 1; i < params.length; i++) {
+           s += ", " + params[i];
+        }
+        s += "}";
+        logger.info(s);
+    }
 }

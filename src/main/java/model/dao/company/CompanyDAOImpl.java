@@ -1,6 +1,11 @@
 package model.dao.company;
 
-import utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
@@ -8,132 +13,91 @@ import model.dao.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class CompanyDAOImpl implements CompanyDAO {
-
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
 
 
     /**
      * Get the number of Companies.
      * @return the number of companies in DataBase
-     * @throws DAOException if no result
      */
-    public int count() throws DAOException {
+    public int count()  {
         logger.info("Count computers");
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT COUNT(*) FROM company");
-            r = s.executeQuery();
-            int result = -1;
-            if (r.next()) {
-                result = (r.getInt(1));
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
+        Integer cpt = this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM company", Integer.class);
+        if (cpt == null) {
+            return -1;
         }
+        return cpt;
     }
 
     /**
      * Get a page of companies.
      * @param page who pages is needed
      * @return Page<Company> contains companies wanted
-     * @throws DAOException if SQL fails
      */
-    public Page<Company> getPage(int page) throws DAOException {
+    public Page<Company> getPage(int page) {
         logger.info("Get all companies");
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE);
-            r = s.executeQuery();
-            ArrayList<Company> result = new ArrayList<>();
-            while (r.next()) {
-                result.add(GenericBuilder.of(Company::new)
-                        .with(Company::setId, r.getInt(1))
-                        .with(Company::setName, r.getString(2))
-                        .build());
-            }
-            return new Page<Company>(result, page);
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-           Utils.close(conn, s, r);
-        }
+        ArrayList<Company> companies = new ArrayList<>();
+        companies = (ArrayList<Company>) this.jdbcTemplate.query(
+                "SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE,
+                new Object[] {},
+                new RowMapper<Company>() {
+                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return GenericBuilder.of(Company::new)
+                                .with(Company::setId, rs.getInt("id"))
+                                .with(Company::setName, rs.getString("name"))
+                                .build();
+                    }
+                });
+        return new Page<Company>(companies, page);
     }
 
     /**
      * Get a company by id.
      * @param id corresponding to the company wanted
      * @return Company wanted
-     * @throws DAOException if SQL fails
      */
-    public Company get(int id) throws DAOException {
+    public Company get(int id) {
         logger.info("Get all companies");
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT id, name FROM company WHERE id = ?");
-            s.setInt(1, id);
-            Company result = null;
-            r = s.executeQuery();
-            if (r.next()) {
-                result = GenericBuilder.of(Company::new)
-                        .with(Company::setId, r.getInt(1))
-                        .with(Company::setName, r.getString(2))
-                        .build();
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
-        }
+        return this.jdbcTemplate.queryForObject(
+                "SELECT id, name FROM company WHERE id = ?",
+                new Object[] {id},
+                new RowMapper<Company>() {
+                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return GenericBuilder.of(Company::new)
+                                .with(Company::setId, rs.getInt("id"))
+                                .with(Company::setName, rs.getString("name"))
+                                .build();
+                    }
+                });
     }
 
     /**
      * Return all companies.
      * @return a ArrayList with all companies
-     * @throws DAOException if SQL fail
      */
-    public ArrayList<Company> getAll() throws DAOException {
+    public ArrayList<Company> getAll() {
         logger.info("Get all companies");
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("SELECT id, name FROM company");
-            r = s.executeQuery();
-            ArrayList<Company> result = new ArrayList<>();
-            while (r.next()) {
-                result.add(GenericBuilder.of(Company::new)
-                        .with(Company::setId, r.getInt(1))
-                        .with(Company::setName, r.getString(2))
-                        .build());
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
-        }
+        ArrayList<Company> companies = new ArrayList<>();
+        companies = (ArrayList<Company>) this.jdbcTemplate.query(
+                "SELECT id, name FROM company",
+                new Object[] {},
+                new RowMapper<Company>() {
+                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
+                        return GenericBuilder.of(Company::new)
+                                .with(Company::setId, rs.getInt("id"))
+                                .with(Company::setName, rs.getString("name"))
+                                .build();
+                    }
+                });
+        return companies;
     }
 
     /**
@@ -144,34 +108,18 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public int create(Company c) throws DAOException {
         logger.info("Create computer : " + c);
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement(
-                    "Insert into company (name) values (?)"
-                    , Statement.RETURN_GENERATED_KEYS);
-            s.setString(1, c.getName());
-
-            int affectedRows = s.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating Company failed, no rows affected.");
-            }
-
-            ResultSet generatedKeys = s.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int id = generatedKeys.getInt(1);
-                return id;
-            } else {
-                generatedKeys.close();
-                throw new SQLException("Creating Company failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
+        SimpleJdbcInsert insert =
+                new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+                        .withTableName("company")
+                        .usingGeneratedKeyColumns("id");
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("name", c.getName());
+        Number id = insert.executeAndReturnKey(parameterSource);
+        if (id == null) {
+            logger.error("Error creating Company, bad parameters, " + c.toString());
+            throw new DAOException("Error creating Computer, bad Company");
         }
+        return id.intValue();
     }
 
     /**
@@ -182,25 +130,26 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public boolean delete(int id) throws DAOException {
         logger.info("Delete a company : " + id);
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            //delete the company
-            s = conn.prepareStatement("DELETE FROM company where id = ?");
-            s.setInt(1, id);
-
-            int affectedRows = s.executeUpdate();
-            s.close();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Delete company failed, no rows affected.");
-            }
-            return true;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
+        String sql = "DELETE FROM company where id = ?";
+        Object[] params = {id};
+        log(params);
+        int affectedRows = jdbcTemplate.update(sql, params);
+        if (affectedRows == 0) {
+            throw new DAOException("Delete Company failed, no rows affected.");
         }
+        return true;
+    }
+
+    /**
+     * Display params of a SQL request.
+     * @param params Obejct[]
+     */
+    private void log(Object[] params) {
+        String s = "params = {" + params[0];
+        for (int i = 1; i < params.length; i++) {
+            s += ", " + params[i];
+        }
+        s += "}";
+        logger.info(s);
     }
 }

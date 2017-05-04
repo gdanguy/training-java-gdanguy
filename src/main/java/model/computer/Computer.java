@@ -145,6 +145,9 @@ public class Computer {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         return this.id == ((Computer) o).getId();
     }
 
