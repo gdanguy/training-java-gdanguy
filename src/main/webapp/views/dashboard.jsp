@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt"
            uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="page" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -28,7 +29,7 @@
 <section id="main">
     <div class="container">
         <h1 id="homeTitle">
-            ${countComputer} Computers found
+            ${countComputer} <spring:message code="dashboard.find" />
         </h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
@@ -41,9 +42,10 @@
                 </form>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" id="addComputer" href=<page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link>>Add
-                    Computer</a>
-                <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
+                <a class="btn btn-success" id="addComputer" href=<page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link>>
+                    <spring:message code="dashboard.add" /></a>
+                <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">
+                    <spring:message code="dashboard.edit" /></a>
             </div>
         </div>
     </div>
@@ -78,7 +80,7 @@
                                 <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="name_a"></page:link>">
                             </c:otherwise>
                         </c:choose>
-                        Computer name</a>
+                        <spring:message code="dashboard.th.computer" /></a>
                 </th>
                 <th>
                     <a href="
@@ -89,8 +91,8 @@
                         <c:otherwise>
                             <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="intro_a"></page:link>">
                         </c:otherwise>
-                        </c:choose>
-                        Introduced date</a>
+                    </c:choose>
+                    <spring:message code="dashboard.th.intro" /></a>
                 </th>
                 <!-- Table header for Discontinued Date -->
                 <th>
@@ -102,8 +104,8 @@
                         <c:otherwise>
                             <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="disco_a"></page:link>">
                         </c:otherwise>
-                        </c:choose>
-                        Discontinued date</a>
+                    </c:choose>
+                    <spring:message code="dashboard.th.disco" /></a>
                 </th>
                 <!-- Table header for Company -->
                 <th>
@@ -115,8 +117,8 @@
                         <c:otherwise>
                             <page:link link="/dashboard" path="${pageContext.request.contextPath}" page="${currentPage}" sizePages="${sizePages}" order="company_a"></page:link>">
                         </c:otherwise>
-                        </c:choose>
-                        Company</a>
+                    </c:choose>
+                    <spring:message code="dashboard.th.company" /></a>
                 </th>
 
             </tr>
