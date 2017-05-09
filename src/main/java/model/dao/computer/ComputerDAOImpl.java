@@ -14,10 +14,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import utils.Utils;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -316,18 +312,26 @@ public class ComputerDAOImpl implements ComputerDAO {
      * @throws DAOException if delete failed
      */
     public void deleteLast() throws DAOException {
-        logger.info("Delete last computer");
-        try {
-            String sql = "DELETE FROM computer WHERE id = ?";
-            Object[] params = {getLastId()};
-            int affectedRows = jdbcTemplate.update(sql, params);
-            log(params);
-            if (affectedRows == 0) {
-                throw new SQLException("Delete Computer failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
+        delete(getLastId());
+    }
+
+
+    /**
+     * Delete all computer of one company.
+     * @param id the id of the company
+     * @throws DAOException id SQL bug
+     */
+    public void deleteIdCompany(int id) throws DAOException {
+        logger.info("Delete computer of the company : " + id);
+        if (id <= 0) {
+            throw new DAOException("id.invalid");
+        }
+        String sql = "DELETE FROM computer where company_id = ?";
+        Object[] params = {id};
+        log(params);
+        int affectedRows = jdbcTemplate.update(sql, params);
+        if (affectedRows == 0) {
+            throw new DAOException("Delete Computer failed, no rows affected.");
         }
     }
 
@@ -337,32 +341,25 @@ public class ComputerDAOImpl implements ComputerDAO {
      * @throws DAOException if sql failed
      */
     public Computer getFirst() throws DAOException {
-        try {
             int id = getFirstId();
             return getDetails(id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        }
     }
 
     /**
      * getLastId.
      * @return int
-     * @throws SQLException if sql failed
      * @throws DAOException if sql failed
      */
-    private int getLastId() throws SQLException, DAOException {
+    private int getLastId() throws DAOException {
         return getFirstORLastId(true);
     }
 
     /**
      * getFirstId.
      * @return int
-     * @throws SQLException if sql failed
      * @throws DAOException if sql failed
      */
-    private int getFirstId() throws SQLException, DAOException {
+    private int getFirstId() throws DAOException {
         return getFirstORLastId(false);
     }
 
@@ -377,50 +374,11 @@ public class ComputerDAOImpl implements ComputerDAO {
         if (last) {
             ordre = " DESC ";
         }
-        Connection conn = null;
-        PreparedStatement s = null;
-        ResultSet r = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement(
-                    "SELECT id FROM computer ORDER BY id" + ordre);
-            r = s.executeQuery();
-            if (!r.next()) {
-                throw new DAOException("No Computer in DataBase");
-            }
-            int id = r.getInt(1);
-            return id;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s, r);
+        Integer cpt = this.jdbcTemplate.queryForObject("SELECT id FROM computer ORDER BY id " + ordre + " LIMIT 1", Integer.class);
+        if (cpt == null) {
+            throw new DAOException("No computer find in db");
         }
-    }
-
-    /**
-     * Delete all computer of one company.
-     * @param id the id of the company
-     * @throws DAOException id SQL bug
-     */
-    public void deleteIdCompany(int id) throws DAOException {
-        logger.info("Delete computer of the company : " + id);
-        if (id <= 0) {
-            throw new DAOException("id.invalid");
-        }
-        Connection conn = null;
-        PreparedStatement s = null;
-        try {
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("DELETE FROM computer where company_id = ?");
-            s.setInt(1, id);
-            s.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
-        }
+        return cpt;
     }
 
     /**

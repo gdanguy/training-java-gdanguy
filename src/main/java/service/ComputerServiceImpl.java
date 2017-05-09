@@ -131,8 +131,6 @@ public class ComputerServiceImpl implements ComputerService {
      * Create a Computer in DataBase.
      * @param computer to insert
      * @return if computer was added
-     * @throws NumberFormatException if bad parameter
-     * @throws DAOException          if model bug
      */
     public int create(Computer computer) {
         logger.info("Create a computer, " + computer);
