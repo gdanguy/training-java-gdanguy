@@ -1,6 +1,6 @@
 package model.dao.computer;
 
-import controller.DashboardServlet;
+import controller.DashboardController;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
@@ -52,7 +52,7 @@ public class ComputerDAOImpl implements ComputerDAO {
      * @return Page<Computer> corresponds to the page
      */
     public Page<Computer> getPage(int page) {
-        return getPage(page, Page.PAGE_SIZE, DashboardServlet.ORDER_NULL);
+        return getPage(page, Page.PAGE_SIZE, DashboardController.ORDER_NULL);
     }
 
     /**
@@ -89,14 +89,14 @@ public class ComputerDAOImpl implements ComputerDAO {
     private String getOrder(String order) {
         String result = " ORDER BY ";
         switch (order) {
-            case DashboardServlet.ORDER_NAME_ASC     : return (result + " name ASC");
-            case DashboardServlet.ORDER_NAME_DESC    : return (result + " name DESC");
-            case DashboardServlet.ORDER_INTRO_ASC    : return (result + " introduced ASC");
-            case DashboardServlet.ORDER_INTRO_DESC   : return (result + " introduced DESC");
-            case DashboardServlet.ORDER_DISCO_ASC    : return (result + " discontinued ASC");
-            case DashboardServlet.ORDER_DISCO_DESC   : return (result + " discontinued DESC");
-            case DashboardServlet.ORDER_COMPANY_ASC  : return (result + " company_name ASC");
-            case DashboardServlet.ORDER_COMPANY_DESC : return (result + " company_name DESC");
+            case DashboardController.ORDER_NAME_ASC     : return (result + " name ASC");
+            case DashboardController.ORDER_NAME_DESC    : return (result + " name DESC");
+            case DashboardController.ORDER_INTRO_ASC    : return (result + " introduced ASC");
+            case DashboardController.ORDER_INTRO_DESC   : return (result + " introduced DESC");
+            case DashboardController.ORDER_DISCO_ASC    : return (result + " discontinued ASC");
+            case DashboardController.ORDER_DISCO_DESC   : return (result + " discontinued DESC");
+            case DashboardController.ORDER_COMPANY_ASC  : return (result + " company_name ASC");
+            case DashboardController.ORDER_COMPANY_DESC : return (result + " company_name DESC");
             default: return "";
         }
     }
@@ -317,23 +317,17 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public void deleteLast() throws DAOException {
         logger.info("Delete last computer");
-        Connection conn = null;
-        PreparedStatement s = null;
         try {
-            int id = getLastId();
-            conn = Utils.getConnection();
-            s = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
-            s.setInt(1, id);
-
-            int affectedRows = s.executeUpdate();
+            String sql = "DELETE FROM computer WHERE id = ?";
+            Object[] params = {getLastId()};
+            int affectedRows = jdbcTemplate.update(sql, params);
+            log(params);
             if (affectedRows == 0) {
                 throw new SQLException("Delete Computer failed, no rows affected.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException(e);
-        } finally {
-            Utils.close(conn, s);
         }
     }
 
@@ -439,6 +433,6 @@ public class ComputerDAOImpl implements ComputerDAO {
            s += ", " + params[i];
         }
         s += "}";
-        logger.info(s);
+        logger.debug(s);
     }
 }

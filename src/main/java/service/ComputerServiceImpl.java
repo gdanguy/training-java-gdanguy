@@ -1,6 +1,6 @@
 package service;
 
-import controller.DashboardServlet;
+import controller.DashboardController;
 import model.Page;
 import model.computer.Computer;
 import model.dao.DAOException;
@@ -8,11 +8,15 @@ import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import service.validator.Validator;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Transactional
 public class ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
     @Autowired
@@ -50,7 +54,7 @@ public class ComputerServiceImpl implements ComputerService {
      * @return a page of Computer
      */
     public Page<Computer> list(int page, int sizePage) {
-        return list(page, sizePage, DashboardServlet.ORDER_NULL);
+        return list(page, sizePage, DashboardController.ORDER_NULL);
     }
 
     /**

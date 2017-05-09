@@ -8,11 +8,14 @@ import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.validator.Validator;
 
 import java.util.ArrayList;
 
+@Service
+@javax.transaction.Transactional
 public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
     @Autowired
@@ -75,6 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Transactional(rollbackFor = Throwable.class)
     public boolean delete(int id) {
+        logger.debug("Deleting Company of ID : " + id);
         if (id > 0) {
             try {
                 //Transaction

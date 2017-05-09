@@ -29,6 +29,7 @@
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
         <org.springframework.version>4.3.7.RELEASE</org.springframework.version>
         <org.springframework-web.version>4.3.7.RELEASE</org.springframework-web.version>
+        <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
     </properties>
 
     <groupId>com.e-biz.gdanguy</groupId>
@@ -256,6 +257,12 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${org.springframework-web.version}</version>
             <exclusions>
@@ -265,7 +272,27 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Spring aspects for i18n -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${org.springframework.version}</version>
+        </dependency>
+
+    <!--Spring boot for context in CLI -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
     </dependencies>
+
     <build>
         <resources>
             <resource>
