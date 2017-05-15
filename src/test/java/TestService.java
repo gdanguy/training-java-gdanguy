@@ -1,7 +1,7 @@
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
-import model.dao.DAOException;
+import exception.DAOException;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;

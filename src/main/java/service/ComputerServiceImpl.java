@@ -3,7 +3,6 @@ package service;
 import controller.DashboardController;
 import model.Page;
 import model.computer.Computer;
-import model.dao.DAOException;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +28,7 @@ public class ComputerServiceImpl implements ComputerService {
      * @return the number of computer in DataBase
      */
     public int count() {
-        try {
-            return computerDAO.count();
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return ECHEC_FLAG;
-        }
+        return computerDAO.count();
     }
 
 
@@ -71,16 +65,11 @@ public class ComputerServiceImpl implements ComputerService {
             return null;
         }
         int p = page;
-        try {
-            Page<Computer> result = computerDAO.getPage(p, sizePage, order);
-            while (result.getListPage().size() == 0) {
-                result = computerDAO.getPage(--p, sizePage, order);
-            }
-            return result;
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
+        Page<Computer> result = computerDAO.getPage(p, sizePage, order);
+        while (result.getListPage().size() == 0) {
+            result = computerDAO.getPage(--p, sizePage, order);
         }
+        return result;
     }
 
     /**
@@ -90,12 +79,7 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public Page<Computer> list(String search) {
         logger.info("List all Computers");
-        try {
-            return computerDAO.getPage(search);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
+        return computerDAO.getPage(search);
     }
 
     /**
@@ -119,12 +103,7 @@ public class ComputerServiceImpl implements ComputerService {
      * @return Computer
      */
     public Computer get(int id) {
-        try {
-            return computerDAO.getDetails(id);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
+        return computerDAO.getDetails(id);
     }
 
     /**
@@ -134,16 +113,12 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public int create(Computer computer) {
         logger.info("Create a computer, " + computer);
-        try {
-            Computer result;
-            if (computer != null && Validateur.validComputer(computer) == null) {
-                result = computerDAO.create(computer);
-                if (result != null) {
-                    return result.getId();
-                }
+        Computer result;
+        if (computer != null && Validateur.validComputer(computer) == null) {
+            result = computerDAO.create(computer);
+            if (result != null) {
+                return result.getId();
             }
-        } catch (DAOException | NumberFormatException e) {
-            logger.error(e.toString());
         }
         return ECHEC_FLAG;
     }
@@ -156,11 +131,7 @@ public class ComputerServiceImpl implements ComputerService {
     public boolean update(Computer computer) {
         logger.info("Update a Computer, new : " + computer);
         if (computer != null && Validateur.validComputer(computer) == null) {
-            try {
-                return computerDAO.update(computer);
-            } catch (DAOException | NumberFormatException e) {
-                logger.error(e.toString());
-            }
+            return computerDAO.update(computer);
         }
         return false;
     }
@@ -176,12 +147,7 @@ public class ComputerServiceImpl implements ComputerService {
             logger.error(INVALID_ID);
             return INVALID_ID;
         } else {
-            try {
-                return computerDAO.delete(id);
-            } catch (DAOException e) {
-                logger.error(e.toString());
-                return INVALID_ID;
-            }
+            return computerDAO.delete(id);
         }
     }
 
@@ -194,7 +160,7 @@ public class ComputerServiceImpl implements ComputerService {
         logger.info("Delete a computer, list : " + listId);
         if (listId == null || listId.size() == 0) {
             logger.error("Invalid ID (no list id)");
-            return "Invalid ID (no list id)";
+            return "Invalid ID (no list id)"; //TODO change return
         }
         for (Integer i : listId) {
             if (i == null) {
@@ -202,12 +168,7 @@ public class ComputerServiceImpl implements ComputerService {
                 return "Invalid ID (null)";
             }
         }
-        try {
-            return computerDAO.delete(listId);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return "Delete Fail";
-        }
+        return computerDAO.delete(listId);
     }
 
     /**
@@ -215,23 +176,14 @@ public class ComputerServiceImpl implements ComputerService {
      * @return Computer
      */
     public Computer getFirst() {
-        try {
-            return computerDAO.getFirst();
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
+        return computerDAO.getFirst();
     }
 
     /**
      * Delete the last computer added in the DAO.
      */
     public void deleteLast() {
-        try {
-            computerDAO.deleteLast();
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        }
+        computerDAO.deleteLast();
     }
 
     /**

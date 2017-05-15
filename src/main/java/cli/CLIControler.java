@@ -4,7 +4,7 @@ import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.computer.Computer;
-import model.dao.DAOException;
+import exception.DAOException;
 import model.dao.company.CompanyDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

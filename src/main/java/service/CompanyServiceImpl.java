@@ -2,7 +2,6 @@ package service;
 
 import model.Page;
 import model.company.Company;
-import model.dao.DAOException;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
 import org.slf4j.Logger;
@@ -34,12 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (page < 0) {
             return null;
         }
-        try {
-            return companyDAO.getPage(page);
-        } catch (DAOException e) {
-            logger.error(e.toString());
-            return null;
-        }
+        return companyDAO.getPage(page);
     }
 
     /**
@@ -51,11 +45,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (id < 0) {
             return null;
         }
-        try {
-            return companyDAO.get(id);
-        } catch (DAOException e) {
-            return null;
-        }
+        return companyDAO.get(id);
     }
 
     /**
@@ -63,12 +53,7 @@ public class CompanyServiceImpl implements CompanyService {
      * @return a ArrayList with all companies
      */
     public ArrayList<Company> listAll() {
-        try {
-            return companyDAO.getAll();
-        } catch (DAOException e) {
-            logger.error(e.toString());
-        }
-        return null;
+        return companyDAO.getAll();
     }
 
     /**
@@ -76,18 +61,14 @@ public class CompanyServiceImpl implements CompanyService {
      * @param id the id of the company
      * @return true if succes, false else
      */
-    @Transactional(rollbackFor = Throwable.class)
+    @Transactional
     public boolean delete(int id) {
         logger.debug("Deleting Company of ID : " + id);
         if (id > 0) {
-            try {
-                //Transaction
-                computerDAO.deleteIdCompany(id);
-                companyDAO.delete(id);
-                return true;
-            } catch (DAOException e) {
-                logger.error(e.toString());
-            }
+            //Transaction
+            computerDAO.deleteIdCompany(id);
+            companyDAO.delete(id);
+            return true;
         }
         return false;
     }
@@ -100,11 +81,7 @@ public class CompanyServiceImpl implements CompanyService {
      */
     public int create(Company c) {
         if (c != null && Validateur.validCompanyStrict(c) == null) {
-            try {
-                return companyDAO.create(c);
-            } catch (DAOException e) {
-                logger.error(e.toString());
-            }
+            return companyDAO.create(c);
         }
         return ECHEC_FLAG;
     }

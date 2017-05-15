@@ -1,5 +1,6 @@
 package model.dao.company;
 
+import exception.CodeError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,7 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
-import model.dao.DAOException;
+import exception.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +105,8 @@ public class CompanyDAOImpl implements CompanyDAO {
      * Create a company.
      * @param c company to create
      * @return the id of the company
-     * @throws DAOException if fail
      */
-    public int create(Company c) throws DAOException {
+    public int create(Company c) {
         logger.info("Create computer : " + c);
         SimpleJdbcInsert insert =
                 new SimpleJdbcInsert(jdbcTemplate.getDataSource())
@@ -117,7 +117,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Number id = insert.executeAndReturnKey(parameterSource);
         if (id == null) {
             logger.error("Error creating Company, bad parameters, " + c.toString());
-            throw new DAOException("Error creating Computer, bad Company");
+            throw new DAOException(CodeError.COMPANY_CREATE);
         }
         return id.intValue();
     }
@@ -126,23 +126,22 @@ public class CompanyDAOImpl implements CompanyDAO {
      * Delete a company and all its computers.
      * @param id the id of the company
      * @return true if succes, false else
-     * @throws DAOException if fail
      */
-    public boolean delete(int id) throws DAOException {
+    public boolean delete(int id) {
         logger.info("Delete a company : " + id);
         String sql = "DELETE FROM company where id = ?";
         Object[] params = {id};
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException("Delete Company failed, no rows affected.");
+            throw new DAOException(CodeError.COMPANY_DELETE);
         }
         return true;
     }
 
     /**
      * Display params of a SQL request.
-     * @param params Obejct[]
+     * @param params Object[]
      */
     private void log(Object[] params) {
         String s = "params = {" + params[0];

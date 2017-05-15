@@ -1,11 +1,12 @@
 package model.dao.computer;
 
 import controller.DashboardController;
+import exception.CodeError;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.computer.Computer;
-import model.dao.DAOException;
+import exception.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         logger.info("Count computers");
         Integer cpt = this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM computer", Integer.class);
         if (cpt == null) {
-            throw new DAOException("No computer find in db");
+            throw new DAOException(CodeError.COMPUTER_NOT_FOUND);
         }
         return cpt;
     }
@@ -185,18 +186,17 @@ public class ComputerDAOImpl implements ComputerDAO {
      * This method adds a computer in the database regardless of its id and returns the computer completed with its id.
      * @param computer to add in the database
      * @return Computer generated
-     * @throws DAOException if SQL fail
      */
-    public Computer create(Computer computer) throws DAOException {
+    public Computer create(Computer computer) {
         logger.info("Create computer : " + computer);
         if (computer == null) {
             logger.error("Error creating Computer, computer == null");
-            throw new DAOException("Error creating Computer, computer == null");
+            throw new DAOException(CodeError.COMPUTER_IS_NULL);
         }
         SimpleJdbcInsert insert =
                 new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                .withTableName("computer")
-                .usingGeneratedKeyColumns("id");
+                        .withTableName("computer")
+                        .usingGeneratedKeyColumns("id");
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("name", computer.getName())
                 .addValue("introduced", computer.getIntroducedTimeStamp())
@@ -205,7 +205,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Number id = insert.executeAndReturnKey(parameterSource);
         if (id == null) {
             logger.error("Error creating Computer, bad parameters, " + computer.toStringDetails());
-            throw new DAOException("Error creating Computer, bad parameters");
+            throw new DAOException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
         }
         int idComputer = id.intValue();
         Computer result = GenericBuilder.of(Computer::new)
@@ -222,9 +222,8 @@ public class ComputerDAOImpl implements ComputerDAO {
      * This method finds a computer with has its id and modifies its attributes by those of that passed as parameter.
      * @param modifiedComputer with the id of the one to be modified and with its new attributes.
      * @return if Computer is updated
-     * @throws DAOException if SQL fail
      */
-    public boolean update(Computer modifiedComputer) throws DAOException {
+    public boolean update(Computer modifiedComputer) {
         logger.info("Update a computer : " + modifiedComputer);
         Integer companyId = modifiedComputer.getCompany() != null ? modifiedComputer.getCompany().getId() : null;
         String sql = "UPDATE computer SET name = ?, company_id = ?, introduced = ?, discontinued = ? WHERE id = ?";
@@ -232,7 +231,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException("Updating Computer failed, no rows affected.");
+            throw new DAOException(CodeError.COMPUTER_EDIT);
         }
         return true;
     }
@@ -241,16 +240,15 @@ public class ComputerDAOImpl implements ComputerDAO {
      * This method removes the computer corresponding to the passed id as a parameter and returns a message confirming whether or not this deletion occurs.
      * @param id of the computer to delete
      * @return if succes : "Computer " + id + " is deleted" or if fail : "Delete Computer failed, no rows affected."
-     * @throws DAOException if SQL fail
      */
-    public String delete(int id) throws DAOException {
+    public String delete(int id) {
         logger.info("Delete a computer : " + id);
         String sql = "DELETE FROM computer where id = ?";
         Object[] params = {id};
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException("Delete Computer failed, no rows affected.");
+            throw new DAOException(CodeError.COMPUTER_DELETE);
         }
         return "Computer " + id + " is deleted";
     }
@@ -259,9 +257,8 @@ public class ComputerDAOImpl implements ComputerDAO {
      * This method removes computers corresponding to the passed listID as a parameter and returns a message confirming whether or not this deletion occurs.
      * @param listId list of the computer to delete
      * @return if succes : "Computers are deleted", else : "Delete Computer failed, no rows affected."
-     * @throws DAOException if SQL fail
      */
-    public String delete(List<Integer> listId) throws DAOException {
+    public String delete(List<Integer> listId) {
         logger.info("Delete computers : " + listId);
         String prepareDelete = prepareDelete(listId.size());
         String sql = "DELETE FROM computer where id in (" + prepareDelete + ")";
@@ -269,7 +266,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException("Delete Computer failed, no rows affected.");
+            throw new DAOException(CodeError.COMPUTER_DELETE);
         }
         return DELETE_SUCCES;
     }
@@ -309,9 +306,8 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     /**
      * Delete the last computer added in the DAO.
-     * @throws DAOException if delete failed
      */
-    public void deleteLast() throws DAOException {
+    public void deleteLast() {
         delete(getLastId());
     }
 
@@ -319,47 +315,40 @@ public class ComputerDAOImpl implements ComputerDAO {
     /**
      * Delete all computer of one company.
      * @param id the id of the company
-     * @throws DAOException id SQL bug
      */
-    public void deleteIdCompany(int id) throws DAOException {
+    public void deleteIdCompany(int id) {
         logger.info("Delete computer of the company : " + id);
         if (id <= 0) {
-            throw new DAOException("id.invalid");
+            throw new DAOException(CodeError.COMPUTER_COMPANY_ID_INVALID);
         }
         String sql = "DELETE FROM computer where company_id = ?";
         Object[] params = {id};
         log(params);
-        int affectedRows = jdbcTemplate.update(sql, params);
-        if (affectedRows == 0) {
-            throw new DAOException("Delete Computer failed, no rows affected.");
-        }
+        jdbcTemplate.update(sql, params);
     }
 
     /**
      * Get the first computer of the DataBase.
      * @return Computer
-     * @throws DAOException if sql failed
      */
-    public Computer getFirst() throws DAOException {
-            int id = getFirstId();
-            return getDetails(id);
+    public Computer getFirst() {
+        int id = getFirstId();
+        return getDetails(id);
     }
 
     /**
      * getLastId.
      * @return int
-     * @throws DAOException if sql failed
      */
-    private int getLastId() throws DAOException {
+    private int getLastId() {
         return getFirstORLastId(true);
     }
 
     /**
      * getFirstId.
      * @return int
-     * @throws DAOException if sql failed
      */
-    private int getFirstId() throws DAOException {
+    private int getFirstId() {
         return getFirstORLastId(false);
     }
 
@@ -367,16 +356,15 @@ public class ComputerDAOImpl implements ComputerDAO {
      * getFirstORLastId.
      * @param last true if you want the last id, false if you want the first
      * @return int
-     * @throws DAOException if sql failed
      */
-    private int getFirstORLastId(boolean last) throws DAOException {
+    private int getFirstORLastId(boolean last) {
         String ordre = "";
         if (last) {
             ordre = " DESC ";
         }
         Integer cpt = this.jdbcTemplate.queryForObject("SELECT id FROM computer ORDER BY id " + ordre + " LIMIT 1", Integer.class);
         if (cpt == null) {
-            throw new DAOException("No computer find in db");
+            throw new DAOException(CodeError.COMPUTER_NOT_FOUND);
         }
         return cpt;
     }
@@ -388,7 +376,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     private void log(Object[] params) {
         String s = "params = {" + params[0];
         for (int i = 1; i < params.length; i++) {
-           s += ", " + params[i];
+            s += ", " + params[i];
         }
         s += "}";
         logger.debug(s);
