@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import service.validator.Validator;
+import service.validator.Validateur;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class ComputerServiceImpl implements ComputerService {
         logger.info("Create a computer, " + computer);
         try {
             Computer result;
-            if (computer != null && Validator.validComputer(computer) == null) {
+            if (computer != null && Validateur.validComputer(computer) == null) {
                 result = computerDAO.create(computer);
                 if (result != null) {
                     return result.getId();
@@ -155,7 +155,7 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public boolean update(Computer computer) {
         logger.info("Update a Computer, new : " + computer);
-        if (computer != null && Validator.validComputer(computer) == null) {
+        if (computer != null && Validateur.validComputer(computer) == null) {
             try {
                 return computerDAO.update(computer);
             } catch (DAOException | NumberFormatException e) {

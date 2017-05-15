@@ -4,7 +4,7 @@ import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
 import service.mappy.computer.ComputerDTO;
-import service.validator.Validator;
+import service.validator.Validateur;
 
 public class ComputerMapper implements Mapper<Computer, ComputerDTO> {
     /**
@@ -17,8 +17,8 @@ public class ComputerMapper implements Mapper<Computer, ComputerDTO> {
         return GenericBuilder.of(Computer::new)
                 .with(Computer::setId, computerDTO.getId())
                 .with(Computer::setName, computerDTO.getName())
-                .with(Computer::setIntroduced, Validator.parseString(computerDTO.getIntroduced()))
-                .with(Computer::setDiscontinued, Validator.parseString(computerDTO.getDiscontinued()))
+                .with(Computer::setIntroduced, Validateur.parseString(computerDTO.getIntroduced()))
+                .with(Computer::setDiscontinued, Validateur.parseString(computerDTO.getDiscontinued()))
                 .with(Computer::setCompany, computerDTO.getCompanyId() < 1 ? null :
                         GenericBuilder.of(Company::new)
                         .with(Company::setId, computerDTO.getCompanyId())

@@ -1,5 +1,6 @@
 package controller;
 
+import model.ComputerValidator;
 import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
@@ -7,15 +8,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import service.CompanyService;
 import service.ComputerService;
 import service.mappy.CompanyMapper;
+import service.mappy.ComputerMapper;
+import org.springframework.validation.ObjectError;
 import service.mappy.computer.ComputerDTO;
-import service.validator.Validator;
+import service.validator.Validateur;
 import org.springframework.ui.ModelMap;
+
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +43,13 @@ public class ComputerController {
     private static final String DISCO = "discontinued";
     private static final String COMPANY_ID = "companyId";
     private CompanyMapper companyMap = new CompanyMapper();
+    private ComputerMapper computerMap = new ComputerMapper();
     @Autowired
     private CompanyService serviceCompany;
     @Autowired
     private ComputerService serviceComputer;
+    @Autowired
+    private ComputerValidator computerValidator;
 
     /**
      * Forward the addComputer jsp.
@@ -95,7 +104,7 @@ public class ComputerController {
         String[] computerToDelete = toDelete.split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {
-            if (Validator.intValidatorStrict(computerToDelete[i]).size() > 0) {
+            if (Validateur.intValidatorStrict(computerToDelete[i]).size() > 0) {
                 model.addAttribute(MESSAGE_ERROR, "Invalid selection");
                 return "redirect:/dashboard";
             }
@@ -117,6 +126,7 @@ public class ComputerController {
         int id = Integer.parseInt(idComputer);
         model.addAttribute(ID, id);
         Computer c = serviceComputer.get(id);
+        model.addAttribute("form", new ComputerDTO());
         model.addAttribute(COMPUTER, GenericBuilder.of(ComputerDTO::new)
                 .with(ComputerDTO::setId, id)
                 .with(ComputerDTO::setName, c.getName())
@@ -131,24 +141,27 @@ public class ComputerController {
     /**
      * Update a computer.
      * @param model ModelMap
-     * @param id int
-     * @param name String
-     * @param intro String
-     * @param disco String
-     * @param compId String
+     * @param computerDTO computerDto
+     * @param bindingResult BindingResult
      * @return String
      */
     @PostMapping("/editComputer")
-    protected String editComputerPost(@RequestParam(value = ID) String id,
-                                      @RequestParam(value = NAME) String name,
-                                      @RequestParam(value = INTRO) String intro,
-                                      @RequestParam(value = DISCO) String disco,
-                                      @RequestParam(value = COMPANY_ID) String compId,
+    protected String editComputerPost(@Valid ComputerDTO computerDTO,
+                                      BindingResult bindingResult,
                                       ModelMap model) {
-        boolean updateSucces = serviceComputer.update(getComputerModified(Integer.parseInt(id), name, intro, disco, compId));
-        if (!updateSucces) {
-            return "500";
+        computerValidator.validate(computerMap.from(computerDTO), bindingResult);
+        if (bindingResult.hasErrors()) {
+            String errorString = "";
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errorString += error.getObjectName() + " - " + error.getDefaultMessage() + "<br/>";
+            }
+            model.addAttribute("messageError", "Error creating computer, invalid param : " + errorString);
+            return "redirect:/dashboard";
         }
+        //boolean updateSucces = serviceComputer.update(getComputerModified(Integer.parseInt(id), name, intro, disco, compId));
+        //if (!updateSucces) {
+        //    return "500";
+        //}
         return "redirect:/dashboard";
     }
 
@@ -192,28 +205,28 @@ public class ComputerController {
         int id = CompanyService.ECHEC_FLAG;
         ArrayList<String> messageError = new ArrayList<>();
         //Test of the name
-        LocalDateTime introduced = Validator.parseString(intro);
-        LocalDateTime discontinued = Validator.parseString(disco);
+        LocalDateTime introduced = Validateur.parseString(intro);
+        LocalDateTime discontinued = Validateur.parseString(disco);
         if (strict) {
             String resultError;
             //Test of name
-            //resultError = Validator.nameValidator(name);
+            //resultError = Validateur.nameValidator(name);
             //setError(messageError, resultError);
 
             //Test of introduced
-            resultError = Validator.dateValidate(intro);
+            resultError = Validateur.dateValidate(intro);
             setError(messageError, resultError);
 
             //Test of discontinued
-            resultError = Validator.dateValidate(disco);
+            resultError = Validateur.dateValidate(disco);
             setError(messageError, resultError);
 
             //Test of Company id
-            resultError = Validator.companyidValidate(compId);
+            resultError = Validateur.companyidValidate(compId);
             setError(messageError, resultError);
 
             //test date
-            resultError = Validator.testDate(introduced, discontinued);
+            resultError = Validateur.testDate(introduced, discontinued);
             setError(messageError, resultError);
 
             //set message error

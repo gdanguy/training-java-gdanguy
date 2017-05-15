@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Validator {
+public abstract class Validateur {
     public static final String REGEX_DATE = "^(([1][9][9][0-9])|([2-9][0-9]{3}))[-](([0][1-9])|([1][0-2]))[-](([0][1-9])|([1-2][0-9])|([3][0-1]))$";
     public static final String REGEX_DATE_2 = "^(([0][1-9])|([1-2][0-9])|([3][0-1]))[-](([0][1-9])|([1][0-2]))[-](([1][9][9][0-9])|([2-9][0-9]{3}))$";
     public static final String REGEX_NAME = "^[A-Za-z0-9 -]{0,38}[A-Za-z0-9]$";
@@ -18,7 +18,7 @@ public abstract class Validator {
     public static final String NAME_DEFAULT = "no name";
 
     /**
-     * Validator for Date.
+     * Validateur for Date.
      * @param date the date to validate
      * @return true if valid, false else
      */
@@ -30,7 +30,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for Name.
+     * Validateur for Name.
      * @param name the name to validate
      * @return true if valid, false else
      */
@@ -42,7 +42,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for int.
+     * Validateur for int.
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
@@ -54,7 +54,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for int with null is a error.
+     * Validateur for int with null is a error.
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
@@ -70,7 +70,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for int with null and negative is a error.
+     * Validateur for int with null and negative is a error.
      * @param intToValidate the int to validate
      * @return true if valid, false else
      */
@@ -113,7 +113,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for Company syntax.
+     * Validateur for Company syntax.
      * @param c the Computer to validate
      * @return null if valid, String[2] else
      */
@@ -131,7 +131,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator Strict for Company syntax.
+     * Validateur Strict for Company syntax.
      * @param c the Computer to validate
      * @return null if valid, String[2] else
      */
@@ -147,7 +147,7 @@ public abstract class Validator {
     }
 
     /**
-     * Validator for Computer syntax.
+     * Validateur for Computer syntax.
      * @param c the Computer to validate
      * @return null if valid, String[] else
      */

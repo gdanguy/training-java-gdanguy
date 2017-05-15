@@ -2,6 +2,7 @@
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="page" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
                     id: ${id}
                 </div>
                 <h1>Edit Computer</h1>
-                <form action="editComputer" method="POST" onsubmit="return validateComputer();">
+                <form action="editComputer" method="POST" onsubmit="return validateComputer();" modelAttribut="form">
                     <input type="hidden" value="${computer.id}" id="id" name="id"/>
                     <fieldset>
                         <div class="form-group">

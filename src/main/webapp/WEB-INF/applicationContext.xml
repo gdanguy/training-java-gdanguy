@@ -66,7 +66,7 @@
     <bean id="companyService" class="service.CompanyServiceImpl"/>
     <bean id="computerService" class="service.ComputerServiceImpl"/>
     <bean id="cliControler" class="cli.CLIControler"/>
-
+    <bean id="computerValidator" class="model.ComputerValidator"/>
     <mvc:annotation-driven/>
     <mvc:resources mapping="/js/**" location="js/"/>
     <mvc:resources mapping="/css/**" location="css/"/>

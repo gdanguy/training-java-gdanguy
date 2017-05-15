@@ -1,15 +1,20 @@
 package service.mappy.computer;
 
 import model.company.Company;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ComputerDTO {
     public static final DateTimeFormatter FORMAT_COURT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected int id;
+    @NotNull
     protected String name;
+    @DateTimeFormat
     protected String introduced;
+    @DateTimeFormat
     protected String discontinued;
     protected Integer companyId;
     protected String companyName;

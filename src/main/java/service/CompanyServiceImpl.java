@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import service.validator.Validator;
+import service.validator.Validateur;
 
 import java.util.ArrayList;
 
@@ -99,7 +99,7 @@ public class CompanyServiceImpl implements CompanyService {
      * @return the id of the company
      */
     public int create(Company c) {
-        if (c != null && Validator.validCompanyStrict(c) == null) {
+        if (c != null && Validateur.validCompanyStrict(c) == null) {
             try {
                 return companyDAO.create(c);
             } catch (DAOException e) {
