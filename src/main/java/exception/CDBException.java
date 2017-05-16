@@ -1,13 +1,13 @@
 package exception;
 
 
-public class DAOException extends RuntimeException {
+public class CDBException extends RuntimeException {
     private CodeError error;
     /**
      * Constructor.
      * @param error the code of the Exception
      */
-    public DAOException(CodeError error) {
+    public CDBException(CodeError error) {
         this.error = error;
     }
 

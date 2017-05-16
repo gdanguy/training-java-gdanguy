@@ -1,12 +1,12 @@
 package model.dao.computer;
 
 import controller.DashboardController;
+import exception.CDBException;
 import exception.CodeError;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.computer.Computer;
-import exception.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +32,13 @@ public class ComputerDAOImpl implements ComputerDAO {
     /**
      * Get the number of Computer.
      * @return the number of computer in DataBase
-     * @throws DAOException if no result
+     * @throws CDBException if no result
      */
-    public int count() throws DAOException {
+    public int count() throws CDBException {
         logger.info("Count computers");
         Integer cpt = this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM computer", Integer.class);
         if (cpt == null) {
-            throw new DAOException(CodeError.COMPUTER_NOT_FOUND);
+            throw new CDBException(CodeError.COMPUTER_NOT_FOUND);
         }
         return cpt;
     }
@@ -191,7 +191,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         logger.info("Create computer : " + computer);
         if (computer == null) {
             logger.error("Error creating Computer, computer == null");
-            throw new DAOException(CodeError.COMPUTER_IS_NULL);
+            throw new CDBException(CodeError.COMPUTER_IS_NULL);
         }
         SimpleJdbcInsert insert =
                 new SimpleJdbcInsert(jdbcTemplate.getDataSource())
@@ -205,7 +205,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Number id = insert.executeAndReturnKey(parameterSource);
         if (id == null) {
             logger.error("Error creating Computer, bad parameters, " + computer.toStringDetails());
-            throw new DAOException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
+            throw new CDBException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
         }
         int idComputer = id.intValue();
         Computer result = GenericBuilder.of(Computer::new)
@@ -231,7 +231,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException(CodeError.COMPUTER_EDIT);
+            throw new CDBException(CodeError.COMPUTER_EDIT);
         }
         return true;
     }
@@ -248,7 +248,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException(CodeError.COMPUTER_DELETE);
+            throw new CDBException(CodeError.COMPUTER_DELETE);
         }
         return "Computer " + id + " is deleted";
     }
@@ -256,9 +256,8 @@ public class ComputerDAOImpl implements ComputerDAO {
     /**
      * This method removes computers corresponding to the passed listID as a parameter and returns a message confirming whether or not this deletion occurs.
      * @param listId list of the computer to delete
-     * @return if succes : "Computers are deleted", else : "Delete Computer failed, no rows affected."
      */
-    public String delete(List<Integer> listId) {
+    public void delete(List<Integer> listId) {
         logger.info("Delete computers : " + listId);
         String prepareDelete = prepareDelete(listId.size());
         String sql = "DELETE FROM computer where id in (" + prepareDelete + ")";
@@ -266,9 +265,8 @@ public class ComputerDAOImpl implements ComputerDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException(CodeError.COMPUTER_DELETE);
+            throw new CDBException(CodeError.COMPUTER_DELETE);
         }
-        return DELETE_SUCCES;
     }
 
     /**
@@ -319,7 +317,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     public void deleteIdCompany(int id) {
         logger.info("Delete computer of the company : " + id);
         if (id <= 0) {
-            throw new DAOException(CodeError.COMPUTER_COMPANY_ID_INVALID);
+            throw new CDBException(CodeError.COMPUTER_COMPANY_ID_INVALID);
         }
         String sql = "DELETE FROM computer where company_id = ?";
         Object[] params = {id};
@@ -364,7 +362,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
         Integer cpt = this.jdbcTemplate.queryForObject("SELECT id FROM computer ORDER BY id " + ordre + " LIMIT 1", Integer.class);
         if (cpt == null) {
-            throw new DAOException(CodeError.COMPUTER_NOT_FOUND);
+            throw new CDBException(CodeError.COMPUTER_NOT_FOUND);
         }
         return cpt;
     }

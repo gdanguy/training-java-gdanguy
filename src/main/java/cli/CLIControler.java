@@ -1,10 +1,10 @@
 package cli;
 
+import exception.CDBException;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
 import model.computer.Computer;
-import exception.DAOException;
 import model.dao.company.CompanyDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +56,9 @@ public class CLIControler {
 
     /**
      * cli.MainCLI of the CLI.
-     * @throws DAOException is SQL fail
+     * @throws CDBException is SQL fail
      */
-    public void displayUserInterface() throws DAOException {
+    public void displayUserInterface() throws CDBException {
         System.out.println("Welcome, type " + HELP + " for the list of commands");
         String result = "";
         do {
@@ -114,9 +114,9 @@ public class CLIControler {
      * Call the method corresponding to the parameter.
      * @param action Action wanted
      * @return String
-     * @throws DAOException if SQL fail
+     * @throws CDBException if SQL fail
      */
-    public String choixAction(String action) throws DAOException {
+    public String choixAction(String action) throws CDBException {
         logger.info("Choose action : '" + action + "'\n");
         int id;
         try {
@@ -179,9 +179,9 @@ public class CLIControler {
     /**
      * Instructs the user to enter information to generate a computer.
      * @return return computer
-     * @throws DAOException is SQL fail
+     * @throws CDBException is SQL fail
      */
-    private Computer userInputComputer() throws DAOException {
+    private Computer userInputComputer() throws CDBException {
         logger.info("User input new Computer");
         try {
             String name = lireSaisieUtilisateur("Enter computer Name : ");
@@ -218,9 +218,9 @@ public class CLIControler {
      * @param oldComputer old information
      * @param id          id of the computer
      * @return Computer
-     * @throws DAOException is SQL fail
+     * @throws CDBException is SQL fail
      */
-    private Computer userInputComputer(Computer oldComputer, int id) throws DAOException {
+    private Computer userInputComputer(Computer oldComputer, int id) throws CDBException {
         logger.info("User input new Computer, old : " + oldComputer);
         try {
             String name = lireSaisieUtilisateur("Enter computer Name (before : " + oldComputer.getName() + ") : ");
@@ -257,9 +257,9 @@ public class CLIControler {
     /**
      * Instructs the user to enter information to generate a company.
      * @return return company
-     * @throws DAOException is SQL fail
+     * @throws CDBException is SQL fail
      */
-    private Company userInputCompany() throws DAOException {
+    private Company userInputCompany() throws CDBException {
         logger.info("User input new Company");
         try {
             String name = lireSaisieUtilisateur("Enter Company Name : ");

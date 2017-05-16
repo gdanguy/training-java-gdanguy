@@ -1,8 +1,8 @@
 package service;
 
 import controller.DashboardController;
+import exception.CDBException;
 import exception.CodeError;
-import exception.DAOException;
 import model.Page;
 import model.computer.Computer;
 import model.dao.computer.ComputerDAO;
@@ -122,7 +122,7 @@ public class ComputerServiceImpl implements ComputerService {
                 return result.getId();
             }
         }
-        throw new DAOException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
+        throw new CDBException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
     }
 
     /**
@@ -156,21 +156,20 @@ public class ComputerServiceImpl implements ComputerService {
     /**
      * Delete Computers in DataBase.
      * @param listId list of the Computer
-     * @return String if succes, null else
      */
-    public String delete(List<Integer> listId) {
+    public void delete(List<Integer> listId) {
         logger.info("Delete a computer, list : " + listId);
         if (listId == null || listId.size() == 0) {
             logger.error("Invalid ID (no list id)");
-            return "Invalid ID (no list id)"; //TODO change return
+            throw new CDBException(CodeError.COMPUTER_DELETE_LIST_EMPTY);
         }
         for (Integer i : listId) {
             if (i == null) {
                 logger.error("Invalid ID (null)");
-                return "Invalid ID (null)";
+                throw new CDBException(CodeError.COMPUTER_DELETE_NULL_ID);
             }
         }
-        return computerDAO.delete(listId);
+        computerDAO.delete(listId);
     }
 
     /**

@@ -1,5 +1,6 @@
 package model.dao.company;
 
+import exception.CDBException;
 import exception.CodeError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +11,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
-import exception.DAOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,7 +117,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Number id = insert.executeAndReturnKey(parameterSource);
         if (id == null) {
             logger.error("Error creating Company, bad parameters, " + c.toString());
-            throw new DAOException(CodeError.COMPANY_CREATE);
+            throw new CDBException(CodeError.COMPANY_CREATE);
         }
         return id.intValue();
     }
@@ -134,7 +134,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         log(params);
         int affectedRows = jdbcTemplate.update(sql, params);
         if (affectedRows == 0) {
-            throw new DAOException(CodeError.COMPANY_DELETE);
+            throw new CDBException(CodeError.COMPANY_DELETE);
         }
         return true;
     }

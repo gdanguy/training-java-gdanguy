@@ -83,9 +83,8 @@ public interface ComputerService {
     /**
      * Delete Computers in DataBase.
      * @param listId list of the Computer
-     * @return String if succes, null else
      */
-    String delete(List<Integer> listId);
+    void delete(List<Integer> listId);
 
 
     /**

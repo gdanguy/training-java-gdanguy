@@ -1,8 +1,7 @@
 package controller;
 
-import exception.CodeError;
-import exception.DAOException;
-import exception.ErrorParameter;
+import exception.CDBException;
+import exception.ExceptionService;
 import model.ComputerValidator;
 import model.GenericBuilder;
 import model.company.Company;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +22,10 @@ import service.CompanyService;
 import service.ComputerService;
 import service.mappy.CompanyMapper;
 import service.mappy.ComputerMapper;
-import org.springframework.validation.ObjectError;
 import service.mappy.computer.ComputerDTO;
 import service.validator.Validateur;
 import org.springframework.ui.ModelMap;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +66,8 @@ public class ComputerController {
     protected ModelAndView addComputerGet(ModelMap model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toList(serviceCompany.listAll()));
-        } catch (DAOException e) {
-            List<CodeError> codeErrors = new ArrayList<>();
-            codeErrors.add(e.getError());
-            redirectAttributes.addFlashAttribute(ErrorsController.ERROR_PARAMETER, new ErrorParameter("404", codeErrors));
-            return new ModelAndView(new RedirectView("errors"));
+        } catch (CDBException e) {
+            return ExceptionService.redirect(e, "404", redirectAttributes);
         }
         ModelAndView redirect = new ModelAndView();
         redirect.setViewName("addComputer");
@@ -108,11 +103,8 @@ public class ComputerController {
         }
         try {
             serviceComputer.create(input);
-        } catch (DAOException e) {
-            List<CodeError> codeErrors = new ArrayList<>();
-            codeErrors.add(e.getError());
-            redirectAttributes.addFlashAttribute(ErrorsController.ERROR_PARAMETER, new ErrorParameter("500", codeErrors));
-            return new ModelAndView(new RedirectView("errors"));
+        } catch (CDBException e) {
+            return ExceptionService.redirect(e, "500", redirectAttributes);
         }
         return new ModelAndView(new RedirectView("dashboard"));
     }
@@ -121,22 +113,28 @@ public class ComputerController {
      * Delete selected computer.
      * @param model  ModelMap
      * @param toDelete  String
+     * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/deleteComputer")
-    protected String deleteComputer(@RequestParam(value = SELECT) String toDelete,
+    protected ModelAndView deleteComputer(@RequestParam(value = SELECT) String toDelete,
+                                    RedirectAttributes redirectAttributes,
                                     ModelMap model) {
         String[] computerToDelete = toDelete.split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {
             if (Validateur.intValidatorStrict(computerToDelete[i]).size() > 0) {
                 model.addAttribute(MESSAGE_ERROR, "Invalid selection");
-                return "redirect:/dashboard";
+                return new ModelAndView(new RedirectView("dashboard"));
             }
             listId.add(Integer.parseInt(computerToDelete[i]));
         }
-        serviceComputer.delete(listId);
-        return "redirect:/dashboard";
+        try {
+            serviceComputer.delete(listId);
+        } catch (CDBException e) {
+            return ExceptionService.redirect(e, "403", redirectAttributes);
+        }
+        return new ModelAndView(new RedirectView("dashboard"));
     }
 
     /**
@@ -163,17 +161,20 @@ public class ComputerController {
         return "editComputer";
     }
 
+
     /**
      * Update a computer.
      * @param model ModelMap
      * @param computerDTO computerDto
      * @param bindingResult BindingResult
+     * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/editComputer")
-    protected String editComputerPost(@Valid ComputerDTO computerDTO,
-                                      BindingResult bindingResult,
-                                      ModelMap model) {
+    protected ModelAndView editComputerPost(ComputerDTO computerDTO,
+                                            BindingResult bindingResult,
+                                            RedirectAttributes redirectAttributes,
+                                            ModelMap model) {
         computerValidator.validate(computerMap.from(computerDTO), bindingResult);
         if (bindingResult.hasErrors()) {
             String errorString = "";
@@ -181,13 +182,14 @@ public class ComputerController {
                 errorString += error.getObjectName() + " - " + error.getDefaultMessage() + "<br/>";
             }
             model.addAttribute("messageError", "Error creating computer, invalid param : " + errorString);
-            return "redirect:/dashboard";
+            return new ModelAndView(new RedirectView("dashboard"));
         }
-        //boolean updateSucces = serviceComputer.update(getComputerModified(Integer.parseInt(id), name, intro, disco, compId));
-        //if (!updateSucces) {
-        //    return "500";
-        //}
-        return "redirect:/dashboard";
+        try {
+            serviceComputer.update(getComputerModified(computerDTO.getId(), computerDTO.getName(), computerDTO.getIntroduced(), computerDTO.getDiscontinued(), ("" + computerDTO.getCompanyId())));
+        } catch (CDBException e) {
+            return ExceptionService.redirect(e, "500", redirectAttributes);
+        }
+        return new ModelAndView(new RedirectView("dashboard"));
     }
 
     /**
@@ -229,14 +231,10 @@ public class ComputerController {
     private Computer getComputer(String name, String intro, String disco, String compId, boolean strict, ArrayList<String> errors) {
         int id = CompanyService.ECHEC_FLAG;
         ArrayList<String> messageError = new ArrayList<>();
-        //Test of the name
         LocalDateTime introduced = Validateur.parseString(intro);
         LocalDateTime discontinued = Validateur.parseString(disco);
         if (strict) {
             String resultError;
-            //Test of name
-            //resultError = Validateur.nameValidator(name);
-            //setError(messageError, resultError);
 
             //Test of introduced
             resultError = Validateur.dateValidate(intro);

@@ -1,5 +1,10 @@
 package exception;
 
+import controller.ErrorsController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +41,10 @@ public abstract class ExceptionService {
     }
     /**
      * Get the message corresponding to the errorCode.
-     * @param e DAOException
+     * @param e CDBException
      * @return message
      */
-    public static String get(DAOException e) {
+    public static String get(CDBException e) {
         return get(e.getError());
     }
 
@@ -54,5 +59,19 @@ public abstract class ExceptionService {
             result.add(get(codeError));
         }
         return result;
+    }
+
+    /**
+     * Return redirection to the Errors Controller.
+     * @param e .
+     * @param htlmCode .
+     * @param redirectAttributes .
+     * @return .
+     */
+    public static ModelAndView redirect(CDBException e, String htlmCode, RedirectAttributes redirectAttributes) {
+        List<CodeError> codeErrors = new ArrayList<>();
+        codeErrors.add(e.getError());
+        redirectAttributes.addFlashAttribute(ErrorsController.ERROR_PARAMETER, new ErrorParameter(htlmCode, codeErrors));
+        return new ModelAndView(new RedirectView("errors"));
     }
 }

@@ -67,9 +67,8 @@ public interface ComputerDAO {
     /**
      * This method removes computers corresponding to the passed listID as a parameter and returns a message confirming whether or not this deletion occurs.
      * @param listId list of the computer to delete
-     * @return if succes : "Computers are deleted", else : "Delete Computer failed, no rows affected."
      */
-    String delete(List<Integer> listId);
+    void delete(List<Integer> listId);
 
     /**
      * Delete the last computer added in the DAO.

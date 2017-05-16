@@ -1,6 +1,6 @@
 package controller;
 
-import exception.DAOException;
+import exception.CDBException;
 import exception.ExceptionService;
 import model.Page;
 import model.computer.Computer;
@@ -89,7 +89,7 @@ public class DashboardController {
         ArrayList<ComputerDTO> list = null;
         try {
             list = new ArrayList<>(computerMap.toList(serviceComputer.list(currentPage, sizePages, order).getListPage()));
-        } catch (DAOException e) {
+        } catch (CDBException e) {
             errors.add(ExceptionService.get(e));
         }
 
@@ -117,7 +117,7 @@ public class DashboardController {
         ArrayList<Computer> list = null;
         try {
             list = serviceComputer.list(search).getListPage();
-        } catch (DAOException e) {
+        } catch (CDBException e) {
             ArrayList<String> messageError = new ArrayList<>();
             messageError.add(ExceptionService.get(e));
             model.addAttribute(MESSAGE_ERROR, messageError);

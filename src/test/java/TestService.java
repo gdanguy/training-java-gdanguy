@@ -1,11 +1,10 @@
+import exception.CDBException;
 import model.GenericBuilder;
 import model.Page;
 import model.company.Company;
-import exception.DAOException;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
-import model.dao.computer.ComputerDAOImpl;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,7 +46,7 @@ public class TestService {
 
     //Computer
     @Test
-    public void testCountComputers() throws DAOException{
+    public void testCountComputers() throws CDBException {
         int countService = serviceComputer.count();
         assertTrue("The number of computers returned by the Service corresponds to the base number", countService == dbComputer.count());
     }
@@ -95,12 +94,12 @@ public class TestService {
         assertTrue("Test : The computer is create, one more computer in base", before + 1 == after);
     }
 
-    @Test(expected = DAOException.class)
+    @Test(expected = CDBException.class)
     public void testCreateComputerNull() {
         serviceComputer.create(null);
     }
 
-    @Test(expected = DAOException.class)
+    @Test(expected = CDBException.class)
     public void testCreateComputerInvalid() {
         serviceComputer.create(GenericBuilder.of(Computer::new)
                             .with(Computer::setId, -1)
@@ -159,20 +158,20 @@ public class TestService {
         assertTrue("Test : the computer is delete, one less computer in base", before - 2 == after);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testDeleteListComputerNull() {
-        assertTrue("Test : DeleteComputer(null) return false", !serviceComputer.delete(null).equals(ComputerDAOImpl.DELETE_SUCCES));
+        serviceComputer.delete(null);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testDeleteListComputerEmpty() {
-        assertTrue("Test : DeleteComputer(new ArrayList<Integer>()) return false", !serviceComputer.delete(new ArrayList<Integer>()).equals(ComputerDAOImpl.DELETE_SUCCES));
+        serviceComputer.delete(new ArrayList<Integer>());
     }
 
     //Company
 
     @Test
-    public void testListAllCompanies() throws DAOException {
+    public void testListAllCompanies() throws CDBException {
         //Test found all companies.
         int count = dbCompany.count();
         assertTrue("Test found all companies", serviceCompany.listAll().size() == count);
