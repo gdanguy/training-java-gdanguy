@@ -41,9 +41,16 @@ public class DashboardController {
     public static final String ORDER_COMPANY_ASC = "company_a";
     public static final String ORDER_COMPANY_DESC = "company_b";
     private ComputerMapper computerMap = new ComputerMapper();
-    @Autowired
     private ComputerService serviceComputer;
 
+    /**
+     * .
+     * @param serviceComputer .
+     */
+    @Autowired
+    public DashboardController(ComputerService serviceComputer) {
+        this.serviceComputer = serviceComputer;
+    }
 
     /**
      * Set data for the Dashboard.

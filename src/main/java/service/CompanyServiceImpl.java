@@ -19,10 +19,19 @@ import java.util.ArrayList;
 @javax.transaction.Transactional
 public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
+    private final CompanyDAO companyDAO;
+    private final ComputerDAO computerDAO;
+
+    /**
+     * .
+     * @param companyDAO .
+     * @param computerDAO .
+     */
     @Autowired
-    private CompanyDAO companyDAO;
-    @Autowired
-    private ComputerDAO computerDAO;
+    public CompanyServiceImpl(CompanyDAO companyDAO, ComputerDAO computerDAO) {
+        this.companyDAO = companyDAO;
+        this.computerDAO = computerDAO;
+    }
 
 
     /**

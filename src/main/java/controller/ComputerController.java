@@ -49,12 +49,22 @@ public class ComputerController {
     private static final String COMPANY_ID = "companyId";
     private CompanyMapper companyMap = new CompanyMapper();
     private ComputerMapper computerMap = new ComputerMapper();
+    private final CompanyService serviceCompany;
+    private final ComputerService serviceComputer;
+    private final ComputerValidator computerValidator;
+
+    /**
+     * .
+     * @param serviceCompany .
+     * @param serviceComputer .
+     * @param computerValidator .
+     */
     @Autowired
-    private CompanyService serviceCompany;
-    @Autowired
-    private ComputerService serviceComputer;
-    @Autowired
-    private ComputerValidator computerValidator;
+    public ComputerController(CompanyService serviceCompany, ComputerService serviceComputer, ComputerValidator computerValidator) {
+        this.serviceCompany = serviceCompany;
+        this.serviceComputer = serviceComputer;
+        this.computerValidator = computerValidator;
+    }
 
     /**
      * Forward the addComputer jsp.

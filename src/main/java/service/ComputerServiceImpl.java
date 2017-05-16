@@ -20,10 +20,18 @@ import java.util.List;
 @Transactional
 public class ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
-    @Autowired
-    private ComputerDAO computerDAO;
+    private final ComputerDAO computerDAO;
 
     public static final String INVALID_ID = "Invalid ID";
+
+    /**
+     * .
+     * @param computerDAO .
+     */
+    @Autowired
+    public ComputerServiceImpl(ComputerDAO computerDAO) {
+        this.computerDAO = computerDAO;
+    }
 
     /**
      * Get the number of Computer.
