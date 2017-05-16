@@ -1,5 +1,8 @@
 package exception;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ebiz on 15/05/17.
  */
@@ -38,5 +41,18 @@ public abstract class ExceptionService {
      */
     public static String get(DAOException e) {
         return get(e.getError());
+    }
+
+    /**
+     * Convert a List of code Errors on List of String.
+     * @param codeErrors List<CodeError>
+     * @return List<String>
+     */
+    public static List<String> get(List<CodeError> codeErrors) {
+        ArrayList<String> result = new ArrayList<>();
+        for (CodeError codeError : codeErrors) {
+            result.add(get(codeError));
+        }
+        return result;
     }
 }

@@ -95,26 +95,22 @@ public class TestService {
         assertTrue("Test : The computer is create, one more computer in base", before + 1 == after);
     }
 
-    @Test
+    @Test(expected = DAOException.class)
     public void testCreateComputerNull() {
-        assertTrue("Test : CreateComputer(null) return -1", serviceComputer.create(null) == ComputerService.ECHEC_FLAG);
+        serviceComputer.create(null);
     }
 
-    @Test
+    @Test(expected = DAOException.class)
     public void testCreateComputerInvalid() {
-        assertTrue("Test : CreateComputer(invalid ComputerName (name is null)) return -1",
-                serviceComputer.create(GenericBuilder.of(Computer::new)
-                                                .with(Computer::setId, -1)
-                                                .with(Computer::setName, null)
-                                                .build()
-                ) == ComputerService.ECHEC_FLAG);
+        serviceComputer.create(GenericBuilder.of(Computer::new)
+                            .with(Computer::setId, -1)
+                            .with(Computer::setName, null)
+                            .build());
 
-        assertTrue("Test : CreateComputer(invalid ComputerName (name is empty)) return -1",
-                serviceComputer.create(GenericBuilder.of(Computer::new)
+        serviceComputer.create(GenericBuilder.of(Computer::new)
                         .with(Computer::setId, -1)
                         .with(Computer::setName, "")
-                        .build()
-                ) == ComputerService.ECHEC_FLAG);
+                        .build());
     }
 
     @Test

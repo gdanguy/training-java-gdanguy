@@ -1,6 +1,8 @@
 package service;
 
 import controller.DashboardController;
+import exception.CodeError;
+import exception.DAOException;
 import model.Page;
 import model.computer.Computer;
 import model.dao.computer.ComputerDAO;
@@ -120,7 +122,7 @@ public class ComputerServiceImpl implements ComputerService {
                 return result.getId();
             }
         }
-        return ECHEC_FLAG;
+        throw new DAOException(CodeError.COMPUTER_CREATE_BAD_PARAMETERS);
     }
 
     /**

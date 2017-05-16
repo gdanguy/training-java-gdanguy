@@ -1,5 +1,8 @@
 package controller;
 
+import exception.CodeError;
+import exception.DAOException;
+import exception.ErrorParameter;
 import model.ComputerValidator;
 import model.GenericBuilder;
 import model.company.Company;
@@ -12,6 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import service.CompanyService;
 import service.ComputerService;
 import service.mappy.CompanyMapper;
@@ -25,6 +31,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by ebiz on 04/05/17.
@@ -54,12 +61,22 @@ public class ComputerController {
     /**
      * Forward the addComputer jsp.
      * @param model ModelMap
+     * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @GetMapping("/addComputer")
-    protected String addComputerGet(ModelMap model) {
-        model.addAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toList(serviceCompany.listAll()));
-        return "addComputer";
+    protected ModelAndView addComputerGet(ModelMap model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toList(serviceCompany.listAll()));
+        } catch (DAOException e) {
+            List<CodeError> codeErrors = new ArrayList<>();
+            codeErrors.add(e.getError());
+            redirectAttributes.addFlashAttribute(ErrorsController.ERROR_PARAMETER, new ErrorParameter("404", codeErrors));
+            return new ModelAndView(new RedirectView("errors"));
+        }
+        ModelAndView redirect = new ModelAndView();
+        redirect.setViewName("addComputer");
+        return redirect;
     }
 
     /**
@@ -69,27 +86,35 @@ public class ComputerController {
      * @param intro String
      * @param disco String
      * @param compId String
+     * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/addComputer")
-    protected String addComputerPost(@RequestParam(value = NAME) String name,
-                                     @RequestParam(value = INTRO) String intro,
-                                     @RequestParam(value = DISCO) String disco,
-                                     @RequestParam(value = COMPANY_ID) String compId,
-                                     ModelMap model) {
+    protected ModelAndView addComputerPost(@RequestParam(value = NAME) String name,
+                                         @RequestParam(value = INTRO) String intro,
+                                         @RequestParam(value = DISCO) String disco,
+                                         @RequestParam(value = COMPANY_ID) String compId,
+                                           RedirectAttributes redirectAttributes,
+                                         ModelMap model) {
         ArrayList<String> errors = null;
         Computer input = getComputerNoStrict(name, intro, disco, compId, errors);
         if (errors != null && errors.size() != 0) {
             model.addAttribute(MESSAGE_ERROR, errors);
         }
         if (input == null) {
-            return addComputerGet(model);
+            ModelAndView redirect = new ModelAndView();
+            redirect.setViewName("addComputer");
+            return redirect;
         }
-        int updateSucces = serviceComputer.create(input);
-        if (updateSucces < 0) {
-            return "500";
+        try {
+            serviceComputer.create(input);
+        } catch (DAOException e) {
+            List<CodeError> codeErrors = new ArrayList<>();
+            codeErrors.add(e.getError());
+            redirectAttributes.addFlashAttribute(ErrorsController.ERROR_PARAMETER, new ErrorParameter("500", codeErrors));
+            return new ModelAndView(new RedirectView("errors"));
         }
-        return "redirect:/dashboard";
+        return new ModelAndView(new RedirectView("dashboard"));
     }
 
     /**
