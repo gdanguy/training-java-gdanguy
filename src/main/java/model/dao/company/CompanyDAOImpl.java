@@ -20,9 +20,16 @@ import java.util.ArrayList;
 
 public class CompanyDAOImpl implements CompanyDAO {
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
+    /**
+     * .
+     * @param jdbcTemplate .
+     */
+    @Autowired
+    public CompanyDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
 
     /**

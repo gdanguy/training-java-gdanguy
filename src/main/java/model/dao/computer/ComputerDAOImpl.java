@@ -23,10 +23,18 @@ import java.util.List;
 
 public class ComputerDAOImpl implements ComputerDAO {
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public static final String DELETE_SUCCES = "Computers are deleted";
+
+    /**
+     * .
+     * @param jdbcTemplate .
+     */
+    @Autowired
+    public ComputerDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
 
     /**
