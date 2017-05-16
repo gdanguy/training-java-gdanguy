@@ -35,6 +35,16 @@ public abstract class ExceptionService {
                 return "error.computer.delete";
             case COMPUTER_NOT_FOUND:
                 return "error.computer.not.found";
+            case COMPANY_NOT_FOUND:
+                return "error.computer.company.id.invalid";
+            case COMPUTER_DELETE_LIST_EMPTY:
+                return "error.computer.delete.list.empty";
+            case COMPUTER_DELETE_NULL_ID:
+                return "error.computer.delete.ID.null";
+            case COMPUTER_ID_INVALID:
+                return "error.computer.id.invalid";
+            case INVALID_PAGE:
+                return "error.invalid.page";
             default:
                 return "error.default";
         }

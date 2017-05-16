@@ -8,6 +8,7 @@ public enum CodeError {
     COMPUTER_NOT_FOUND,
     COMPUTER_CREATE_BAD_PARAMETERS,
     COMPUTER_IS_NULL,
+    COMPUTER_ID_INVALID,
     COMPUTER_EDIT,
     COMPUTER_DELETE,
     COMPUTER_DELETE_LIST_EMPTY,
@@ -16,5 +17,9 @@ public enum CodeError {
 
     //Exception CompanyDAO
     COMPANY_CREATE,
-    COMPANY_DELETE
+    COMPANY_DELETE,
+    COMPANY_NOT_FOUND,
+
+    //Page
+    INVALID_PAGE
 }

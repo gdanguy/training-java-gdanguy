@@ -64,7 +64,7 @@ public class ComputerServiceImpl implements ComputerService {
         logger.info("List all Computers");
         if (page < 0) {
             logger.error("Invalid Page Number");
-            return null;
+            throw new CDBException(CodeError.INVALID_PAGE);
         }
         int p = page;
         Page<Computer> result = computerDAO.getPage(p, sizePage, order);
@@ -135,7 +135,7 @@ public class ComputerServiceImpl implements ComputerService {
         if (computer != null && Validateur.validComputer(computer) == null) {
             return computerDAO.update(computer);
         }
-        return false;
+        throw new CDBException(CodeError.COMPUTER_EDIT);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ComputerServiceImpl implements ComputerService {
         logger.info("Delete a computer, id = " + id);
         if (id <= 0) {
             logger.error(INVALID_ID);
-            return INVALID_ID;
+            throw new CDBException(CodeError.COMPUTER_ID_INVALID);
         } else {
             return computerDAO.delete(id);
         }

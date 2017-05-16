@@ -92,7 +92,12 @@ public class ComputerController {
                                            RedirectAttributes redirectAttributes,
                                          ModelMap model) {
         ArrayList<String> errors = null;
-        Computer input = getComputerNoStrict(name, intro, disco, compId, errors);
+        Computer input;
+        try {
+            input = getComputerNoStrict(name, intro, disco, compId, errors);
+        } catch (CDBException e) {
+            return ExceptionService.redirect(e, "500", redirectAttributes);
+        }
         if (errors != null && errors.size() != 0) {
             model.addAttribute(MESSAGE_ERROR, errors);
         }

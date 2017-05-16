@@ -1,5 +1,7 @@
 package service;
 
+import exception.CDBException;
+import exception.CodeError;
 import model.Page;
 import model.company.Company;
 import model.dao.company.CompanyDAO;
@@ -31,7 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
     public Page<Company> list(int page) {
         logger.info("List all Companies");
         if (page < 0) {
-            return null;
+            throw new CDBException(CodeError.COMPANY_NOT_FOUND);
         }
         return companyDAO.getPage(page);
     }
@@ -43,7 +45,7 @@ public class CompanyServiceImpl implements CompanyService {
      */
     public Company get(int id) {
         if (id < 0) {
-            return null;
+            throw new CDBException(CodeError.COMPANY_NOT_FOUND);
         }
         return companyDAO.get(id);
     }
@@ -64,13 +66,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional
     public boolean delete(int id) {
         logger.debug("Deleting Company of ID : " + id);
-        if (id > 0) {
-            //Transaction
-            computerDAO.deleteIdCompany(id);
-            companyDAO.delete(id);
-            return true;
+        if (id <= 0) {
+            throw new CDBException(CodeError.COMPUTER_COMPANY_ID_INVALID);
         }
-        return false;
+        //Transaction
+        computerDAO.deleteIdCompany(id);
+        companyDAO.delete(id);
+        return true;
     }
 
 
@@ -83,7 +85,7 @@ public class CompanyServiceImpl implements CompanyService {
         if (c != null && Validateur.validCompanyStrict(c) == null) {
             return companyDAO.create(c);
         }
-        return ECHEC_FLAG;
+        throw new CDBException(CodeError.COMPANY_CREATE);
     }
 
     /**

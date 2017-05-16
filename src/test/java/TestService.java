@@ -132,7 +132,7 @@ public class TestService {
         assertTrue("Test : The computer is update, one more computer in the search field ", before + 1 == after);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testUpdateComputerNull() {
         assertTrue("Test : UpdateComputer(null) return false", !serviceComputer.update(null));
     }
@@ -145,7 +145,7 @@ public class TestService {
         assertTrue("Test : the computer is delete, one less computer in base", before - 1 == after);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testDeleteComputerInvalid() {
         assertTrue("Test : DeleteComputer(-1) return false", serviceComputer.delete(-1).equals(ComputerServiceImpl.INVALID_ID));
     }
@@ -188,26 +188,21 @@ public class TestService {
         assertTrue("Test Create a company", id >= 0);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testCreateCompaniesNull() {
         assertTrue("Test : CreateCompany(null) return false", serviceCompany.create(null) == serviceCompany.ECHEC_FLAG);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testCreateCompaniesInvalid() {
-        assertTrue("Test : CreateComputer(invalid ComputerName (name is null)) return -1",
-                serviceCompany.create(GenericBuilder.of(Company::new)
-                        .with(Company::setId, -1)
-                        .with(Company::setName, null)
-                        .build()
-                ) == serviceCompany.ECHEC_FLAG);
-
-        assertTrue("Test : CreateComputer(invalid ComputerName (name is empty)) return -1",
-                serviceCompany.create(GenericBuilder.of(Company::new)
-                        .with(Company::setId, -1)
-                        .with(Company::setName, "")
-                        .build()
-                ) == serviceCompany.ECHEC_FLAG);
+        serviceCompany.create(GenericBuilder.of(Company::new)
+                .with(Company::setId, -1)
+                .with(Company::setName, null)
+                .build());
+        serviceCompany.create(GenericBuilder.of(Company::new)
+                .with(Company::setId, -1)
+                .with(Company::setName, "")
+                .build());
     }
 
     @Test
@@ -218,7 +213,7 @@ public class TestService {
         assertTrue("Test Delete a company", succes);
     }
 
-    @Test
+    @Test(expected = CDBException.class)
     public void testDeleteCompaniesInvalid() {
         assertTrue("Test : DeleteCompany(null) return false", !serviceCompany.delete(-1));
     }
