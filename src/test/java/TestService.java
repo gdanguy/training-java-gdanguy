@@ -1,6 +1,5 @@
 import exception.CDBException;
 import model.GenericBuilder;
-import model.Page;
 import model.company.Company;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
@@ -18,8 +17,8 @@ import service.ComputerService;
 import service.ComputerServiceImpl;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@Transactional
 public class TestService {
     @Resource
     private ComputerService serviceComputer;
@@ -54,22 +54,6 @@ public class TestService {
     public void testCountComputers() throws CDBException {
         int countService = serviceComputer.count();
         assertTrue("The number of computers returned by the Service corresponds to the base number", countService == dbComputer.count());
-    }
-
-    @Test
-    public void testListComputers() {
-        //Test sizePage default
-        Page<Computer> page1 = serviceComputer.list(0);
-        Page<Computer> page2 = serviceComputer.list(0, Page.PAGE_SIZE);
-        assertEquals("Test : The same return for both methods with the default sizes", page1, page2);
-
-        //Test simple research
-        Page<Computer> result = serviceComputer.list(NAME_COMPUTER_TEST);
-        assertTrue("Test : The computer is found ", result.getListPage().size() > 0);
-
-        //Test found all computer
-        int count = serviceComputer.count();
-        assertTrue("Test : Found all computer", serviceComputer.list(0, count).getListPage().size() == count);
     }
 
     @Test
@@ -117,26 +101,6 @@ public class TestService {
                         .build());
     }
 
-    @Test
-    public void testUpdateComputer() {
-        List<Computer> c = serviceComputer.list(0,serviceComputer.count()).getListPage();
-        int cpt = 0;
-        //We search a computer who not have the name at NAME_COMPUTER_TEST_2
-        while (c.get(cpt).getName().equals(NAME_COMPUTER_TEST_2)) {
-            cpt++;
-        }
-        int idComputer = c.get(cpt).getId();
-        int before = serviceComputer.list(NAME_COMPUTER_TEST_2).getListPage().size();
-        serviceComputer.update(
-                GenericBuilder.of(Computer::new)
-                        .with(Computer::setId, idComputer)
-                        .with(Computer::setName, NAME_COMPUTER_TEST_2)
-                        .build());
-
-        int after = serviceComputer.list(NAME_COMPUTER_TEST_2).getListPage().size();
-        assertTrue("Test : The computer is update, one more computer in the search field ", before + 1 == after);
-    }
-
     @Test(expected = CDBException.class)
     public void testUpdateComputerNull() {
         assertTrue("Test : UpdateComputer(null) return false", !serviceComputer.update(null));
@@ -153,14 +117,6 @@ public class TestService {
     @Test(expected = CDBException.class)
     public void testDeleteComputerInvalid() {
         assertTrue("Test : DeleteComputer(-1) return false", serviceComputer.delete(-1).equals(ComputerServiceImpl.INVALID_ID));
-    }
-
-    @Test
-    public void testDeleteListComputer() {
-        int before = serviceComputer.count();
-        serviceComputer.deleteMultiLast();
-        int after = serviceComputer.count();
-        assertTrue("Test : the computer is delete, one less computer in base", before - 2 == after);
     }
 
     @Test(expected = CDBException.class)

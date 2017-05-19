@@ -11,10 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.validator.Validateur;
 
-import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -200,18 +199,6 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public void deleteLast() {
         computerDAO.deleteLast();
-    }
-
-    /**
-     * Delete the last computer in the DAO.
-     */
-    public void deleteMultiLast() {
-        ArrayList<Integer> list = new ArrayList<>();
-        List<Computer> listC = list("").getListPage();
-        int i = listC.size();
-        list.add(listC.get(i - 1).getId());
-        list.add(listC.get(i - 2).getId());
-        delete(list);
     }
 
 

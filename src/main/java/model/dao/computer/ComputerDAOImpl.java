@@ -114,10 +114,11 @@ public class ComputerDAOImpl implements ComputerDAO {
         Session session = sessionFactory.getCurrentSession();
         try {
             Query query = session.createQuery("From Computer C "
-                    + "LEFT JOIN C2  with C.company_id = C2.id "
-                    + "WHERE C.name LIKE '%" + search + "%' "
-                    + "OR C2.name LIKE '%" + search + "%'"
+                    + "left outer join C.company as Cpn "
+                    + "WHERE C.name like :search "
+                    + "OR  Cpn.name like :search "
             );
+            query.setParameter("search", "'%" + search + "%'");
             List<Computer> computers = query.getResultList();
             return new Page<Computer>(computers, 0);
         } catch (HibernateException e) {
@@ -288,7 +289,8 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
         Session session = sessionFactory.getCurrentSession();
         try {
-            Query query = session.createQuery("SELECT id FROM computer ORDER BY id " + ordre);
+            Query query = session.createQuery("SELECT id FROM Computer ORDER BY id " + ordre);
+            query.setMaxResults(1);
             Integer id = (Integer) query.getSingleResult();
             if (id == null) {
                 throw new CDBException(CodeError.COMPUTER_NOT_FOUND);
