@@ -3,10 +3,12 @@ package service.mappy;
 import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
+import org.springframework.context.annotation.Configuration;
 import service.mappy.computer.ComputerDTO;
 import service.validator.Validateur;
 
-public class ComputerMapper implements Mapper<Computer, ComputerDTO> {
+@Configuration
+public class ComputerMapperDTO implements Mapper<Computer, ComputerDTO> {
     /**
      * Computer from ComputerDTO.
      * @param computerDTO in
@@ -26,6 +28,7 @@ public class ComputerMapper implements Mapper<Computer, ComputerDTO> {
                         .build())
                 .build();
     }
+
 
     /**
      * Computer to ComputerDTO.

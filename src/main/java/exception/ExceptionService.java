@@ -45,6 +45,8 @@ public abstract class ExceptionService {
                 return "error.computer.id.invalid";
             case INVALID_PAGE:
                 return "error.invalid.page";
+            case INVALID_DATE:
+                return "error.invalid.date";
             default:
                 return "error.default";
         }

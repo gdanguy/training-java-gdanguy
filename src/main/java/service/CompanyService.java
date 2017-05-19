@@ -3,7 +3,7 @@ package service;
 import model.Page;
 import model.company.Company;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CompanyService {
     int ECHEC_FLAG = -1;
@@ -27,7 +27,7 @@ public interface CompanyService {
      * Return all companies.
      * @return a ArrayList with all companies
      */
-    ArrayList<Company> listAll();
+    List<Company> listAll();
 
     /**
      * Delete a company and all its computers.

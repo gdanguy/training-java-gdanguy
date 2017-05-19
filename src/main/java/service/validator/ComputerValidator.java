@@ -1,13 +1,14 @@
-package model;
+package service.validator;
 
 import model.computer.Computer;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import service.validator.Validateur;
 
 /**
  * Created by ebiz on 09/05/17.
  */
+@Component
 public class ComputerValidator implements Validator {
     /**
      * .

@@ -21,5 +21,6 @@ public enum CodeError {
     COMPANY_NOT_FOUND,
 
     //Page
-    INVALID_PAGE
+    INVALID_PAGE,
+    INVALID_DATE
 }

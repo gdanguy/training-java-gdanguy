@@ -5,7 +5,10 @@ import model.company.Company;
 import model.computer.Computer;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,8 +19,10 @@ import service.ComputerServiceImpl;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -114,7 +119,7 @@ public class TestService {
 
     @Test
     public void testUpdateComputer() {
-        ArrayList<Computer> c = serviceComputer.list(0,serviceComputer.count()).getListPage();
+        List<Computer> c = serviceComputer.list(0,serviceComputer.count()).getListPage();
         int cpt = 0;
         //We search a computer who not have the name at NAME_COMPUTER_TEST_2
         while (c.get(cpt).getName().equals(NAME_COMPUTER_TEST_2)) {

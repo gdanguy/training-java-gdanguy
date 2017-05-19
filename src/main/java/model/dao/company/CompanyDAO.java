@@ -3,7 +3,7 @@ package model.dao.company;
 import model.Page;
 import model.company.Company;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CompanyDAO {
 
@@ -25,7 +25,7 @@ public interface CompanyDAO {
      * Return all companies.
      * @return a ArrayList with all companies
      */
-    ArrayList<Company> getAll();
+    List<Company> getAll();
 
     /**
      * Get the number of Companies.

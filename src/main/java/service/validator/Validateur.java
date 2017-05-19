@@ -117,14 +117,12 @@ public abstract class Validateur {
      * @param c the Computer to validate
      * @return null if valid, String[2] else
      */
-    public static String[] validCompany(Company c) {
+    public static String validCompany(Company c) {
         if (c == null) {
             return null;
         }
-        String[] messageError = new String[2];
-        messageError[0] = nameValidator(c.getName());
-        messageError[1] = intValidatorStrict(c.getId());
-        if (messageError[0] == null && messageError[1] == null) {
+        String messageError = nameValidator(c.getName());
+        if (messageError == null) {
             return null;
         }
         return messageError;
@@ -155,21 +153,20 @@ public abstract class Validateur {
         if (c == null) {
             return null;
         }
-        String[] messageErrorCompany = validCompany(c.getCompany());
+        String messageErrorCompany = validCompany(c.getCompany());
         String[] messageError = new String[2];
         messageError[0] = nameValidator(c.getName());
         if (c.getId() != ComputerService.ECHEC_FLAG) {
             messageError[1] = intValidatorStrict(c.getId());
         }
-        if (messageError[0] == null && messageError[1] == null && messageErrorCompany == null) {
+        if (messageError[0] == null && messageError[1] == null && (messageErrorCompany == null || messageErrorCompany.isEmpty())) {
             return null;
         }
         if (messageErrorCompany != null) {
-            String[] messageError2 = new String[4];
+            String[] messageError2 = new String[3];
             messageError2[0] = messageError[0];
             messageError2[1] = messageError[1];
-            messageError2[2] = messageErrorCompany[0];
-            messageError2[3] = messageErrorCompany[1];
+            messageError2[2] = messageErrorCompany;
             return messageError2;
         }
         return messageError;

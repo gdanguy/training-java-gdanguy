@@ -2,11 +2,13 @@ package service.mappy;
 
 import model.GenericBuilder;
 import model.company.Company;
+import org.springframework.context.annotation.Configuration;
 import service.mappy.company.CompanyDTO;
 
 /**
  * Created by ebiz on 24/04/17.
  */
+@Configuration
 public class CompanyMapper implements Mapper<Company, CompanyDTO> {
     /**
      * Company from CompanyDTO.

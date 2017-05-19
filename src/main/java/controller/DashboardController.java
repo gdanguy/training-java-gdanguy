@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import service.ComputerService;
-import service.mappy.ComputerMapper;
+import service.mappy.ComputerMapperDTO;
 import service.mappy.computer.ComputerDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -40,7 +41,7 @@ public class DashboardController {
     public static final String ORDER_DISCO_DESC = "disco_b";
     public static final String ORDER_COMPANY_ASC = "company_a";
     public static final String ORDER_COMPANY_DESC = "company_b";
-    private ComputerMapper computerMap = new ComputerMapper();
+    private ComputerMapperDTO computerMap = new ComputerMapperDTO();
     private ComputerService serviceComputer;
 
     /**
@@ -121,7 +122,7 @@ public class DashboardController {
                             @RequestParam(value = SEARCH) String search,
                             ModelMap model) {
         model.addAttribute(CURRENT_PAGE, 0);
-        ArrayList<Computer> list = null;
+        List<Computer> list = null;
         try {
             list = serviceComputer.list(search).getListPage();
         } catch (CDBException e) {

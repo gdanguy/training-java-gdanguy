@@ -6,13 +6,14 @@ import exception.CodeError;
 import model.Page;
 import model.computer.Computer;
 import model.dao.computer.ComputerDAO;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.validator.Validateur;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,19 @@ import java.util.List;
 public class ComputerServiceImpl implements ComputerService {
     private Logger logger = LoggerFactory.getLogger(ComputerServiceImpl.class);
     private final ComputerDAO computerDAO;
+    private final SessionFactory sessionFactory;
 
     public static final String INVALID_ID = "Invalid ID";
 
     /**
      * .
      * @param computerDAO .
+     * @param sessionFactory .
      */
     @Autowired
-    public ComputerServiceImpl(ComputerDAO computerDAO) {
+    public ComputerServiceImpl(ComputerDAO computerDAO, SessionFactory sessionFactory) {
         this.computerDAO = computerDAO;
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -71,7 +75,7 @@ public class ComputerServiceImpl implements ComputerService {
     public Page<Computer> list(int page, int sizePage, String order) {
         logger.info("List all Computers");
         if (page < 0) {
-            logger.error("Invalid Page Number");
+            logger.error("Invalid Page Number : " + page);
             throw new CDBException(CodeError.INVALID_PAGE);
         }
         int p = page;
@@ -89,7 +93,8 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public Page<Computer> list(String search) {
         logger.info("List all Computers");
-        return computerDAO.getPage(search);
+        Page result = computerDAO.getPage(search);
+        return result;
     }
 
     /**
@@ -113,7 +118,8 @@ public class ComputerServiceImpl implements ComputerService {
      * @return Computer
      */
     public Computer get(int id) {
-        return computerDAO.getDetails(id);
+        Computer result = computerDAO.getDetails(id);
+        return result;
     }
 
     /**
@@ -157,7 +163,8 @@ public class ComputerServiceImpl implements ComputerService {
             logger.error(INVALID_ID);
             throw new CDBException(CodeError.COMPUTER_ID_INVALID);
         } else {
-            return computerDAO.delete(id);
+            String result = computerDAO.delete(id);
+            return result;
         }
     }
 
@@ -200,7 +207,7 @@ public class ComputerServiceImpl implements ComputerService {
      */
     public void deleteMultiLast() {
         ArrayList<Integer> list = new ArrayList<>();
-        ArrayList<Computer> listC = list("").getListPage();
+        List<Computer> listC = list("").getListPage();
         int i = listC.size();
         list.add(listC.get(i - 1).getId());
         list.add(listC.get(i - 2).getId());

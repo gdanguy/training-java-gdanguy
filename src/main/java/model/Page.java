@@ -1,11 +1,12 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Page<T> {
     public static final int PAGE_SIZE = 10;
 
-    protected ArrayList<T> listObjects = new ArrayList<>();
+    protected List<T> listObjects = new ArrayList<>();
     protected int currentPage;
     protected int pageSize = PAGE_SIZE;
 
@@ -14,7 +15,7 @@ public class Page<T> {
      * @param list contains the ArrayList to copy
      * @param page correspond to the currentPage
      */
-    public Page(ArrayList<T> list, int page) {
+    public Page(List<T> list, int page) {
         for (int i = 0; i < list.size(); i++) {
             this.listObjects.add(list.get(i));
         }
@@ -27,7 +28,7 @@ public class Page<T> {
      * @param page     correspond to the currentPage
      * @param pageSize the page size
      */
-    public Page(ArrayList<T> list, int page, int pageSize) {
+    public Page(List<T> list, int page, int pageSize) {
         for (int i = 0; i < list.size(); i++) {
             this.listObjects.add(list.get(i));
         }
@@ -39,7 +40,7 @@ public class Page<T> {
      * Get the ArrayList containing a T page.
      * @return the ArrayList containing a T page
      */
-    public ArrayList<T> getListPage() {
+    public List<T> getListPage() {
         return listObjects;
     }
 

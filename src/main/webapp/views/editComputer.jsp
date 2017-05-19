@@ -25,7 +25,7 @@
                     id: ${id}
                 </div>
                 <h1>Edit Computer</h1>
-                <form action="editComputer" method="POST" onsubmit="return validateComputer();" modelAttribut="form">
+                <form action="editComputer" method="POST" modelAttribut="form">
                     <input type="hidden" value="${computer.id}" id="id" name="id"/>
                     <fieldset>
                         <div class="form-group">

@@ -2,33 +2,32 @@ package model.dao.company;
 
 import exception.CDBException;
 import exception.CodeError;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import model.GenericBuilder;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import model.Page;
 import model.company.Company;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
+@Repository
 public class CompanyDAOImpl implements CompanyDAO {
     private Logger logger = LoggerFactory.getLogger(CompanyDAOImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+    private SessionFactory sessionFactory;
 
     /**
      * .
-     * @param jdbcTemplate .
+     * @param sessionFactory .
      */
     @Autowired
-    public CompanyDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public CompanyDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
 
@@ -38,11 +37,9 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public int count()  {
         logger.info("Count computers");
-        Integer cpt = this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM company", Integer.class);
-        if (cpt == null) {
-            return -1;
-        }
-        return cpt;
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM Company");
+        return query.list().size();
     }
 
     /**
@@ -52,19 +49,17 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public Page<Company> getPage(int page) {
         logger.info("Get all companies");
-        ArrayList<Company> companies = new ArrayList<>();
-        companies = (ArrayList<Company>) this.jdbcTemplate.query(
-                "SELECT id, name FROM company LIMIT " + Page.PAGE_SIZE + " OFFSET " + page * Page.PAGE_SIZE,
-                new Object[] {},
-                new RowMapper<Company>() {
-                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
-                        return GenericBuilder.of(Company::new)
-                                .with(Company::setId, rs.getInt("id"))
-                                .with(Company::setName, rs.getString("name"))
-                                .build();
-                    }
-                });
-        return new Page<Company>(companies, page);
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Query query = session.createQuery("FROM Company ");
+            query.setFirstResult(page * Page.PAGE_SIZE);
+            query.setMaxResults(Page.PAGE_SIZE);
+            List<Company> companies = query.getResultList();
+            return new Page<Company>(companies, page);
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            throw new CDBException(CodeError.COMPANY_NOT_FOUND);
+        }
     }
 
     /**
@@ -74,38 +69,32 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public Company get(int id) {
         logger.info("Get all companies");
-        return this.jdbcTemplate.queryForObject(
-                "SELECT id, name FROM company WHERE id = ?",
-                new Object[] {id},
-                new RowMapper<Company>() {
-                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
-                        return GenericBuilder.of(Company::new)
-                                .with(Company::setId, rs.getInt("id"))
-                                .with(Company::setName, rs.getString("name"))
-                                .build();
-                    }
-                });
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Query query = session.createQuery("FROM Company C WHERE C.id = :company_id");
+            query.setParameter("company_id", id);
+            return (Company) query.getSingleResult();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            throw new CDBException(CodeError.COMPANY_NOT_FOUND);
+        }
     }
 
     /**
      * Return all companies.
      * @return a ArrayList with all companies
      */
-    public ArrayList<Company> getAll() {
+    public List<Company> getAll() {
         logger.info("Get all companies");
-        ArrayList<Company> companies = new ArrayList<>();
-        companies = (ArrayList<Company>) this.jdbcTemplate.query(
-                "SELECT id, name FROM company",
-                new Object[] {},
-                new RowMapper<Company>() {
-                    public Company mapRow(ResultSet rs, int rowNom) throws SQLException {
-                        return GenericBuilder.of(Company::new)
-                                .with(Company::setId, rs.getInt("id"))
-                                .with(Company::setName, rs.getString("name"))
-                                .build();
-                    }
-                });
-        return companies;
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Query query = session.createQuery("FROM Company ");
+            List<Company> companies = query.getResultList();
+            return companies;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            throw new CDBException(CodeError.COMPANY_NOT_FOUND);
+        }
     }
 
     /**
@@ -115,18 +104,18 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public int create(Company c) {
         logger.info("Create computer : " + c);
-        SimpleJdbcInsert insert =
-                new SimpleJdbcInsert(jdbcTemplate.getDataSource())
-                        .withTableName("company")
-                        .usingGeneratedKeyColumns("id");
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("name", c.getName());
-        Number id = insert.executeAndReturnKey(parameterSource);
-        if (id == null) {
-            logger.error("Error creating Company, bad parameters, " + c.toString());
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            Integer id = (Integer) session.save(GenericBuilder.of(Company::new).with(Company::setName, c.getName()).build());
+            if (id == null) {
+                logger.error("Error creating Company, bad parameters, " + c.toString());
+                throw new CDBException(CodeError.COMPANY_CREATE);
+            }
+            return id.intValue();
+        } catch (HibernateException e) {
+            e.printStackTrace();
             throw new CDBException(CodeError.COMPANY_CREATE);
         }
-        return id.intValue();
     }
 
     /**
@@ -136,26 +125,17 @@ public class CompanyDAOImpl implements CompanyDAO {
      */
     public boolean delete(int id) {
         logger.info("Delete a company : " + id);
-        String sql = "DELETE FROM company where id = ?";
-        Object[] params = {id};
-        log(params);
-        int affectedRows = jdbcTemplate.update(sql, params);
-        if (affectedRows == 0) {
+        Session session = sessionFactory.getCurrentSession();
+        if (id < 1) {
             throw new CDBException(CodeError.COMPANY_DELETE);
         }
-        return true;
-    }
-
-    /**
-     * Display params of a SQL request.
-     * @param params Object[]
-     */
-    private void log(Object[] params) {
-        String s = "params = {" + params[0];
-        for (int i = 1; i < params.length; i++) {
-            s += ", " + params[i];
+        try {
+            Company company = session.get(Company.class, id);
+            session.delete(company);
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            throw new CDBException(CodeError.COMPUTER_DELETE);
         }
-        s += "}";
-        logger.info(s);
+        return true;
     }
 }

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <my.version>0.6.0-snapshot</my.version>
+        <my.version>0.7.0-SNAPSHOT</my.version>
         <java.version>1.8</java.version>
         <javax.version>7.0</javax.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -27,10 +27,10 @@
         <gatling.version>2.1.7</gatling.version>
         <gatling-plugin.version>2.1.7</gatling-plugin.version>
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
-        <org.springframework.version>4.3.7.RELEASE</org.springframework.version>
-        <org.springframework-web.version>4.3.7.RELEASE</org.springframework-web.version>
+        <org.springframework.version>4.3.8.RELEASE</org.springframework.version>
         <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
         <hibernateValidator.version>5.4.1.Final</hibernateValidator.version>
+        <hibernate.version>5.2.9.Final</hibernate.version>
     </properties>
 
     <groupId>com.e-biz.gdanguy</groupId>
@@ -265,13 +265,20 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${org.springframework-web.version}</version>
+            <version>${org.springframework.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${org.springframework.version}</version>
         </dependency>
 
         <!-- Spring aspects for i18n -->
@@ -281,31 +288,33 @@
             <version>${org.springframework.version}</version>
         </dependency>
 
-    <!--Spring boot for context in CLI -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        <version>${spring.boot.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-tomcat</artifactId>
-        <version>${spring.boot.version}</version>
-    </dependency>
-
-        <!-- Validateur -->
-        <!-- https://mvnrepository.com/artifact/javax.el/el-api -->
+        <!--Spring boot for context in CLI -->
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-            <version>2.2</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
+        <!-- Validateur -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernateValidator.version}</version>
         </dependency>
+
+        <!-- hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+         </dependency>
+
+
     </dependencies>
 
     <build>

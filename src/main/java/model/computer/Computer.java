@@ -1,19 +1,37 @@
 package model.computer;
 
 import model.company.Company;
+import service.validator.Validateur;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
+@Table(name = "computer")
 public class Computer {
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter FORMAT2 = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    public static final int FLAG_NO_ID = -1;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     protected int id;
+    @Column(name = "name")
     protected String name;
+    @Column(name = "introduced")
     protected LocalDateTime introduced;
+    @Column(name = "discontinued")
     protected LocalDateTime discontinued;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
     protected Company company;
 
     /**
@@ -48,11 +66,27 @@ public class Computer {
     }
 
     /**
+     * Set Introduced.
+     * @param introduced String
+     */
+    public void setIntroduced(String introduced) {
+        this.introduced = Validateur.parseString(introduced);
+    }
+
+    /**
      * Set Discontinued.
      * @param discontinued new discontinued
      */
     public void setDiscontinued(LocalDateTime discontinued) {
         this.discontinued = discontinued;
+    }
+
+    /**
+     * Set Discontinued.
+     * @param discontinued String
+     */
+    public void setDiscontinued(String discontinued) {
+        this.introduced = Validateur.parseString(discontinued);
     }
 
     /**

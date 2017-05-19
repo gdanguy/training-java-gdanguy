@@ -1,8 +1,8 @@
 package controller;
 
 import exception.CDBException;
+import exception.CodeError;
 import exception.ExceptionService;
-import model.ComputerValidator;
 import model.GenericBuilder;
 import model.company.Company;
 import model.computer.Computer;
@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,14 +20,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import service.CompanyService;
 import service.ComputerService;
 import service.mappy.CompanyMapper;
-import service.mappy.ComputerMapper;
+import service.mappy.ComputerMapperDTO;
 import service.mappy.computer.ComputerDTO;
+import service.validator.ComputerValidator;
 import service.validator.Validateur;
-import org.springframework.ui.ModelMap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -48,14 +46,14 @@ public class ComputerController {
     private static final String DISCO = "discontinued";
     private static final String COMPANY_ID = "companyId";
     private CompanyMapper companyMap = new CompanyMapper();
-    private ComputerMapper computerMap = new ComputerMapper();
+    private ComputerMapperDTO computerMap = new ComputerMapperDTO();
     private final CompanyService serviceCompany;
     private final ComputerService serviceComputer;
     private final ComputerValidator computerValidator;
 
     /**
      * .
-     * @param serviceCompany .
+     * @param serviceCompany  .
      * @param serviceComputer .
      * @param computerValidator .
      */
@@ -68,7 +66,7 @@ public class ComputerController {
 
     /**
      * Forward the addComputer jsp.
-     * @param model ModelMap
+     * @param model              ModelMap
      * @param redirectAttributes RedirectAttributes
      * @return String
      */
@@ -86,21 +84,21 @@ public class ComputerController {
 
     /**
      * Create a computer in DataBase.
-     * @param model ModelMap
-     * @param name String
-     * @param intro String
-     * @param disco String
-     * @param compId String
+     * @param model              ModelMap
+     * @param name               String
+     * @param intro              String
+     * @param disco              String
+     * @param compId             String
      * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/addComputer")
     protected ModelAndView addComputerPost(@RequestParam(value = NAME) String name,
-                                         @RequestParam(value = INTRO) String intro,
-                                         @RequestParam(value = DISCO) String disco,
-                                         @RequestParam(value = COMPANY_ID) String compId,
+                                           @RequestParam(value = INTRO) String intro,
+                                           @RequestParam(value = DISCO) String disco,
+                                           @RequestParam(value = COMPANY_ID) String compId,
                                            RedirectAttributes redirectAttributes,
-                                         ModelMap model) {
+                                           ModelMap model) {
         ArrayList<String> errors = null;
         Computer input;
         try {
@@ -126,15 +124,15 @@ public class ComputerController {
 
     /**
      * Delete selected computer.
-     * @param model  ModelMap
-     * @param toDelete  String
+     * @param model              ModelMap
+     * @param toDelete           String
      * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/deleteComputer")
     protected ModelAndView deleteComputer(@RequestParam(value = SELECT) String toDelete,
-                                    RedirectAttributes redirectAttributes,
-                                    ModelMap model) {
+                                          RedirectAttributes redirectAttributes,
+                                          ModelMap model) {
         String[] computerToDelete = toDelete.split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {
@@ -154,13 +152,13 @@ public class ComputerController {
 
     /**
      * Get the id of the computer wanted et set the computer to the jsp.
-     * @param model ModelMap
+     * @param model      ModelMap
      * @param idComputer int
      * @return String
      */
     @GetMapping("/editComputer")
     protected String editCompuer(@RequestParam(value = ID) String idComputer,
-            ModelMap model) {
+                                 ModelMap model) {
         int id = Integer.parseInt(idComputer);
         model.addAttribute(ID, id);
         Computer c = serviceComputer.get(id);
@@ -179,28 +177,27 @@ public class ComputerController {
 
     /**
      * Update a computer.
-     * @param model ModelMap
-     * @param computerDTO computerDto
-     * @param bindingResult BindingResult
+     * @param model  .
+     * @param id     .
+     * @param name   .
+     * @param intro  .
+     * @param disco  .
+     * @param compId .
      * @param redirectAttributes RedirectAttributes
      * @return String
      */
     @PostMapping("/editComputer")
-    protected ModelAndView editComputerPost(ComputerDTO computerDTO,
-                                            BindingResult bindingResult,
+    protected ModelAndView editComputerPost(
+                                            @RequestParam(value = ID) String id,
+                                            @RequestParam(value = NAME) String name,
+                                            @RequestParam(value = INTRO, required = false) String intro,
+                                            @RequestParam(value = DISCO, required = false) String disco,
+                                            @RequestParam(value = COMPANY_ID, required = false) String compId,
                                             RedirectAttributes redirectAttributes,
                                             ModelMap model) {
-        computerValidator.validate(computerMap.from(computerDTO), bindingResult);
-        if (bindingResult.hasErrors()) {
-            String errorString = "";
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                errorString += error.getObjectName() + " - " + error.getDefaultMessage() + "<br/>";
-            }
-            model.addAttribute("messageError", "Error creating computer, invalid param : " + errorString);
-            return new ModelAndView(new RedirectView("dashboard"));
-        }
         try {
-            serviceComputer.update(getComputerModified(computerDTO.getId(), computerDTO.getName(), computerDTO.getIntroduced(), computerDTO.getDiscontinued(), ("" + computerDTO.getCompanyId())));
+            Computer computer = getComputerModified(Integer.parseInt(id), name, intro, disco, compId);
+            serviceComputer.update(computer);
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "500", redirectAttributes);
         }
@@ -209,9 +206,9 @@ public class ComputerController {
 
     /**
      * Get the computer set by the user.
-     * @param name String
-     * @param intro String
-     * @param disco String
+     * @param name   String
+     * @param intro  String
+     * @param disco  String
      * @param compId String
      * @param errors modified with a new ArrayList of errors
      * @return the computer wanted
@@ -222,9 +219,9 @@ public class ComputerController {
 
     /**
      * Get the computer set by the user without null.
-     * @param name String
-     * @param intro String
-     * @param disco String
+     * @param name   String
+     * @param intro  String
+     * @param disco  String
      * @param compId String
      * @param errors modified with a new ArrayList of errors
      * @return the computer wanted
@@ -236,47 +233,40 @@ public class ComputerController {
     /**
      * Get the computer set by the user.
      * @param strict if strict of not
-     * @param name String
-     * @param intro String
-     * @param disco String
+     * @param name   String
+     * @param intro  String
+     * @param disco  String
      * @param compId String
      * @param errors modified with a new ArrayList of errors
      * @return the computer wanted
      */
     private Computer getComputer(String name, String intro, String disco, String compId, boolean strict, ArrayList<String> errors) {
-        int id = CompanyService.ECHEC_FLAG;
         ArrayList<String> messageError = new ArrayList<>();
         LocalDateTime introduced = Validateur.parseString(intro);
         LocalDateTime discontinued = Validateur.parseString(disco);
         if (strict) {
-            String resultError;
-
             //Test of introduced
-            resultError = Validateur.dateValidate(intro);
-            setError(messageError, resultError);
+            if (Validateur.dateValidate(intro) != null) {
+                throw new CDBException(CodeError.INVALID_DATE);
+            }
 
             //Test of discontinued
-            resultError = Validateur.dateValidate(disco);
-            setError(messageError, resultError);
+            if (Validateur.dateValidate(disco) != null) {
+                throw new CDBException(CodeError.INVALID_DATE);
+            }
 
             //Test of Company id
-            resultError = Validateur.companyidValidate(compId);
-            setError(messageError, resultError);
+            if (Validateur.companyidValidate(compId) != null) {
+                throw new CDBException(CodeError.COMPUTER_COMPANY_ID_INVALID);
+            }
 
             //test date
-            resultError = Validateur.testDate(introduced, discontinued);
-            setError(messageError, resultError);
-
-            //set message error
-            if (messageError.size() != 0) {
-                errors = messageError;
-                //request.setAttribute(MESSAGE_ERROR, messageError);
-                return null;
+            if (Validateur.testDate(introduced, discontinued) != null) {
+                throw new CDBException(CodeError.INVALID_DATE);
             }
         }
         int companyId = Integer.parseInt(compId);
         return GenericBuilder.of(Computer::new)
-                .with(Computer::setId, id)
                 .with(Computer::setName, name)
                 .with(Computer::setIntroduced, introduced)
                 .with(Computer::setDiscontinued, discontinued)
@@ -285,23 +275,11 @@ public class ComputerController {
     }
 
     /**
-     * If error != null, add it to massageError.
-     * @param messageError list of error
-     * @param error string
-     */
-    private void setError(List messageError, String error) {
-        if (error != null) {
-            logger.warn(error);
-            messageError.add(error);
-        }
-    }
-
-    /**
      * Get the computer set by the user, if user don't set value, keep older.
-     * @param id int
-     * @param nameModified String
-     * @param introModified String
-     * @param discoModified String
+     * @param id             int
+     * @param nameModified   String
+     * @param introModified  String
+     * @param discoModified  String
      * @param compIdModified String
      * @return the computer wanted
      */

@@ -6,6 +6,8 @@ import model.Page;
 import model.company.Company;
 import model.dao.company.CompanyDAO;
 import model.dao.computer.ComputerDAO;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +15,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.validator.Validateur;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
-@javax.transaction.Transactional
+@Transactional
 public class CompanyServiceImpl implements CompanyService {
     private Logger logger = LoggerFactory.getLogger(CompanyServiceImpl.class);
     private final CompanyDAO companyDAO;
     private final ComputerDAO computerDAO;
+    private final SessionFactory sessionFactory;
 
     /**
      * .
      * @param companyDAO .
      * @param computerDAO .
+     * @param sessionFactory .
      */
     @Autowired
-    public CompanyServiceImpl(CompanyDAO companyDAO, ComputerDAO computerDAO) {
+    public CompanyServiceImpl(CompanyDAO companyDAO, ComputerDAO computerDAO, SessionFactory sessionFactory) {
         this.companyDAO = companyDAO;
         this.computerDAO = computerDAO;
+        this.sessionFactory = sessionFactory;
     }
 
 
@@ -44,7 +49,8 @@ public class CompanyServiceImpl implements CompanyService {
         if (page < 0) {
             throw new CDBException(CodeError.COMPANY_NOT_FOUND);
         }
-        return companyDAO.getPage(page);
+        Page result = companyDAO.getPage(page);
+        return result;
     }
 
     /**
@@ -53,7 +59,9 @@ public class CompanyServiceImpl implements CompanyService {
      * @return Company wanted
      */
     public Company get(int id) {
-        if (id < 0) {
+        if (id == CompanyService.ECHEC_FLAG) {
+            return null;
+        } else if (id < 0) {
             throw new CDBException(CodeError.COMPANY_NOT_FOUND);
         }
         return companyDAO.get(id);
@@ -63,7 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
      * Return all companies.
      * @return a ArrayList with all companies
      */
-    public ArrayList<Company> listAll() {
+    public List<Company> listAll() {
         return companyDAO.getAll();
     }
 
@@ -79,8 +87,19 @@ public class CompanyServiceImpl implements CompanyService {
             throw new CDBException(CodeError.COMPUTER_COMPANY_ID_INVALID);
         }
         //Transaction
-        computerDAO.deleteIdCompany(id);
-        companyDAO.delete(id);
+        Transaction tx = null;
+        try {
+            tx = sessionFactory.getCurrentSession().beginTransaction();
+            computerDAO.deleteIdCompany(id);
+            companyDAO.delete(id);
+            tx.commit();
+        } catch (CDBException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            throw e;
+        }
         return true;
     }
 
@@ -92,7 +111,8 @@ public class CompanyServiceImpl implements CompanyService {
      */
     public int create(Company c) {
         if (c != null && Validateur.validCompanyStrict(c) == null) {
-            return companyDAO.create(c);
+            int result = companyDAO.create(c);
+            return result;
         }
         throw new CDBException(CodeError.COMPANY_CREATE);
     }
@@ -102,7 +122,7 @@ public class CompanyServiceImpl implements CompanyService {
      * @return true if succes, false else.
      */
     public boolean deleteLast() {
-        ArrayList<Company> list = listAll();
+        List<Company> list = listAll();
         int id = list.get(list.size() - 1).getId();
         return delete(id);
     }
