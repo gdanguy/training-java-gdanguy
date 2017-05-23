@@ -87,7 +87,7 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 42,'Macintosh LC III+',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 43,'Macintosh Quadra 605','1993-10-21',null,1);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 44,'Macintosh LC 500 series',null,null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 45,'TRS-80 Color Computer','1980-01-01',null,5);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 45,'TRS-80 Color model.Computer','1980-01-01',null,5);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 46,'Acorn System 2',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 47,'Dragon 32/64',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 48,'MEK6800D2',null,null,null);
@@ -140,7 +140,7 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 95,'NeXTcube Turbo',null,null,19);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 96,'NeXTcube 040',null,null,19);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 97,'NeXTcube 030',null,null,19);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 98,'Tinkertoy Tic-Tac-Toe Computer',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 98,'Tinkertoy Tic-Tac-Toe model.Computer',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values ( 99,'Z3',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (100,'Z4',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (101,'Z1',null,null,null);
@@ -187,8 +187,8 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (142,'Atari 2080 ST','1986-01-01',null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (143,'Atari 260 ST+','1985-01-01',null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (144,'Atari 4160 STe','1988-01-01',null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (145,'TRS-80 Color Computer 2',null,null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (146,'TRS-80 Color Computer 3',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (145,'TRS-80 Color model.Computer 2',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (146,'TRS-80 Color model.Computer 3',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (147,'TRS-80 Model 1','1977-01-01',null,5);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (148,'Timex Sinclair 2068','1983-11-01','1984-04-01',23);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (149,'ZX Spectrum','1982-01-01',null,25);
@@ -341,8 +341,8 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (296,'WRT54G',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (297,'ThinkPad','1992-01-01',null,36);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (298,'Apple Newton','1993-01-01','1998-01-01',1);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (299,'Atanasoff-Berry Computer','1937-01-01',null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (300,'Atlas Computer','1962-01-01','1974-01-01',null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (299,'Atanasoff-Berry model.Computer','1937-01-01',null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (300,'Atlas model.Computer','1962-01-01','1974-01-01',null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (301,'ASUS Eee PC 901',null,null,37);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (302,'ASUS Eee PC 701',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (303,'IBM 7030','1961-01-01',null,13);
@@ -378,12 +378,12 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (333,'Toshiba Satellite',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (334,'Timex Sinclair 2048',null,null,23);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (335,'Sprinter',null,null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (336,'Timex Computer 2048',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (336,'Timex model.Computer 2048',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (337,'Pentagon',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (338,'Belle',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (339,'Loki',null,null,25);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (340,'Hobbit',null,null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (341,'NeXT Computer',null,null,19);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (341,'NeXT model.Computer',null,null,19);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (342,'TRS-80',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (343,'TRS-80 Model 2','1980-01-01',null,5);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (344,'TRS-80 Model 3',null,null,5);
@@ -443,7 +443,7 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (398,'ReserVec',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (399,'DASK',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (400,'UTEC',null,null,null);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (401,'DRTE Computer',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (401,'DRTE model.Computer',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (402,'PowerEdge',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (403,'Apple Network Server',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (404,'Goodyear MPP',null,null,null);
@@ -452,7 +452,7 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (407,'CER-10',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (408,'CER-20',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (409,'IBM BladeCenter','2002-01-01',null,13);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (410,'Wisconsin Integrally Synchronized Computer',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (410,'Wisconsin Integrally Synchronized model.Computer',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (411,'Amstrad CPC',null,null,38);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (412,'Amstrad CPC 6128',null,null,38);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (413,'Amstrad CPC 664',null,null,38);
@@ -609,7 +609,7 @@ insert ignore into computer (id,name,introduced,discontinued,company_id) values 
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (564,'MindWave BrainCubed Education Bundle',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (565,'PalmPilot',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (566,'Upcoming iPhone 5',null,null,1);
-insert ignore into computer (id,name,introduced,discontinued,company_id) values (567,'Dell Inspiron 560 Desktop Computer ',null,null,null);
+insert ignore into computer (id,name,introduced,discontinued,company_id) values (567,'Dell Inspiron 560 Desktop model.Computer ',null,null,null);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (568,'IPad 2',null,null,1);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (569,'HP TouchPad','2011-02-09',null,27);
 insert ignore into computer (id,name,introduced,discontinued,company_id) values (570,'HP Veer','2011-02-09',null,27);

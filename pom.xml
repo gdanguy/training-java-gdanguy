@@ -5,7 +5,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <my.version>0.7.0-SNAPSHOT</my.version>
         <java.version>1.8</java.version>
         <javax.version>7.0</javax.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -29,14 +28,24 @@
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
         <org.springframework.version>4.3.8.RELEASE</org.springframework.version>
         <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+        <spring-security.version>4.2.2.RELEASE</spring-security.version>
         <hibernateValidator.version>5.4.1.Final</hibernateValidator.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
     </properties>
 
     <groupId>com.e-biz.gdanguy</groupId>
     <artifactId>training-java-gdanguy</artifactId>
-    <version>${my.version}</version>
-    <packaging>war</packaging>
+    <version>0.7.0</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>core</module>
+        <module>persistence</module>
+        <module>binding</module>
+        <module>service</module>
+        <module>console</module>
+        <module>webapp</module>
+    </modules>
 
     <profiles>
         <profile>
@@ -69,7 +78,6 @@
     </profiles>
 
     <dependencies>
-
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -109,22 +117,6 @@
             <version>${mysql-connector-java.version}</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javax.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/javax/javaee-web-api -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>${javax.version}</version>
-        </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
@@ -181,12 +173,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>${HikariCP.version}</version>
         </dependency>
 
         <dependency>
@@ -274,30 +260,11 @@
             </exclusions>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${org.springframework.version}</version>
-        </dependency>
-
         <!-- Spring aspects for i18n -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
             <version>${org.springframework.version}</version>
-        </dependency>
-
-        <!--Spring boot for context in CLI -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
         <!-- Validateur -->
@@ -312,9 +279,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
-         </dependency>
-
-
+        </dependency>
     </dependencies>
 
     <build>
@@ -335,8 +300,8 @@
                         <id>validate</id>
                         <phase>validate</phase>
                         <configuration>
-                            <configLocation>src/main/resources/config/checkstyle/checkstyle.xml</configLocation>
-                            <suppressionsLocation>src/main/resources/config/checkstyle/suppressions.xml</suppressionsLocation>
+                            <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+                            <suppressionsLocation>config/checkstyle/suppressions.xml</suppressionsLocation>
                             <consoleOutput>true</consoleOutput>
                         </configuration>
                         <goals>
