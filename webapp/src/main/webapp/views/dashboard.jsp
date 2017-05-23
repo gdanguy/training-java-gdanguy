@@ -51,7 +51,7 @@
     </div>
 
     <form id="deleteForm" action=
-    <page:link link="/deleteComputer" path="${pageContext.request.contextPath}"></page:link> method="POST">
+    <page:link link="/computer/deleteComputer" path="${pageContext.request.contextPath}"></page:link> method="POST">
         <input type="hidden" name="selection" value="">
     </form>
 

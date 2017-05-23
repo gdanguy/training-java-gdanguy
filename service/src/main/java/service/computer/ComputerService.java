@@ -1,4 +1,4 @@
-package service.Computer;
+package service.computer;
 
 import core.model.Computer;
 import core.utils.Page;

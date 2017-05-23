@@ -1,4 +1,4 @@
-package service.Company;
+package service.company;
 
 
 import core.model.Company;

@@ -6,8 +6,8 @@ import core.model.Company;
 import core.model.Computer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.Company.CompanyServiceImpl;
-import service.Computer.ComputerServiceImpl;
+import service.company.CompanyServiceImpl;
+import service.computer.ComputerServiceImpl;
 import core.utils.GenericBuilder;
 import core.utils.Page;
 

@@ -1,4 +1,4 @@
-package service.Computer;
+package service.computer;
 
 import core.exception.CDBException;
 import core.exception.CodeError;

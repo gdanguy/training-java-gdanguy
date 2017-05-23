@@ -16,12 +16,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import service.Company.CompanyService;
-import service.Computer.ComputerService;
+import service.company.CompanyService;
+import service.computer.ComputerService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
  * Created by ebiz on 04/05/17.
  */
 @Controller
+@RequestMapping("/computer")
 public class ComputerController {
     private static final String LIST_COMPANIES_ATTRIBUTE = "listCompany";
     private static Logger logger = LoggerFactory.getLogger(ComputerController.class);

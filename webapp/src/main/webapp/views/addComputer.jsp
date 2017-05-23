@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-    <title>core.model.Computer Database</title>
+    <title>Computer Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -26,7 +26,7 @@
             <div class="col-xs-8 col-xs-offset-2 box">
                 <h1><spring:message code="dashboard.add" /></h1>
                 <form action=
-                      <page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" onsubmit="return validateComputer();">
+                      <page:link link="/computer/addComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" onsubmit="return validateComputer();">
                     <fieldset>
                         <div class="form-group">
                             <label for="computerName"><spring:message code="dashboard.th.computer" /></label>

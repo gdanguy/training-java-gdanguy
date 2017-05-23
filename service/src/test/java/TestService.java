@@ -11,9 +11,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import service.Company.CompanyService;
-import service.Computer.ComputerService;
-import service.Computer.ComputerServiceImpl;
+import service.company.CompanyService;
+import service.computer.ComputerService;
+import service.computer.ComputerServiceImpl;
 import core.utils.GenericBuilder;
 
 import javax.annotation.Resource;
