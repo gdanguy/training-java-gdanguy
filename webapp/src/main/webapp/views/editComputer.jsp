@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="page" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-    <title>core.model.Computer Database</title>
+    <title>Computer Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -24,29 +25,29 @@
                 <div class="label label-default pull-right">
                     id: ${id}
                 </div>
-                <h1>Edit core.model.Computer</h1>
+                <h1><spring:message code="dashboard.edit" /></h1>
                 <form action="editComputer" method="POST" modelAttribut="form">
                     <input type="hidden" value="${computer.id}" id="id" name="id"/>
                     <fieldset>
                         <div class="form-group">
-                            <label for="computerName">core.model.Computer name</label>
+                            <label for="computerName"><spring:message code="dashboard.th.computer" /></label>
                             <input type="text" class="form-control" id="computerName" name="computerName"
                                    value="${computer.name}" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" required>
                         </div>
                         <div class="form-group">
-                            <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>
+                            <label for="introduced"><spring:message code="dashboard.th.intro" /> (Format DD-MM-YYYY)</label>
                             <input type="date" class="form-control" id="introduced" name="introduced"
                                    value="${computer.introduced}"
                                    pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                         </div>
                         <div class="form-group">
-                            <label for="discontinued">Discontinued date (Format DD-MM-YYYY)</label>
+                            <label for="discontinued"><spring:message code="dashboard.th.disco" /> (Format DD-MM-YYYY)</label>
                             <input type="date" class="form-control" id="discontinued" name="discontinued"
                                    value="${computer.discontinued}"
                                    pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                         </div>
                         <div class="form-group">
-                            <label for="companyId">core.model.Company (Previous : ${dao.computer.companyName})</label>
+                            <label for="companyId"><spring:message code="dashboard.th.company" /> (Previous : ${dao.computer.companyName})</label>
                             <select class="form-control" id="companyId" name="companyId">
                                 <option value="-1">--</option>
                                 <c:forEach var="company" items="${listCompany}">

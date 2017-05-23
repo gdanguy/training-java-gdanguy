@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="page" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -23,29 +24,29 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-8 col-xs-offset-2 box">
-                <h1>Add core.model.Computer</h1>
+                <h1><spring:message code="dashboard.add" /></h1>
                 <form action=
                       <page:link link="/addComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" onsubmit="return validateComputer();">
                     <fieldset>
                         <div class="form-group">
-                            <label for="computerName">core.model.Computer name</label>
+                            <label for="computerName"><spring:message code="dashboard.th.computer" /></label>
                             <input type="text" class="form-control" id="computerName" name="computerName"
-                                   placeholder="core.model.Computer name" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" required>
+                                   placeholder="Computer name" pattern="^[A-Za-z0-9 -]{0,39}[A-Za-z0-9]$" required>
                         </div>
                         <div class="form-group">
-                            <label for="introduced">Introduced date (Format DD-MM-YYYY)</label>
+                            <label for="introduced"><spring:message code="dashboard.th.intro" /> (Format DD-MM-YYYY)</label>
                             <input type="date" class="form-control" id="introduced" name="introduced"
                                    placeholder="Introduced date"
                                    pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                         </div>
                         <div class="form-group">
-                            <label for="discontinued">Discontinued date (Format DD-MM-YYYY)</label>
+                            <label for="discontinued"><spring:message code="dashboard.th.disco" /> (Format DD-MM-YYYY)</label>
                             <input type="date" class="form-control" id="discontinued" name="discontinued"
                                    placeholder="Discontinued date"
                                    pattern="^[0-3][0-9][-][0-1][0-9][-](([1][9][9][0-9])|([2-9][0-9]{3}))$">
                         </div>
                         <div class="form-group">
-                            <label for="companyId">core.model.Company</label>
+                            <label for="companyId"><spring:message code="dashboard.th.company" /></label>
                             <select class="form-control" id="companyId" name="companyId">
                                 <option value="-1">--</option>
                                 <c:forEach var="company" items="${listCompany}">

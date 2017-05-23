@@ -16,13 +16,19 @@
     <dependencies>
         <dependency>
             <groupId>com.e-biz.gdanguy</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.e-biz.gdanguy</groupId>
             <artifactId>service</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <!--Spring boot for context in CLI -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
     </dependencies>
 </project>
