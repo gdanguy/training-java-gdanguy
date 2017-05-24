@@ -1,8 +1,9 @@
 import core.exception.CDBException;
-import dao.company.CompanyDAO;
-import dao.computer.ComputerDAO;
 import core.model.Company;
 import core.model.Computer;
+import core.utils.GenericBuilder;
+import dao.company.CompanyDAO;
+import dao.computer.ComputerDAO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,7 +15,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import service.company.CompanyService;
 import service.computer.ComputerService;
 import service.computer.ComputerServiceImpl;
-import core.utils.GenericBuilder;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@ContextConfiguration(locations = {"file:service/src/main/resources/applicationContext-service.xml"})
 @Transactional
 public class TestService {
     @Resource

@@ -9,7 +9,7 @@
             <input type="checkbox" name="cb${computer.id}" class="cb" value="${computer.id}">
         </td>
         <td>
-            <a href=<page:link link="/editComputer" path="${path}" id="${computer.id}"></page:link> onclick="">${computer.name}</a>
+            <a href=<page:link link="/computer/editComputer" path="${path}" id="${computer.id}"></page:link> onclick="">${computer.name}</a>
         </td>
         <td>${computer.introduced}</td>
         <td>${computer.discontinued}</td>

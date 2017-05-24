@@ -8,7 +8,7 @@
 
     <http  create-session="stateless" use-expressions="true">
         <http-basic/>
-
+        <csrf disabled="true" />
         <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
         <intercept-url pattern="/**" access="isAuthenticated()"/>
     </http>

@@ -115,7 +115,7 @@ public class ComputerController {
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "500", redirectAttributes);
         }
-        return new ModelAndView(new RedirectView("dashboard"));
+        return new ModelAndView(new RedirectView("/dashboard"));
     }
 
     /**
@@ -143,7 +143,7 @@ public class ComputerController {
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "403", redirectAttributes);
         }
-        return new ModelAndView(new RedirectView("dashboard"));
+        return new ModelAndView(new RedirectView("/dashboard"));
     }
 
     /**
@@ -197,7 +197,7 @@ public class ComputerController {
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "500", redirectAttributes);
         }
-        return new ModelAndView(new RedirectView("dashboard"));
+        return new ModelAndView(new RedirectView("/dashboard"));
     }
 
     /**

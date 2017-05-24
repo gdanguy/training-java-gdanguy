@@ -11,4 +11,6 @@
     <context:component-scan base-package="service"/>
     <context:annotation-config/>
     <import resource="applicationContext-persistence.xml"/>
+    <import resource="applicationContext-core.xml"/>
+    <import resource="applicationContext-binding.xml"/>
 </beans>

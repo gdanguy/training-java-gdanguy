@@ -80,6 +80,13 @@
     <dependencies>
         <!-- Log -->
         <dependency>
+            <!-- unactive commons-loggins -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
