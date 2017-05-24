@@ -8,4 +8,5 @@
     <!-- SCAN BACKEND RESOURCES -->
     <context:component-scan base-package="controller"/>
     <context:annotation-config/>
+
 </beans>

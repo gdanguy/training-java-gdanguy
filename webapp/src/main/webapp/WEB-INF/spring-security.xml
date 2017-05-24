@@ -1,15 +1,16 @@
 <b:beans xmlns="http://www.springframework.org/schema/security"
          xmlns:b="http://www.springframework.org/schema/beans"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/security
+         http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http  create-session="stateless" use-expressions="true">
         <http-basic/>
-        <logout />
+
         <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
-        <intercept-url pattern="/computer/*" access="hasRole('admin')"/>
-        <intercept-url pattern="/dashboard" access="hasRole('user')"/>
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
     </http>
 
     <b:bean id="digestFilter" class=

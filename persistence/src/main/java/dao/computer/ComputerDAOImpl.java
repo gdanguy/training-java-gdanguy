@@ -14,9 +14,11 @@ import org.springframework.stereotype.Repository;
 import core.utils.Constant;
 import core.utils.Page;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
+@Transactional
 public class ComputerDAOImpl implements ComputerDAO {
     private Logger logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     private SessionFactory sessionFactory;

@@ -9,7 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Collection;
@@ -33,8 +33,8 @@ public class User implements UserDetails {
     protected String password;
 
     /* Spring Security related fields*/
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Role> authorities;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> role;
     @Transient
     private boolean accountNonExpired = true;
     @Transient
@@ -86,7 +86,7 @@ public class User implements UserDetails {
     }
 
     public Set<Role> getRoles() {
-        return authorities;
+        return role;
     }
 
     public void setId(int id) {
@@ -102,6 +102,6 @@ public class User implements UserDetails {
     }
 
     public void setRoles(Set<Role> roles) {
-        this.authorities = roles;
+        this.role = roles;
     }
 }

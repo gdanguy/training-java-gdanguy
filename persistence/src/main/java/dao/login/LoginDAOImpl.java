@@ -5,10 +5,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 /**
  * Created by ebiz on 23/05/17.
  */
 @Repository
+@Transactional
 public class LoginDAOImpl implements LoginDAO {
     private SessionFactory sessionFactory;
 
