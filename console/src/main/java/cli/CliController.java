@@ -1,22 +1,25 @@
 package cli;
 
 import core.exception.CDBException;
-import dao.company.CompanyDAO;
 import core.model.Company;
 import core.model.Computer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import service.company.CompanyServiceImpl;
-import service.computer.ComputerServiceImpl;
 import core.utils.GenericBuilder;
 import core.utils.Page;
+import dao.company.CompanyDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import service.company.CompanyService;
+import service.computer.ComputerService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class CLIControler {
-    private Logger logger = LoggerFactory.getLogger(CLIControler.class);
+@Component("cliController")
+public class CliController {
+    private Logger logger = LoggerFactory.getLogger(CliController.class);
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static final String NEXT_PAGE = "+";
@@ -38,19 +41,20 @@ public class CLIControler {
     public static final String TYPE_COMPUTER = "computer";
     public static final String TYPE_COMPANY = "company";
 
-    private CompanyServiceImpl serviceCompany;
-    private ComputerServiceImpl serviceComputer;
+    private CompanyService serviceCompany;
+    private ComputerService serviceComputer;
     private CompanyDAO db;
 
-    public void setServiceCompany(CompanyServiceImpl serviceCompany) {
+    /**
+     * .
+     * @param serviceCompany .
+     * @param serviceComputer .
+     * @param db .
+     */
+    @Autowired
+    public CliController(CompanyService serviceCompany, ComputerService serviceComputer, CompanyDAO db) {
         this.serviceCompany = serviceCompany;
-    }
-
-    public void setServiceComputer(ComputerServiceImpl serviceComputer) {
         this.serviceComputer = serviceComputer;
-    }
-
-    public void setDb(CompanyDAO db) {
         this.db = db;
     }
 

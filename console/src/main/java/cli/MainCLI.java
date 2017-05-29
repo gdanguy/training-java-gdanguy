@@ -9,8 +9,8 @@ public class MainCLI {
      * @param args no use
      */
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("file:src/main/webapp/WEB-INF/applicationContext.xml");
-        CLIControler cli = (CLIControler) context.getBean("cliControler");
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext-console.xml");
+        CliController cli = (CliController) context.getBean("cliController");
         cli.displayUserInterface();
     }
 }
