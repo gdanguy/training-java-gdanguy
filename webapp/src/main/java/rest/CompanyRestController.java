@@ -18,7 +18,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
-@RequestMapping("/rest/dashboard")
+@RequestMapping("/rest/company")
 public class CompanyRestController {
 
     private final CompanyService serviceCompany;

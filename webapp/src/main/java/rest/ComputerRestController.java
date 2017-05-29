@@ -59,8 +59,8 @@ public class ComputerRestController {
      * @param page Integer
      * @return Page<Computer>
      */
-    @GetMapping("/page/{" + Constant.PAGE + "}")
-    public Page<Computer> getPage(@PathVariable(value = Constant.PAGE) Integer page) {
+    @GetMapping("/page")
+    public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page) {
         return serviceComputer.list(page);
     }
 
@@ -70,8 +70,8 @@ public class ComputerRestController {
      * @param pageSize Integer
      * @return Page<Computer>
      */
-    @GetMapping("/page/{" + Constant.PAGE + "}")
-    public Page<Computer> getPage(@PathVariable(value = Constant.PAGE) Integer page,
+    @GetMapping("/page2")
+    public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page,
                                   @RequestParam(value = Constant.SIZE_PAGE) Integer pageSize) {
         return serviceComputer.list(page, pageSize);
     }
@@ -83,11 +83,11 @@ public class ComputerRestController {
      * @param order String
      * @return Page<Computer>
      */
-    @GetMapping("/page/{" + Constant.PAGE + "}")
-    public Page<Computer> getPage(@PathVariable(value = Constant.PAGE) Integer page,
+    @GetMapping("/page3")
+    public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page,
                                   @RequestParam(value = Constant.SIZE_PAGE) Integer pageSize,
                                   @RequestParam(value = Constant.ORDER) String order) {
-        return serviceComputer.list(page, pageSize);
+        return serviceComputer.list(page, pageSize, order);
     }
 
     /**
@@ -116,5 +116,14 @@ public class ComputerRestController {
     @PostMapping("/delete/{" + Constant.ID + "}")
     public void delete(@PathVariable(value = Constant.ID) Integer id) {
         serviceComputer.delete(id);
+    }
+
+    /**
+     * Delete a List of computer.
+     * @param computers List<Integer>
+     */
+    @PostMapping("/delete/{" + Constant.ID + "}")
+    public void delete(@RequestBody List<Integer> computers) {
+        serviceComputer.delete(computers);
     }
 }

@@ -15,7 +15,6 @@ import core.utils.Constant;
 import core.utils.Page;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -127,8 +126,8 @@ public class ComputerDAOImpl implements ComputerDAO {
         try {
             Query query = session.createQuery("select C From Computer C "
                     + "left outer join C.company as Cpn "
-                    + "WHERE C.name like '%" + search +"%' "
-                    + "OR  Cpn.name like '%" + search +"%' "
+                    + "WHERE C.name like '%" + search + "%' "
+                    + "OR  Cpn.name like '%" + search + "%' "
             );
             List<Computer> computers = query.getResultList();
             return new Page<Computer>(computers, 0);
