@@ -26,7 +26,7 @@
                     id: ${id}
                 </div>
                 <h1><spring:message code="dashboard.edit" /></h1>
-                <form action=<page:link link="/computer/editComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" modelAttribut="form">
+                <form action=<page:link link="/computer/editComputer" path="${pageContext.request.contextPath}"></page:link> method="POST" modelAttribut="form" onsubmit="return validateComputer();">
                     <input type="hidden" value="${computer.id}" id="id" name="id"/>
                     <fieldset>
                         <div class="form-group">
