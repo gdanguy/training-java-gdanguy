@@ -118,6 +118,15 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     /**
+     * Get All Computer.
+     * @return List<Computer>
+     */
+    public List<Computer> getAll() {
+        List<Computer> result = computerDAO.getAll();
+        return result;
+    }
+
+    /**
      * Create a model.Computer in DataBase.
      * @param computer to insert
      * @return if computer was added

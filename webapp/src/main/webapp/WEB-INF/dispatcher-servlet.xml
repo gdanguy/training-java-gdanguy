@@ -12,6 +12,7 @@
 
     <!-- ANNOTATIONS POUR LA CREATION DE BEANS VIA ANNOTATIONS -->
     <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="rest"/>
     <context:component-scan base-package="service" />
 
 

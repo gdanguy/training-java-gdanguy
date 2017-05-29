@@ -60,6 +60,12 @@ public interface ComputerService {
     Computer get(int id);
 
     /**
+     * Get All Computer.
+     * @return List<Computer>
+     */
+    List<Computer> getAll();
+
+    /**
      * Create a model.Computer in DataBase.
      * @param computer to insert
      * @return model.Computer in a String format

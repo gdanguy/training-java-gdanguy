@@ -14,6 +14,12 @@ public interface ComputerDAO {
     int count();
 
     /**
+     * Get All Computer.
+     * @return List<Computer>
+     */
+    List<Computer> getAll();
+
+    /**
      * This method returns the page of computers.
      * @param page corresponds to the page's number to be retrieved
      * @return Page<model.Computer> corresponds to the page

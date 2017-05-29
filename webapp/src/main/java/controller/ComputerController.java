@@ -5,12 +5,11 @@ import core.exception.CodeError;
 import core.exception.ExceptionService;
 import core.model.Company;
 import core.model.Computer;
+import core.utils.Constant;
 import core.utils.GenericBuilder;
 import core.validator.Validateur;
 import map.CompanyMapper;
 import map.computer.ComputerDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,17 +33,6 @@ import java.util.ArrayList;
 @Controller
 @RequestMapping("/computer")
 public class ComputerController {
-    private static final String LIST_COMPANIES_ATTRIBUTE = "listCompany";
-    private static Logger logger = LoggerFactory.getLogger(ComputerController.class);
-    private static final String SELECT = "selection";
-    private static final String MESSAGE_ERROR = "messageError";
-    private static final String ID = "id";
-    private static final String COMPUTER = "computer";
-    private static final String LIST = "listCompany";
-    private static final String NAME = "computerName";
-    private static final String INTRO = "introduced";
-    private static final String DISCO = "discontinued";
-    private static final String COMPANY_ID = "companyId";
     private CompanyMapper companyMap = new CompanyMapper();
     private final CompanyService serviceCompany;
     private final ComputerService serviceComputer;
@@ -69,7 +57,7 @@ public class ComputerController {
     @GetMapping("/addComputer")
     protected ModelAndView addComputerGet(ModelMap model, RedirectAttributes redirectAttributes) {
         try {
-            model.addAttribute(LIST_COMPANIES_ATTRIBUTE, companyMap.toList(serviceCompany.listAll()));
+            model.addAttribute(Constant.LIST_COMPANY, companyMap.toList(serviceCompany.listAll()));
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "404", redirectAttributes);
         }
@@ -89,10 +77,10 @@ public class ComputerController {
      * @return String
      */
     @PostMapping("/addComputer")
-    protected ModelAndView addComputerPost(@RequestParam(value = NAME) String name,
-                                           @RequestParam(value = INTRO) String intro,
-                                           @RequestParam(value = DISCO) String disco,
-                                           @RequestParam(value = COMPANY_ID) String compId,
+    protected ModelAndView addComputerPost(@RequestParam(value = Constant.NAME) String name,
+                                           @RequestParam(value = Constant.INTRO) String intro,
+                                           @RequestParam(value = Constant.DISCO) String disco,
+                                           @RequestParam(value = Constant.COMPANY_ID) String compId,
                                            RedirectAttributes redirectAttributes,
                                            ModelMap model) {
         ArrayList<String> errors = null;
@@ -103,7 +91,7 @@ public class ComputerController {
             return ExceptionService.redirect(e, "500", redirectAttributes);
         }
         if (errors != null && errors.size() != 0) {
-            model.addAttribute(MESSAGE_ERROR, errors);
+            model.addAttribute(Constant.MESSAGE_ERROR, errors);
         }
         if (input == null) {
             ModelAndView redirect = new ModelAndView();
@@ -126,14 +114,14 @@ public class ComputerController {
      * @return String
      */
     @PostMapping("/deleteComputer")
-    protected ModelAndView deleteComputer(@RequestParam(value = SELECT) String toDelete,
+    protected ModelAndView deleteComputer(@RequestParam(value = Constant.SELECT) String toDelete,
                                           RedirectAttributes redirectAttributes,
                                           ModelMap model) {
         String[] computerToDelete = toDelete.split(",");
         ArrayList<Integer> listId = new ArrayList<>();
         for (int i = 0; i < computerToDelete.length; i++) {
             if (Validateur.intValidatorStrict(computerToDelete[i]).size() > 0) {
-                model.addAttribute(MESSAGE_ERROR, "Invalid selection");
+                model.addAttribute(Constant.MESSAGE_ERROR, "Invalid selection");
                 return new ModelAndView(new RedirectView("dashboard"));
             }
             listId.add(Integer.parseInt(computerToDelete[i]));
@@ -153,20 +141,20 @@ public class ComputerController {
      * @return String
      */
     @GetMapping("/editComputer")
-    protected String editCompuer(@RequestParam(value = ID) String idComputer,
+    protected String editCompuer(@RequestParam(value = Constant.ID) String idComputer,
                                  ModelMap model) {
         int id = Integer.parseInt(idComputer);
-        model.addAttribute(ID, id);
+        model.addAttribute(Constant.ID, id);
         Computer c = serviceComputer.get(id);
-        model.addAttribute("form", new ComputerDTO());
-        model.addAttribute(COMPUTER, GenericBuilder.of(ComputerDTO::new)
+        model.addAttribute(Constant.FORM, new ComputerDTO());
+        model.addAttribute(Constant.COMPUTER, GenericBuilder.of(ComputerDTO::new)
                 .with(ComputerDTO::setId, id)
                 .with(ComputerDTO::setName, c.getName())
                 .with(ComputerDTO::setIntroduced, c.getIntroduced())
                 .with(ComputerDTO::setDiscontinued, c.getDiscontinued())
                 .with(ComputerDTO::setCompany, c.getCompany())
                 .build());
-        model.addAttribute(LIST, companyMap.toList(serviceCompany.listAll()));
+        model.addAttribute(Constant.LIST_COMPANY, companyMap.toList(serviceCompany.listAll()));
         return "editComputer";
     }
 
@@ -184,11 +172,11 @@ public class ComputerController {
      */
     @PostMapping("/editComputer")
     protected ModelAndView editComputerPost(
-                                            @RequestParam(value = ID) String id,
-                                            @RequestParam(value = NAME) String name,
-                                            @RequestParam(value = INTRO, required = false) String intro,
-                                            @RequestParam(value = DISCO, required = false) String disco,
-                                            @RequestParam(value = COMPANY_ID, required = false) String compId,
+                                            @RequestParam(value = Constant.ID) String id,
+                                            @RequestParam(value = Constant.NAME) String name,
+                                            @RequestParam(value = Constant.INTRO, required = false) String intro,
+                                            @RequestParam(value = Constant.DISCO, required = false) String disco,
+                                            @RequestParam(value = Constant.COMPANY_ID, required = false) String compId,
                                             RedirectAttributes redirectAttributes,
                                             ModelMap model) {
         try {

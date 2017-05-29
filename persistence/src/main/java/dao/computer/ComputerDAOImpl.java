@@ -41,9 +41,18 @@ public class ComputerDAOImpl implements ComputerDAO {
      */
     public int count() throws CDBException {
         logger.info("Count computers");
+        return getAll().size();
+    }
+
+    /**
+     * Get All Computer.
+     * @return List<Computer>
+     */
+    public List<Computer> getAll() {
+        logger.info("Get all computers");
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM Computer C");
-        return query.list().size();
+        return query.getResultList();
     }
 
     /**

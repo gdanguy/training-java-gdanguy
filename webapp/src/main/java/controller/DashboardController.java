@@ -43,12 +43,12 @@ public class DashboardController {
                            @RequestParam(value = Constant.MESSAGE_ERROR, required = false) ArrayList<String> errors,
                             ModelMap model) {
         int currentPage = 0;
-        if (cp != null && !cp.equals("")) {
+        if (cp != null && !cp.isEmpty()) {
             currentPage = Integer.parseInt(cp);
         }
         model.addAttribute(Constant.CURRENT_PAGE, currentPage);
         int sizePages = Page.PAGE_SIZE;
-        if (size != null && !size.equals("")) {
+        if (size != null && !size.isEmpty()) {
             sizePages = Integer.parseInt(size);
         }
         int debut = 0;
@@ -80,7 +80,7 @@ public class DashboardController {
         model.addAttribute(Constant.END, fin);
         model.addAttribute(Constant.COUNT, nbComputer);
         model.addAttribute(Constant.SIZE_PAGE, sizePages);
-        model.addAttribute(Constant.LIST, list);
+        model.addAttribute(Constant.LIST_COMPUTERS, list);
         return "dashboard";
     }
 
@@ -108,7 +108,7 @@ public class DashboardController {
         model.addAttribute(Constant.END, 0);
         model.addAttribute(Constant.COUNT, list.size());
         model.addAttribute(Constant.SIZE_PAGE, list.size());
-        model.addAttribute(Constant.LIST, computerMap.toList(list));
+        model.addAttribute(Constant.LIST_COMPUTERS, computerMap.toList(list));
         model.addAttribute(Constant.ORDER, order);
         return "dashboard";
     }
