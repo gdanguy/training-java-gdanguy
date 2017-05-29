@@ -5,14 +5,15 @@ import core.model.Company;
 import core.model.Computer;
 import core.utils.GenericBuilder;
 import core.utils.Page;
-import dao.company.CompanyDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import service.company.CompanyService;
-import service.computer.ComputerService;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -41,22 +42,13 @@ public class CliController {
     public static final String TYPE_COMPUTER = "computer";
     public static final String TYPE_COMPANY = "company";
 
-    private CompanyService serviceCompany;
-    private ComputerService serviceComputer;
-    private CompanyDAO db;
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "admin";    private static final String AUTHSTRING = USERNAME + ":" + PASSWORD;
+    private static final String AUTHHEADER = "Authorization";
+    private static final String AUTHORIZATION_HEADER_VALUE = "Basic " + java.util.Base64.getEncoder().encodeToString(AUTHSTRING.getBytes());
 
-    /**
-     * .
-     * @param serviceCompany .
-     * @param serviceComputer .
-     * @param db .
-     */
-    @Autowired
-    public CliController(CompanyService serviceCompany, ComputerService serviceComputer, CompanyDAO db) {
-        this.serviceCompany = serviceCompany;
-        this.serviceComputer = serviceComputer;
-        this.db = db;
-    }
+    private Client client = ClientBuilder.newClient();
+    private WebTarget myResource;
 
     /**
      * cli.MainCLI of the CLI.
@@ -133,28 +125,33 @@ public class CliController {
                     return "";
                 case SHOW_COMPUTER_DETAILS:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    return serviceComputer.get(id).toStringDetails();
+                    myResource = client.target("http://localhost:8085/rest/computer/" + id);
+                    return myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Computer.class).toStringDetails();
                 case CREATE_COMPUTER:
                     Computer c = userInputComputer();
-                    if (serviceComputer.create(c) >= 0) {
+                    myResource = client.target("http://localhost:8085/rest/computer/add");
+                    int result = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(c), Integer.class);
+                    if (result >= 0) {
                         return "model.Computer Created";
                     } else {
                         return "Error create computer";
                     }
                 case UPDATE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    if (serviceComputer.update(userInputComputer(serviceComputer.get(id), id))) {
-                        return "Update computer done";
-                    } else {
-                        return "Error update computer";
-                    }
+                    myResource = client.target("http://localhost:8085/rest/computer/" + id);
+                    Computer old = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Computer.class);
+                    Computer computer = userInputComputer(old, id);
+                    myResource = client.target("http://localhost:8085/rest/computer/edit");
+                    myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(computer));
+                    return "Update computer done";
                 case DELETE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    return serviceComputer.delete(id);
+                    myResource = client.target("http://localhost:8085/rest/computer/delete/" + id);
+                    return "computer delete";
                 case ADD_COMPANY:
                     Company company = userInputCompany();
-                    id = serviceCompany.create(company);
-                    //return new model.Company(id, company.getName()).toString() + " was created";
+                    myResource = client.target("http://localhost:8085/rest/company/add");
+                    id = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(company), Integer.class);
                     return (GenericBuilder.of(Company::new)
                             .with(Company::setId, id)
                             .with(Company::setName, company.getName())
@@ -162,11 +159,8 @@ public class CliController {
                             .toString() + " was created";
                 case DELETE_COMPANY:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    if (serviceCompany.delete(id)) {
-                        return "model.Company with id = " + id + " was deleted";
-                    } else {
-                        return "model.Company with id = " + id + " wasn't deleted";
-                    }
+                    myResource = client.target("http://localhost:8085/rest/company/delete/" + id);
+                    return "model.Company with id = " + id + " was deleted";
                 case HELP:
                     return listeOption();
                 case QUIT:
@@ -203,13 +197,14 @@ public class CliController {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer model.Company id : "));
-            //CompanyDAOImpl db = CompanyDAO.getInstance();
+            myResource = client.target("http://localhost:8085/rest/computer/" + companyId);
+            Company company = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Company.class);
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, -1)
                     .with(Computer::setName, name)
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
-                    .with(Computer::setCompany, db.get(companyId))
+                    .with(Computer::setCompany, company)
                     .build();
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
@@ -243,14 +238,15 @@ public class CliController {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer model.Company id (before : " + oldComputer.getCompany() + "): "));
-            //CompanyDAOImpl db = CompanyDAO.getInstance();
+            myResource = client.target("http://localhost:8085/rest/computer/" + companyId);
+            Company company = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Company.class);
 
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, id)
                     .with(Computer::setName, name)
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
-                    .with(Computer::setCompany, db.get(companyId))
+                    .with(Computer::setCompany, company)
                     .build();
         } catch (NullPointerException | NumberFormatException e) {
             logger.error(e + "\n");
@@ -296,13 +292,7 @@ public class CliController {
      * @param type TYPE_COMPUTER or TYPE_COMPANY
      */
     private void displayList(String type) {
-        Page<?> list;
-        if (type.equals(TYPE_COMPANY)) {
-            list = serviceCompany.list(0);
-        } else {
-            list = serviceComputer.list(0);
-        }
-
+        Page<?> list = getPage(type, 0);
         if (list.isEmpty()) {
             System.out.println("No item wanted in the database");
         } else {
@@ -312,30 +302,33 @@ public class CliController {
                 quit = true;
                 String input = lireSaisieUtilisateur("Type '" + NEXT_PAGE + "' for next page, '" + PREVIOUS_PAGE + "' for previous page, other for quit");
                 if (input.equals(NEXT_PAGE)) {
-                    if (type.equals(TYPE_COMPANY)) {
-                        list = serviceCompany.list(list.getNextPage());
-                    } else {
-                        list = serviceComputer.list(list.getNextPage());
-                    }
+                    list = getPage(type, list.getNextPage());
                     quit = false;
                     if (list.isEmpty()) {
-                        if (type.equals(TYPE_COMPANY)) {
-                            list = serviceCompany.list(list.getPreviousPage());
-                        } else {
-                            list = serviceComputer.list(list.getPreviousPage());
-                        }
+                        list = getPage(type, list.getPreviousPage());
                     }
                     System.out.println(list);
                 } else if (input.equals(PREVIOUS_PAGE)) {
-                    if (type.equals(TYPE_COMPANY)) {
-                        list = serviceCompany.list(list.getPreviousPage());
-                    } else {
-                        list = serviceComputer.list(list.getPreviousPage());
-                    }
+                    list = getPage(type, list.getPreviousPage());
                     quit = false;
                     System.out.println(list);
                 }
             } while (!quit);
         }
+    }
+
+    /**
+     * Get a page.
+     * @param type .
+     * @param page .
+     * @return .
+     */
+    private Page getPage(String type, int page) {
+        if (type.equals(TYPE_COMPANY)) {
+            myResource = client.target("http://localhost:8085/rest/company/page/" + page);
+        } else {
+            myResource = client.target("http://localhost:8085/rest/computer/page/" + page);
+        }
+        return myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Page.class);
     }
 }

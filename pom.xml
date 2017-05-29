@@ -32,6 +32,8 @@
         <hibernateValidator.version>5.4.1.Final</hibernateValidator.version>
         <hibernate.version>5.2.9.Final</hibernate.version>
         <json.version>2.9.0.pr3</json.version>
+        <jersey.version>2.5</jersey.version>
+        <jax-ws-rs.version>2.0</jax-ws-rs.version>
     </properties>
 
     <groupId>com.e-biz.gdanguy</groupId>
