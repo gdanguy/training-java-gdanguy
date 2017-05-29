@@ -192,7 +192,8 @@ public class ComputerController {
                                             RedirectAttributes redirectAttributes,
                                             ModelMap model) {
         try {
-            Computer computer = getComputerModified(Integer.parseInt(id), name, intro, disco, compId);
+
+            Computer computer = getComputerModified(Integer.parseInt(id.split(",")[0]), name, intro, disco, compId);
             serviceComputer.update(computer);
         } catch (CDBException e) {
             return ExceptionService.redirect(e, "500", redirectAttributes);
