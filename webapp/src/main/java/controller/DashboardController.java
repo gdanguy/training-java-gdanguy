@@ -27,17 +27,6 @@ public class DashboardController {
     @Autowired
     private ComputerService serviceComputer;
 
-
-
-    /**
-     * .
-     * @param serviceComputer .
-     */
-//    @Autowired
-//    public DashboardController(ComputerService serviceComputer) {
-//        this.serviceComputer = serviceComputer;
-//    }
-
     /**
      * Set data for the Dashboard.
      * @param cp .
