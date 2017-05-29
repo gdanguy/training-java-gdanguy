@@ -3,6 +3,7 @@ package rest;
 import core.model.Computer;
 import core.utils.Constant;
 import core.utils.Page;
+import core.validator.Validateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import service.computer.ComputerService;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -21,10 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/computer")
 public class ComputerRestController {
-
     private final ComputerService serviceComputer;
-
-    //TODO faire les retours erreurs json
 
     /**
      * .
@@ -42,6 +41,9 @@ public class ComputerRestController {
      */
     @GetMapping("/{" + Constant.ID + "}")
     public Computer get(@PathVariable(value = Constant.ID) Integer id) {
+        if (id == null || id < 1) {
+            throw new InvalidParameterException("Invalid ID");
+        }
         return serviceComputer.get(id);
     }
 
@@ -61,6 +63,9 @@ public class ComputerRestController {
      */
     @GetMapping("/page")
     public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page) {
+        if (page == null || page < 0) {
+            throw new InvalidParameterException("Invalid page");
+        }
         return serviceComputer.list(page);
     }
 
@@ -73,6 +78,9 @@ public class ComputerRestController {
     @GetMapping("/page2")
     public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page,
                                   @RequestParam(value = Constant.SIZE_PAGE) Integer pageSize) {
+        if (page == null || pageSize == null || page < 0 || pageSize < 1) {
+            throw new InvalidParameterException("Invalid page");
+        }
         return serviceComputer.list(page, pageSize);
     }
 
@@ -87,6 +95,9 @@ public class ComputerRestController {
     public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page,
                                   @RequestParam(value = Constant.SIZE_PAGE) Integer pageSize,
                                   @RequestParam(value = Constant.ORDER) String order) {
+        if (page == null || pageSize == null || order == null || page < 0 || pageSize < 1 || order.isEmpty()) {
+            throw new InvalidParameterException("Invalid page");
+        }
         return serviceComputer.list(page, pageSize, order);
     }
 
@@ -97,6 +108,14 @@ public class ComputerRestController {
      */
     @PostMapping("/add")
     public int add(@RequestBody Computer computer) {
+        String[] errors = Validateur.validComputer(computer);
+        if (errors.length > 0) {
+            String message = "";
+            for (String error : errors) {
+                message += error;
+            }
+            throw new InvalidParameterException(message);
+        }
         return serviceComputer.create(computer);
     }
 
@@ -106,6 +125,14 @@ public class ComputerRestController {
      */
     @PostMapping("/edit")
     public void edit(@RequestBody Computer computer) {
+        String[] errors = Validateur.validComputer(computer);
+        if (errors.length > 0) {
+            String message = "";
+            for (String error : errors) {
+                message += error;
+            }
+            throw new InvalidParameterException(message);
+        }
         serviceComputer.update(computer);
     }
 
@@ -115,6 +142,9 @@ public class ComputerRestController {
      */
     @PostMapping("/delete/{" + Constant.ID + "}")
     public void delete(@PathVariable(value = Constant.ID) Integer id) {
+        if (id == null || id < 1) {
+            throw new InvalidParameterException("Invalid ID");
+        }
         serviceComputer.delete(id);
     }
 
@@ -122,8 +152,13 @@ public class ComputerRestController {
      * Delete a List of computer.
      * @param computers List<Integer>
      */
-    @PostMapping("/delete/{" + Constant.ID + "}")
+    @PostMapping("/delete")
     public void delete(@RequestBody List<Integer> computers) {
+        for (Integer id : computers) {
+            if (id == null || id < 1) {
+                throw new InvalidParameterException("Invalid ID");
+            }
+        }
         serviceComputer.delete(computers);
     }
 }
