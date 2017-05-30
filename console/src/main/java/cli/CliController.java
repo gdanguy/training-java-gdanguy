@@ -3,8 +3,13 @@ package cli;
 import core.exception.CDBException;
 import core.model.Company;
 import core.model.Computer;
+import core.utils.Constant;
 import core.utils.GenericBuilder;
 import core.utils.Page;
+import map.CompanyMapperDTO;
+import map.ComputerMapperDTO;
+import map.company.CompanyDTO;
+import map.computer.ComputerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,35 +25,39 @@ import java.util.Scanner;
 
 @Component("cliController")
 public class CliController {
-    private Logger logger = LoggerFactory.getLogger(CliController.class);
-    public static final Scanner SCANNER = new Scanner(System.in);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CliController.class);
+    private static final Scanner SCANNER = new Scanner(System.in);
 
-    public static final String NEXT_PAGE = "+";
-    public static final String PREVIOUS_PAGE = "-";
+    private static final String NEXT_PAGE = "+";
+    private static final String PREVIOUS_PAGE = "-";
 
-    public static final String LIST_COMPUTER = "list computers";
-    public static final String LIST_COMPANIES = "list companies";
-    public static final String SHOW_COMPUTER_DETAILS = "show computer details";
-    public static final String CREATE_COMPUTER = "create a computer";
-    public static final String UPDATE_COMPUTER = "update a computer";
-    public static final String DELETE_COMPUTER = "delete a computer";
-    public static final String ADD_COMPANY = "create a company";
-    public static final String DELETE_COMPANY = "delete a company";
-    public static final String QUIT = "quit";
-    public static final String HELP = "help";
+    private static final String LIST_COMPUTER = "list computers";
+    private static final String LIST_COMPANIES = "list companies";
+    private static final String SHOW_COMPUTER_DETAILS = "show computer details";
+    private static final String CREATE_COMPUTER = "create a computer";
+    private static final String UPDATE_COMPUTER = "update a computer";
+    private static final String DELETE_COMPUTER = "delete a computer";
+    private static final String ADD_COMPANY = "create a company";
+    private static final String DELETE_COMPANY = "delete a company";
+    private static final String QUIT = "quit";
+    private static final String HELP = "help";
 
-    public static final DateTimeFormatter FORMATTEUR = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTEUR = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static final String TYPE_COMPUTER = "computer";
-    public static final String TYPE_COMPANY = "company";
-
+    private static final String TYPE_COMPUTER = "computer";
+    private static final String TYPE_COMPANY = "company";
+    private static final String URL_COMPUTER = "http://localhost:8080/api/computer";
+    private static final String URL_COMPANY = "http://localhost:8080/api/company";
+    private static final Client CLIENT = ClientBuilder.newClient();
     private static final String USERNAME = "admin";
-    private static final String PASSWORD = "admin";    private static final String AUTHSTRING = USERNAME + ":" + PASSWORD;
-    private static final String AUTHHEADER = "Authorization";
-    private static final String AUTHORIZATION_HEADER_VALUE = "Basic " + java.util.Base64.getEncoder().encodeToString(AUTHSTRING.getBytes());
+    private static final String PASSWORD = "admin";
+    private static final String AUTH_STRING = USERNAME + ":" + PASSWORD;
+    private static final String AUTH_HEADER = "Authorization";
+    private static final String AUTHORIZATION_HEADER_VALUE = "Basic " + java.util.Base64.getEncoder().encodeToString(AUTH_STRING.getBytes());
 
-    private Client client = ClientBuilder.newClient();
     private WebTarget myResource;
+    private final ComputerMapperDTO computerMapperDTO = new ComputerMapperDTO();
+    private final CompanyMapperDTO companyMapperDTO = new CompanyMapperDTO();
 
     /**
      * cli.MainCLI of the CLI.
@@ -97,12 +106,12 @@ public class CliController {
      * @return String
      */
     public String lireSaisieUtilisateur(String message) {
-        logger.info("Input needed");
+        LOGGER.info("Input needed");
         if (message != null) {
             System.out.println(message);
         }
         String str = SCANNER.nextLine();
-        str.toLowerCase();
+        str = str.toLowerCase();
         return str;
     }
 
@@ -113,7 +122,7 @@ public class CliController {
      * @throws CDBException if SQL fail
      */
     public String choixAction(String action) throws CDBException {
-        logger.info("Choose action : '" + action + "'\n");
+        LOGGER.info("Choose action : '" + action + "'\n");
         int id;
         try {
             switch (action) {
@@ -125,33 +134,34 @@ public class CliController {
                     return "";
                 case SHOW_COMPUTER_DETAILS:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    myResource = client.target("http://localhost:8085/rest/computer/" + id);
-                    return myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Computer.class).toStringDetails();
+                    myResource = CLIENT.target(URL_COMPUTER + "/{" + Constant.ID + "}").resolveTemplate(Constant.ID, id);
+                    return computerMapperDTO.from(myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).get(ComputerDTO.class)).toStringDetails();
                 case CREATE_COMPUTER:
-                    Computer c = userInputComputer();
-                    myResource = client.target("http://localhost:8085/rest/computer/add");
-                    int result = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(c), Integer.class);
+                    ComputerDTO c = computerMapperDTO.to(userInputComputer());
+                    myResource = CLIENT.target(URL_COMPUTER);
+                    int result = myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(c), Integer.class);
                     if (result >= 0) {
-                        return "model.Computer Created";
+                        return "Computer Created";
                     } else {
                         return "Error create computer";
                     }
                 case UPDATE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    myResource = client.target("http://localhost:8085/rest/computer/" + id);
-                    Computer old = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Computer.class);
-                    Computer computer = userInputComputer(old, id);
-                    myResource = client.target("http://localhost:8085/rest/computer/edit");
-                    myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(computer));
+                    myResource = CLIENT.target(URL_COMPUTER + "/{" + Constant.ID + "}").resolveTemplate(Constant.ID, id);
+                    Computer old = myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).get(Computer.class);
+                    ComputerDTO computer = computerMapperDTO.to(userInputComputer(old, id));
+                    myResource = CLIENT.target(URL_COMPUTER);
+                    myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).put(Entity.json(computer));
                     return "Update computer done";
                 case DELETE_COMPUTER:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    myResource = client.target("http://localhost:8085/rest/computer/delete/" + id);
+                    myResource = CLIENT.target(URL_COMPUTER);
+                    myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).delete(/*Entity.json(id)*/);
                     return "computer delete";
                 case ADD_COMPANY:
-                    Company company = userInputCompany();
-                    myResource = client.target("http://localhost:8085/rest/company/add");
-                    id = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(company), Integer.class);
+                    CompanyDTO company = companyMapperDTO.to(userInputCompany());
+                    myResource = CLIENT.target(URL_COMPANY);
+                    id = myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).post(Entity.json(company), Integer.class);
                     return (GenericBuilder.of(Company::new)
                             .with(Company::setId, id)
                             .with(Company::setName, company.getName())
@@ -159,8 +169,9 @@ public class CliController {
                             .toString() + " was created";
                 case DELETE_COMPANY:
                     id = Integer.parseInt(lireSaisieUtilisateur("Enter computer ID : "));
-                    myResource = client.target("http://localhost:8085/rest/company/delete/" + id);
-                    return "model.Company with id = " + id + " was deleted";
+                    myResource = CLIENT.target(URL_COMPANY + "/{" + Constant.ID + "}").resolveTemplate(Constant.ID, id);
+                    myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).delete();
+                    return "Company with id = " + id + " was deleted";
                 case HELP:
                     return listeOption();
                 case QUIT:
@@ -169,7 +180,7 @@ public class CliController {
                     return "Invalid input\n";
             }
         } catch (NullPointerException | NumberFormatException e) {
-            logger.error(e + "\n");
+            LOGGER.error(e + "\n");
             return "Invalid input";
         }
     }
@@ -180,7 +191,7 @@ public class CliController {
      * @throws CDBException is SQL fail
      */
     private Computer userInputComputer() throws CDBException {
-        logger.info("User input new model.Computer");
+        LOGGER.info("User input new model.Computer");
         try {
             String name = lireSaisieUtilisateur("Enter computer Name : ");
             String introduced = lireSaisieUtilisateur(
@@ -197,17 +208,17 @@ public class CliController {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer model.Company id : "));
-            myResource = client.target("http://localhost:8085/rest/computer/" + companyId);
-            Company company = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Company.class);
+            myResource = CLIENT.target(URL_COMPUTER + companyId);
+            CompanyDTO company = myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).get(CompanyDTO.class);
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, -1)
                     .with(Computer::setName, name)
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
-                    .with(Computer::setCompany, company)
+                    .with(Computer::setCompany, companyMapperDTO.from(company))
                     .build();
         } catch (NullPointerException | NumberFormatException e) {
-            logger.error(e + "\n");
+            LOGGER.error(e + "\n");
             return null;
         }
     }
@@ -220,7 +231,7 @@ public class CliController {
      * @throws CDBException is SQL fail
      */
     private Computer userInputComputer(Computer oldComputer, int id) throws CDBException {
-        logger.info("User input new model.Computer, old : " + oldComputer);
+        LOGGER.info("User input new model.Computer, old : " + oldComputer);
         try {
             String name = lireSaisieUtilisateur("Enter computer Name (before : " + oldComputer.getName() + ") : ");
 
@@ -238,18 +249,18 @@ public class CliController {
             }
 
             int companyId = Integer.parseInt(lireSaisieUtilisateur("Enter computer model.Company id (before : " + oldComputer.getCompany() + "): "));
-            myResource = client.target("http://localhost:8085/rest/computer/" + companyId);
-            Company company = myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Company.class);
+            myResource = CLIENT.target(URL_COMPUTER + companyId);
+            CompanyDTO company = myResource.request(MediaType.APPLICATION_JSON).header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE).get(CompanyDTO.class);
 
             return GenericBuilder.of(Computer::new)
                     .with(Computer::setId, id)
                     .with(Computer::setName, name)
                     .with(Computer::setIntroduced, intro)
                     .with(Computer::setDiscontinued, disco)
-                    .with(Computer::setCompany, company)
+                    .with(Computer::setCompany, companyMapperDTO.from(company))
                     .build();
         } catch (NullPointerException | NumberFormatException e) {
-            logger.error(e + "\n");
+            LOGGER.error(e + "\n");
             return null;
         }
     }
@@ -260,7 +271,7 @@ public class CliController {
      * @throws CDBException is SQL fail
      */
     private Company userInputCompany() throws CDBException {
-        logger.info("User input new model.Company");
+        LOGGER.info("User input new model.Company");
         try {
             String name = lireSaisieUtilisateur("Enter model.Company Name : ");
             return GenericBuilder.of(Company::new)
@@ -268,7 +279,7 @@ public class CliController {
                     .with(Company::setName, name)
                     .build();
         } catch (NullPointerException | NumberFormatException e) {
-            logger.error(e + "\n");
+            LOGGER.error(e + "\n");
             return null;
         }
     }
@@ -325,10 +336,13 @@ public class CliController {
      */
     private Page getPage(String type, int page) {
         if (type.equals(TYPE_COMPANY)) {
-            myResource = client.target("http://localhost:8085/rest/company/page/" + page);
+            myResource = CLIENT.target(URL_COMPANY + "/page");
         } else {
-            myResource = client.target("http://localhost:8085/rest/computer/page/" + page);
+            myResource = CLIENT.target(URL_COMPUTER + "/page");
         }
-        return myResource.request(MediaType.APPLICATION_JSON).header(AUTHHEADER, AUTHORIZATION_HEADER_VALUE).get(Page.class);
+        return myResource.queryParam(Constant.PAGE, page)
+                .request(MediaType.APPLICATION_JSON)
+                .header(AUTH_HEADER, AUTHORIZATION_HEADER_VALUE)
+                .get(Page.class);
     }
 }

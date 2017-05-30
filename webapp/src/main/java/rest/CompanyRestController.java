@@ -23,7 +23,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
-@RequestMapping("/rest/company")
+@RequestMapping("/api/company")
 public class CompanyRestController {
     private final CompanyService serviceCompany;
     private final CompanyMapperDTO companyMapperDTO = new CompanyMapperDTO();

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
-@RequestMapping("/rest/computer")
+@RequestMapping("/api/computer")
 public class ComputerRestController {
     private final ComputerService serviceComputer;
     private final ComputerMapperDTO computerMapperDTO = new ComputerMapperDTO();
