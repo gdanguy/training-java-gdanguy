@@ -21,7 +21,7 @@ public class ComputerMapperDTO implements Mapper<Computer, ComputerDTO> {
                 .with(Computer::setName, computerDTO.getName())
                 .with(Computer::setIntroduced, Validateur.parseString(computerDTO.getIntroduced()))
                 .with(Computer::setDiscontinued, Validateur.parseString(computerDTO.getDiscontinued()))
-                .with(Computer::setCompany, computerDTO.getCompanyId() < 1 ? null :
+                .with(Computer::setCompany, (computerDTO.getCompanyId() == null || computerDTO.getCompanyId() < 1) ? null :
                         GenericBuilder.of(Company::new)
                         .with(Company::setId, computerDTO.getCompanyId())
                         .with(Company::setName, computerDTO.getCompanyName())

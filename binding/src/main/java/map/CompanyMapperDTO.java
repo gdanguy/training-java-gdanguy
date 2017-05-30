@@ -9,7 +9,7 @@ import core.utils.GenericBuilder;
  * Created by ebiz on 24/04/17.
  */
 @Configuration
-public class CompanyMapper implements Mapper<Company, CompanyDTO> {
+public class CompanyMapperDTO implements Mapper<Company, CompanyDTO> {
     /**
      * model.Company from CompanyDTO.
      * @param companyDTO in

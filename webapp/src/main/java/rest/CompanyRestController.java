@@ -4,7 +4,10 @@ import core.model.Company;
 import core.utils.Constant;
 import core.utils.Page;
 import core.validator.Validateur;
+import map.CompanyMapperDTO;
+import map.company.CompanyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +25,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest/company")
 public class CompanyRestController {
-
     private final CompanyService serviceCompany;
+    private final CompanyMapperDTO companyMapperDTO = new CompanyMapperDTO();
 
     /**
      * .
@@ -37,47 +40,48 @@ public class CompanyRestController {
     /**
      * Get a company by id.
      * @param id Integer
-     * @return Company
+     * @return CompanyDTO
      */
     @GetMapping("/{id}")
-    public Company get(@PathVariable(value = Constant.ID) Integer id) {
+    public CompanyDTO get(@PathVariable(value = Constant.ID) Integer id) {
         if (id == null || id < 1) {
             throw new InvalidParameterException("Invalid ID");
         }
-        return serviceCompany.get(id);
+        return companyMapperDTO.to(serviceCompany.get(id));
     }
 
     /**
      * Get all.
-     * @return List<Company>
+     * @return List<CompanyDTO>
      */
     @GetMapping()
-    public List<Company> get() {
-        return serviceCompany.listAll();
+    public List<CompanyDTO> get() {
+        return (List) companyMapperDTO.toList(serviceCompany.listAll());
     }
 
     /**
-     * Get a Page<Company>.
+     * Get a Page<CompanyDTO>.
      * @param page Integer
-     * @return Page<Company>
+     * @return Page<CompanyDTO>
      */
     @GetMapping("/page/{" + Constant.PAGE + "}")
-    public Page<Company> getPage(@PathVariable(value = Constant.PAGE) Integer page) {
+    public Page<CompanyDTO> getPage(@PathVariable(value = Constant.PAGE) Integer page) {
         if (page == null || page < 0) {
             throw new InvalidParameterException("Invalid page");
         }
-        return serviceCompany.list(page);
+        return companyMapperDTO.toPage(serviceCompany.list(page));
     }
 
     /**
      * Create a company.
-     * @param company Company
+     * @param companyDTO CompanyDTO
      * @return id of the new Company
      */
-    @PostMapping("/add")
-    public int add(@RequestBody Company company) {
+    @PostMapping()
+    public int add(@RequestBody CompanyDTO companyDTO) {
+        Company company = companyMapperDTO.from(companyDTO);
         String errors = Validateur.validCompany(company);
-        if (!errors.isEmpty()) {
+        if (errors != null && !errors.isEmpty()) {
             throw new InvalidParameterException(errors);
         }
         return serviceCompany.create(company);
@@ -87,7 +91,7 @@ public class CompanyRestController {
      * Delete a Company.
      * @param id Integer
      */
-    @PostMapping("/delete/{" + Constant.ID + "}")
+    @DeleteMapping("/{" + Constant.ID + "}")
     public void delete(@PathVariable(value = Constant.ID) Integer id) {
         if (id == null || id < 1) {
             throw new InvalidParameterException("Invalid ID");

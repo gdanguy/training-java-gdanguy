@@ -74,7 +74,14 @@ public class ComputerServiceImpl implements ComputerService {
             throw new CDBException(CodeError.INVALID_PAGE);
         }
         int p = page;
-        Page<Computer> result = computerDAO.getPage(p, sizePage, order);
+        Page<Computer> result;
+        if (sizePage < 0) {
+            result = computerDAO.getPage(p, Page.PAGE_SIZE, Constant.ORDER_NULL);
+        } else if (order.isEmpty()) {
+            result = computerDAO.getPage(p, sizePage, Constant.ORDER_NULL);
+        } else {
+            result = computerDAO.getPage(p, sizePage, order);
+        }
         while (result.getListPage().size() == 0) {
             result = computerDAO.getPage(--p, sizePage, order);
         }

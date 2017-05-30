@@ -8,7 +8,7 @@ import core.model.Computer;
 import core.utils.Constant;
 import core.utils.GenericBuilder;
 import core.validator.Validateur;
-import map.CompanyMapper;
+import map.CompanyMapperDTO;
 import map.computer.ComputerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 @Controller
 @RequestMapping("/computer")
 public class ComputerController {
-    private CompanyMapper companyMap = new CompanyMapper();
+    private CompanyMapperDTO companyMap = new CompanyMapperDTO();
     private final CompanyService serviceCompany;
     private final ComputerService serviceComputer;
 
