@@ -46,8 +46,8 @@ public class CliController {
 
     private static final String TYPE_COMPUTER = "computer";
     private static final String TYPE_COMPANY = "company";
-    private static final String URL_COMPUTER = "http://localhost:8085/api/computer";
-    private static final String URL_COMPANY = "http://localhost:8085/api/company";
+    private static final String URL_COMPUTER = "http://localhost:8085/api/computers";
+    private static final String URL_COMPANY = "http://localhost:8085/api/companies";
     private static final Client CLIENT = ClientBuilder.newClient();
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";

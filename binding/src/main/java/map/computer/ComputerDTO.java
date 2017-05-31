@@ -4,10 +4,11 @@ import core.model.Company;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ComputerDTO {
+public class ComputerDTO implements Serializable {
     public static final DateTimeFormatter FORMAT_COURT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected int id;
     @NotNull

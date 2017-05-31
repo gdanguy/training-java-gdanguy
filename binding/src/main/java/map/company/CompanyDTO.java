@@ -2,7 +2,9 @@ package map.company;
 
 import core.model.Company;
 
-public class CompanyDTO {
+import java.io.Serializable;
+
+public class CompanyDTO implements Serializable {
     private int id;
     private String name;
 

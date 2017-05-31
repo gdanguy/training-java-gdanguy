@@ -1,9 +1,10 @@
 package core.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Page<T> {
+public class Page<T> implements Serializable {
     public static final int PAGE_SIZE = 10;
 
     protected List<T> listObjects = new ArrayList<>();

@@ -7,6 +7,8 @@ import core.validator.Validateur;
 import map.ComputerMapperDTO;
 import map.computer.ComputerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +27,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
-@RequestMapping("/api/computer")
+@RequestMapping("/api/computers")
 public class ComputerRestController {
     private final ComputerService serviceComputer;
     private final ComputerMapperDTO computerMapperDTO = new ComputerMapperDTO();
@@ -70,15 +72,15 @@ public class ComputerRestController {
      */
     @GetMapping("/page")
     public Page<ComputerDTO> getPage(@RequestParam(value = Constant.PAGE) Integer page,
-                                  @RequestParam(value = Constant.SIZE_PAGE, required = false) Integer pageSize,
-                                  @RequestParam(value = Constant.ORDER, required = false) String order) {
+                                  @RequestParam(value = Constant.SIZE_PAGE, required = false, defaultValue = "10") Integer pageSize,
+                                  @RequestParam(value = Constant.ORDER, required = false, defaultValue = Constant.ORDER_NAME_ASC) String order) {
         if (page == null || page < 0) {
             throw new InvalidParameterException("Invalid page");
         }
-        if (pageSize == null) {
-            pageSize = 0;
+        if (pageSize == null || pageSize < 1) {
+            pageSize = Page.PAGE_SIZE;
         }
-        if (order == null) {
+        if (order == null || order.isEmpty()) {
             order = "";
         }
         return computerMapperDTO.toPage(serviceComputer.list(page, pageSize, order));
@@ -90,7 +92,7 @@ public class ComputerRestController {
      * @return id of the new Computer
      */
     @PostMapping()
-    public int add(@RequestBody ComputerDTO computerDTO) {
+    public ResponseEntity<?> add(@RequestBody ComputerDTO computerDTO) {
         Computer computer = computerMapperDTO.from(computerDTO);
         String[] errors = Validateur.validComputer(computer);
         if (errors != null && errors.length > 0) {
@@ -100,7 +102,7 @@ public class ComputerRestController {
             }
             throw new InvalidParameterException(message);
         }
-        return serviceComputer.create(computer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(serviceComputer.create(computer));
     }
 
     /**
