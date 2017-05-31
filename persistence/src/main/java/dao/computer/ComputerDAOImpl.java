@@ -75,8 +75,16 @@ public class ComputerDAOImpl implements ComputerDAO {
         String orderBy = getOrder(order);
         Session session = sessionFactory.getCurrentSession();
         try {
-            Query query = session.createQuery(" FROM Computer C "
-                    + orderBy);
+            Query query;
+            //If we order on company we need to check company.name
+            if (order.equals(Constant.ORDER_COMPANY_ASC) || order.equals(Constant.ORDER_COMPANY_DESC)) {
+                query = session.createQuery("SELECT C FROM Computer C "
+                                            + "left outer join C.company as Cpn "
+                                            + orderBy);
+            } else {
+                query = session.createQuery(" FROM Computer C "
+                                                + orderBy);
+            }
             query.setFirstResult(page * sizePage);
             query.setMaxResults(sizePage);
             List<Computer> computers = query.getResultList();
@@ -108,9 +116,9 @@ public class ComputerDAOImpl implements ComputerDAO {
             case Constant.ORDER_DISCO_DESC:
                 return (result + " discontinued DESC");
             case Constant.ORDER_COMPANY_ASC:
-                return (result + " company_name ASC");
+                return (result + " Cpn.name ASC");
             case Constant.ORDER_COMPANY_DESC:
-                return (result + " company_name DESC");
+                return (result + " Cpn.name DESC");
             default:
                 return "";
         }
