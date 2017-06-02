@@ -55,7 +55,7 @@ public interface Mapper<T, U> {
      * @return Page of U
      */
     default Page<U> toPage(Page<T> pageIn) {
-        return new Page<>((new ArrayList<>(toList(pageIn.getListPage()))), pageIn.getPageSize());
+        return new Page<>((new ArrayList<>(toList(pageIn.getListPage()))), pageIn.getCurrentPage(), pageIn.getPageSize());
     }
 
     /**
@@ -64,6 +64,6 @@ public interface Mapper<T, U> {
      * @return Page of T
      */
     default Page<T> fromPage(Page<U> pageIn) {
-        return new Page<>((new ArrayList<>(fromList(pageIn.getListPage()))), pageIn.getPageSize());
+        return new Page<>((new ArrayList<>(fromList(pageIn.getListPage()))), pageIn.getCurrentPage(), pageIn.getPageSize());
     }
 }

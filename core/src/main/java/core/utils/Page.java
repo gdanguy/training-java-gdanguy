@@ -7,9 +7,9 @@ import java.util.List;
 public class Page<T> implements Serializable {
     public static final int PAGE_SIZE = 10;
 
-    protected List<T> listObjects = new ArrayList<>();
-    protected int currentPage;
-    protected int pageSize = PAGE_SIZE;
+    private List<T> listObjects = new ArrayList<>();
+    private int currentPage = 0;
+    private int pageSize = PAGE_SIZE;
 
     /**
      * Constructor.

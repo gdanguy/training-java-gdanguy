@@ -10,7 +10,7 @@
         <http-basic/>
         <csrf disabled="true" />
         <custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
-        <intercept-url pattern="/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/**" access="permitAll()"/>
     </http>
 
     <b:bean id="digestFilter" class=

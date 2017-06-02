@@ -7,6 +7,7 @@ import core.validator.Validateur;
 import map.CompanyMapperDTO;
 import map.company.CompanyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/api/companies")
 public class CompanyRestController {
     private final CompanyService serviceCompany;

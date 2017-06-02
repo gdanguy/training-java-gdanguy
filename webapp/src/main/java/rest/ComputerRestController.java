@@ -9,6 +9,7 @@ import map.computer.ComputerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import java.util.List;
  * Created by ebiz on 29/05/17.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/api/computers")
 public class ComputerRestController {
     private final ComputerService serviceComputer;
@@ -72,8 +74,8 @@ public class ComputerRestController {
      */
     @GetMapping("/page")
     public Page<ComputerDTO> getPage(@RequestParam(value = Constant.PAGE) Integer page,
-                                  @RequestParam(value = Constant.SIZE_PAGE, required = false, defaultValue = "10") Integer pageSize,
-                                  @RequestParam(value = Constant.ORDER, required = false, defaultValue = Constant.ORDER_NAME_ASC) String order) {
+                                  @RequestParam(value = Constant.SIZE_PAGE, required = false) Integer pageSize,
+                                  @RequestParam(value = Constant.ORDER, required = false) String order) {
         if (page == null || page < 0) {
             throw new InvalidParameterException("Invalid page");
         }
@@ -81,7 +83,7 @@ public class ComputerRestController {
             pageSize = Page.PAGE_SIZE;
         }
         if (order == null || order.isEmpty()) {
-            order = "";
+            order = Constant.ORDER_NAME_ASC;
         }
         return computerMapperDTO.toPage(serviceComputer.list(page, pageSize, order));
     }
