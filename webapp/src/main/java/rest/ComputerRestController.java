@@ -49,11 +49,11 @@ public class ComputerRestController {
      * @return ComputerDTO
      */
     @GetMapping("/{" + Constant.ID + "}")
-    public ComputerDTO get(@PathVariable(value = Constant.ID) Integer id) {
+    public Computer get(@PathVariable(value = Constant.ID) Integer id) {
         if (id == null || id < 1) {
             throw new InvalidParameterException("Invalid ID");
         }
-        return computerMapperDTO.to(serviceComputer.get(id));
+        return serviceComputer.get(id);
     }
 
     /**
@@ -61,8 +61,8 @@ public class ComputerRestController {
      * @return List<ComputerDTO>
      */
     @GetMapping()
-    public List<ComputerDTO> get() {
-        return (List) computerMapperDTO.toList(serviceComputer.getAll());
+    public List<Computer> get() {
+        return serviceComputer.getAll();
     }
 
     /**
@@ -73,7 +73,7 @@ public class ComputerRestController {
      * @return Page<ComputerDTO>
      */
     @GetMapping("/page")
-    public Page<ComputerDTO> getPage(@RequestParam(value = Constant.PAGE) Integer page,
+    public Page<Computer> getPage(@RequestParam(value = Constant.PAGE) Integer page,
                                   @RequestParam(value = Constant.SIZE_PAGE, required = false) Integer pageSize,
                                   @RequestParam(value = Constant.ORDER, required = false) String order) {
         if (page == null || page < 0) {
@@ -85,7 +85,7 @@ public class ComputerRestController {
         if (order == null || order.isEmpty()) {
             order = Constant.ORDER_NAME_ASC;
         }
-        return computerMapperDTO.toPage(serviceComputer.list(page, pageSize, order));
+        return serviceComputer.list(page, pageSize, order);
     }
 
     /**
